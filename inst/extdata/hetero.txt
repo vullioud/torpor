@@ -1,0 +1,32 @@
+
+model{	
+#Model
+    for (i in 1:NbObservations) {
+       Y[i] ~ dnorm(mu[i], sigmay)
+       G[i] ~ dcat(p[1:2])
+mu[i] <- 
+ifelse(G[i]==1,
+int1+beta1*Ta[i],
+ifelse(Ta[i]<Tmin,
+int3+beta1*Ta[i],
+int2*exp(beta2*Ta[i])))
+    }
+
+#Assumptions
+int1 <- BMR-beta1*TLC
+int2 <-BMR/exp(beta2*tlc)
+int3 <- TMR-beta1*Tmin
+Tmin <- min(TLC,tlc-(log(BMR/TMR)/beta2))
+
+
+#Prior     
+tlc~dnorm(0,0.001)I(TLC,100)
+p[1:2] ~ ddirch(rep(1,2))  
+tauy ~ dunif(0,50)
+sigmay <- 1/pow(tauy,2)
+beta1~dnorm(0,0.001)I(-100,0)
+TMR~dnorm(0,0.001)I(0,BMR)
+beta2~dbeta(1,1)I(0,0.3)
+
+
+}
