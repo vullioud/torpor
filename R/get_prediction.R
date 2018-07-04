@@ -79,3 +79,5 @@ funnorm<- function(x, int1, beta1) {
   out <- int1 +beta1*x
   return(out)
 }
+
+
