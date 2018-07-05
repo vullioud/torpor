@@ -15,3 +15,4 @@
 #' @aliases toRpoR-package
 #' @docType package
 #' @keywords package
+#' @export
