@@ -5,7 +5,7 @@
 #'@param model a fitted model from fit_torpor
 #'@param Temp a vector of temperatur for which the prediction should be made
 #'@return a data frame with predicted values
-
+#'@export
 get_prediction <- function(model, Temp){
 
   beta1<- (model$sims.list$beta1)
@@ -34,6 +34,7 @@ get_prediction <- function(model, Temp){
   }
 
 
+#### if model$sims.list$G
 out1 <- data.frame(Temp = X,
                   Group = rep("Torp", length(X)),
                   mean_pred =  Ymeant,
@@ -46,7 +47,15 @@ out2 <- data.frame(Temp = X,
                    sup_95 = Y975n,
                    inf_95 = Y025n)
 
+
+if(length(model$mean$G[model$mean$G>1.5]) == 0){
+  out <- out2
+} else if (length(model$mean$G[model$mean$G<1.5]) == 0){
+out <- out1
+  } else {
 out <- rbind(out1, out2)
+  }
+
 return(out)
 
 }
@@ -76,7 +85,7 @@ funtorp <- function(x, Tmin, int2, int3, beta1, beta2) {
 #'@param beta1 slope 1
 #'@return a metabolic value
 funnorm<- function(x, int1, beta1) {
-  out <- int1 +beta1*x
+  out <- int1 + beta1*x
   return(out)
 }
 

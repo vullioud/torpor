@@ -2,7 +2,8 @@
 #'
 #'wrapper around the Jags function -
 #'@name fit_torpor
-#'@param data a data frame with 2 col. 1: Temperature, & 2: Metabolic value
+#'@param MR a vector of Metabolic rate
+#'@param Ta a vector of Temperature (same length than Ta)
 #'@param BMR value for the focal specie
 #'@param TLC value for the focal specie
 #'@param Model path to model_file.txt
@@ -10,8 +11,10 @@
 #'@return a fitted jags object
 #'@import rjags
 #'@import jagsUI
-
-fit_torpor <- function(data,
+#'@export
+#'
+fit_torpor <- function(MR,
+                       Ta,
                        BMR,
                        TLC,
                        Model = NULL,
@@ -39,11 +42,18 @@ params_hetero <- c("tauy",
                      "Tmin",
                      "tlc",
                      "BMR",
-                     "TMR")
+                     "TMR",
+                    "TLC")
 
 ## get the values for the models
-Y <- as.numeric(as.character(data[,2]))
-Ta <- as.numeric(as.character(data[,1]))
+Y <- as.numeric(as.character(MR))
+Ta <- as.numeric(as.character(Ta))
+
+## check
+if(length(Y) != length(Ta)) {
+  stop("Ta and MR not the same length")
+}
+
 ## remove NAs
 da <- cbind(Y,Ta)[!is.na(Y)&!is.na(Ta)&Ta<(TLC-2),]
 Y <-as.numeric(da[,1])

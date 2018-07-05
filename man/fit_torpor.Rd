@@ -4,11 +4,13 @@
 \alias{fit_torpor}
 \title{Fit Torpor}
 \usage{
-fit_torpor(data, BMR, TLC, Model = NULL, fitting_options = list(ni = 5e+05,
-  nt = 10, nb = 3e+05, nc = 3))
+fit_torpor(MR, Ta, BMR, TLC, Model = NULL, fitting_options = list(ni =
+  5e+05, nt = 10, nb = 3e+05, nc = 3))
 }
 \arguments{
-\item{data}{a data frame with 2 col. 1: Temperature, & 2: Metabolic value}
+\item{MR}{a vector of Metabolic rate}
+
+\item{Ta}{a vector of Temperature (same length than Ta)}
 
 \item{BMR}{value for the focal specie}
 
