@@ -5,7 +5,6 @@
 #'@param model a fitted model from fit_torpor
 #'@return the Q10 value
 #'@export
-
 get_Q10 <- function(model){
 
   beta1<- stats::median(model$sims.list$beta1)
@@ -21,7 +20,7 @@ get_Q10 <- function(model){
                ^(10/(TLC-Tmin)),digits=1)
 
   if(length(model$mean$G[model$mean$G>1.5]) == 0){
-    warning("error no values in torpor")
+    stop("no values in torpor")
     out <- NA
   } else if (length(model$mean$G[model$mean$G<1.5]) == 0){
     out <- out
