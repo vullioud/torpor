@@ -1,5 +1,9 @@
 #' test_data
 #'
+#' Callithrix_pygmaea
+#' BMR: 98
+#' TLC: 28.88
+#'
 #' @docType data
 #' @keywords datasets
 #' @name test_data
@@ -8,6 +12,10 @@
 NULL
 
 #' test_data2
+#'
+#' Cercartetus_lepidus
+#' BMR: 1.49
+#' TLC: 28.8
 #'
 #' @docType data
 #' @keywords datasets
@@ -18,9 +26,13 @@ NULL
 
 #' test_data3
 #'
+#' Elephantulus_rozeti
+#' BMR: 1.055
+#' TLC: 29
+#'
 #' @docType data
 #' @keywords datasets
 #' @name test_data3
 #' @usage data(test_data3)
-#' @format A data frame with 186 obs. taken from XXX
+#' @format A data frame with 186 obs. taken from Lovegrove EA 2001
 NULL
