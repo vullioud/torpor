@@ -2,17 +2,22 @@
 #'
 #'plot the raw values and the fitted model
 #'@name fit_and_plot
-#'@param data a data frame with 2 column MR and Ta
+#'@param MR a vector with MR
+#'@param Ta, a vector with Ta (same length as MR)
 #'@param model_out a fitted model from fit torpor
 #'@param ... arguments to fit the model in \code{\link{fit_torpor}} if not provided
 #'@export
 #'@return a plot
+#'@examples
+#'data(test_data)
+#'fit_and_plot(MR = test_data[,2], Ta = test_data[,1], BMR = 98, TLC = 28.88,
+#' fitting_options = list(nc =1) )
 
-fit_and_plot <- function(data, model_out = NULL, ...) {
-
+fit_and_plot <- function(model_out = NULL, MR, Ta,...) {
+# browser()
   ## fit a model if necessary
   if(is.null(model_out)) {
-    out <- fit_torpor(...)
+    out <- fit_torpor(MR = MR, Ta = Ta,...)
   } else {
     out <- model_out
   }
@@ -29,8 +34,10 @@ fit_and_plot <- function(data, model_out = NULL, ...) {
 
   TLC <- out$sims.list$TLC[1]
   BMR <- out$sims.list$BMR[1]
-  Y <- as.numeric(as.character(data[,2]))
-  Ta <- as.numeric(as.character(data[,1]))
+
+  Y <- as.numeric(as.character(MR))
+  Ta <- as.numeric(as.character(Ta))
+
   ## remove NAs
   da <- cbind(Y,Ta)[!is.na(Y)&!is.na(Ta)&Ta<(TLC-2),] ## TLC estimated -> problem
   Y <-as.numeric(da[,1])
@@ -45,12 +52,12 @@ fit_and_plot <- function(data, model_out = NULL, ...) {
   Tlimlo <- min(Ta,na.rm=T)
   MRup <- max(Y,na.rm=T)
   MRlo <- min(Y,na.rm=T)
-  ylab <- names(data)[2]
+  ylab <- "MR"
 
 
   # get the predictions
   pred <- get_prediction(out, seq(Tlimlo,Tlimup,length=100))
-  X <-  pred[pred$Group == "Torp", "Temp"]
+  X <-  pred[pred$Group == "Norm", "Temp"]
   Ymeant <- pred[pred$Group == "Torp", "mean_pred"]
   Y975t <- pred[pred$Group == "Torp", "sup_95"]
   Y025t <- pred[pred$Group == "Torp", "inf_95"]
