@@ -1,9 +1,9 @@
 #' Fit Torpor
 #'
-#'wrapper around the Jags function -
+#'wrapper around the function
 #'@name fit_torpor
 #'@param MR a vector of Metabolic rate
-#'@param Ta a vector of Temperature (same length than Ta)
+#'@param Ta a vector of Temperature (same length as Ta)
 #'@param BMR value for the focal specie
 #'@param TLC value for the focal specie
 #'@param Model path to model_file.txt
@@ -12,7 +12,10 @@
 #'@import rjags
 #'@import jagsUI
 #'@export
-#'
+#'@examples
+#'data(test_data)
+#fit_torpor(MR = test_data[,2], Ta = test_data[, 1], BMR = 98, TLC = 28.88, Model = NULL, fitting_options = list(nc = 1))
+
 fit_torpor <- function(MR,
                        Ta,
                        BMR,
@@ -23,6 +26,7 @@ fit_torpor <- function(MR,
                                               nb = 300000,
                                               nc = 3)){
 
+  CompleteArgs(fit_torpor)
 ## find the model if not given by the user
  if(is.null(Model)){
    path_to_model <- system.file("extdata", "hetero.txt",  package = "toRpoR")
@@ -32,18 +36,18 @@ fit_torpor <- function(MR,
 
 ## Returned values
 params_hetero <- c("tauy",
-                     "G",
-                     "p",
-                     "int1",
-                     "int2",
-                     "int3",
-                     "beta1",
-                     "beta2",
-                     "Tmin",
-                     "tlc",
-                     "BMR",
-                     "TMR",
-                    "TLC")
+                   "G",
+                   "p",
+                   "int1",
+                   "int2",
+                   "int3",
+                   "beta1",
+                   "beta2",
+                   "Tmin",
+                   "tlc",
+                   "BMR",
+                   "TMR",
+                   "TLC")
 
 ## get the values for the models
 Y <- as.numeric(as.character(MR))
@@ -92,8 +96,32 @@ out <- jagsUI ::jags(data = win.data,
                      n.thin = fitting_options[["nt"]],
                      n.iter = fitting_options[["ni"]],
                      n.burnin = fitting_options[["nb"]],
-                     parallel=T)
+                     parallel=T, verbose = F)
 
 return(out)
 }
 
+
+#' CompleteArgs
+#'
+#'From Alex Courtiol Isorix package
+#'@name CompleteArgs
+#'@param fn a function
+CompleteArgs <- function(fn) {
+  ## This function should not be called by the user but is itself called by other functions.
+  ## It keeps the default list elements when
+  ## a new list with fewer elements is provided
+  env <- parent.frame()
+  args <- formals(fn)
+  for (arg.name in names(args)) {
+    if (is.call(arg <- args[[arg.name]])) {
+      if (arg[1] == "list()") {
+        arg.input <- mget(names(args), envir = env)[[arg.name]]
+        arg.full  <- eval(formals(fn)[[arg.name]])
+        arg.full.updated <- utils::modifyList(arg.full, arg.input)
+        assign(arg.name, arg.full.updated, envir = env)
+      }
+    }
+  }
+  return(NULL)
+}
