@@ -4,11 +4,13 @@
 \name{test_data3}
 \alias{test_data3}
 \title{test_data3}
-\format{A data frame with 186 obs. taken from XXX}
+\format{A data frame with 186 obs. taken from Lovegrove EA 2001}
 \usage{
 data(test_data3)
 }
 \description{
-test_data3
+Elephantulus_rozeti
+BMR: 1.055
+TLC: 29
 }
 \keyword{datasets}

@@ -10,7 +10,7 @@ fit_torpor(MR, Ta, BMR, TLC, Model = NULL, fitting_options = list(ni =
 \arguments{
 \item{MR}{a vector of Metabolic rate}
 
-\item{Ta}{a vector of Temperature (same length than Ta)}
+\item{Ta}{a vector of Temperature (same length as Ta)}
 
 \item{BMR}{value for the focal specie}
 
@@ -24,5 +24,8 @@ fit_torpor(MR, Ta, BMR, TLC, Model = NULL, fitting_options = list(ni =
 a fitted jags object
 }
 \description{
-wrapper around the Jags function -
+wrapper around the function
+}
+\examples{
+data(test_data)
 }

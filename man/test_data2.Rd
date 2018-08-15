@@ -9,6 +9,8 @@
 data(test_data2)
 }
 \description{
-test_data2
+Cercartetus_lepidus
+BMR: 1.49
+TLC: 28.8
 }
 \keyword{datasets}

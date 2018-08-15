@@ -9,6 +9,8 @@
 data(test_data)
 }
 \description{
-test_data
+Callithrix_pygmaea
+BMR: 98
+TLC: 28.88
 }
 \keyword{datasets}

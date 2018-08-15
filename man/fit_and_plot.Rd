@@ -4,12 +4,14 @@
 \alias{fit_and_plot}
 \title{plot raw data and model output}
 \usage{
-fit_and_plot(data, model_out = NULL, ...)
+fit_and_plot(model_out = NULL, MR, Ta, ...)
 }
 \arguments{
-\item{data}{a data frame with 2 column MR and Ta}
-
 \item{model_out}{a fitted model from fit torpor}
+
+\item{MR}{a vector with MR}
+
+\item{Ta, }{a vector with Ta (same length as MR)}
 
 \item{...}{arguments to fit the model in \code{\link{fit_torpor}} if not provided}
 }
@@ -18,4 +20,9 @@ a plot
 }
 \description{
 plot the raw values and the fitted model
+}
+\examples{
+data(test_data)
+fit_and_plot(MR = test_data[,2], Ta = test_data[,1], BMR = 98, TLC = 28.88,
+fitting_options = list(nc =1) )
 }
