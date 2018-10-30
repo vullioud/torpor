@@ -1,29 +1,44 @@
-#' toRpoR: a package to fit mixture models on bats
+#'toRpoR: Binary mixture model aimed at distinguishing torpid and
+#'euthermic metabolic rates
 #'
-#' This R package is center around 3 main functions:
-#' the fit_torpor() functions allow you to fit gives the tools to reproduce the main statistical analysis of
-#' the article: Super Super
+#'This package enables an objective and standardized distinction between torpid
+#'and euthermic metabolic rates (MR) measured in steady-state conditions.
+#'Furthermore, it provides parameters’ estimations of the relation between
+#'ambient temperatures (Ta) and MR in both physiological stages. This package
+#'is aimed to support any physiologist working in thermal energetics. More information
+#'can be use
 #'
-#' This package is not conceived for general use yet!
+#'This R package is center around the \code{\link{fit_torpor()}} functions which
+#'allow you to fit binary mixture model on metabolic rates data using Bayesian inference.
 #'
-#' In the examples below, we provide the workflow leading the main results
-#' presented in the paper.
+#'Note: This package is not ready for general use yet!
 #'
+#'@docType package
+#'@name toRpoR
 #'
-#' NOTE: IT is a mess
-#' @docType package
-#' @name toRpoR
+#'@section fit_torpor:
+#'The function \code{\link{fit_torpor()}} considers the assumed relation between
+#'MR and Ta (Speakman & Thomas 2003).In the hypothermic state (torpor) and above some threshold Ta (Tmin),
+#'MR follows an exponential curve reflecting the Arrhenius rate enhancing
+#'effect of temperature on chemical reactions, whereas below Tmin, it increases
+#'linearly with decreasing Ta to maintain a minimal Tb in torpor. In the
+#'euthermic state, MR solely increases linearly with decreasing Ta.
 #'
-#' @section fit_torpor():
-#' The fit_torpor() function fit a mixture model for 2 pop using jags.
+#'@section fit_and_plot:
+#'The function \code{\link{fit_and_plot()}} is a wrapper function arround the \code{\link{fit_torpor()}}.
+#'It uses \code{\link{fit_torpor()}} to fit a model binomial mixture model using
+#'Bayesian inference and plot the predicted value as well as the raw data.
+#'Measures are presented in different colors depending of the metabolic stage
+#'and predicted values as well as 95% credibility interval (segmented lines)
+#'are presented. This function enable the user to replicates the analysis done in
+#'XXXX.
 #'
-#' @section fit_and_plot():
-#' The fit_and_plot() isa wrapper function around the fit_torpor() function. It
-#' reproduce the plot presented in the article.
-#' @section get_prediction():
-#' The get_prediction() functions allow you to access the prediction of the
-#' fitted model and the 95 credibility intervals.
-#' @section get_Q10():
-#' The get_Q10() function gives you the Q10 values for a given dataset.
+#'@section get_prediction():
+#'The function provides the predicted MR and 95% credible interval boundaries
+#'at a defined Ta given a certain model, in normothermic and/or torpid stage.
+#'
+#'@section get_Q10():
+#'The function provides the Q10 temperature coefficient, which represents the
+#'metabolic rates ratio measured at 10 °C Ta apart.
 #'
 NULL
