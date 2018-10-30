@@ -10,22 +10,43 @@ fit_torpor(MR, Ta, BMR, TLC, Model = NULL, fitting_options = list(ni =
 \arguments{
 \item{MR}{a vector of Metabolic rate}
 
-\item{Ta}{a vector of Temperature (same length as Ta)}
+\item{Ta}{a vector of ambient Temperature (same length as MR)}
 
-\item{BMR}{value for the focal specie}
+\item{BMR}{BMR value for the focal specie}
 
-\item{TLC}{value for the focal specie}
+\item{TLC}{TLC value for the focal specie}
 
-\item{Model}{path to model_file.txt}
+\item{Model}{path to model_file.txt if the users want to use her/his own model structure}
 
-\item{fitting_options}{a list with specification for jags parameters}
+\item{fitting_options}{a list with specification for sampling parameters.
+The follwing parameters can be speficied:
+*ni = number of interation
+*nt = number of XXX
+*nb = number of burns
+*nc = number of chain}
 }
 \value{
 a fitted jags object
 }
 \description{
-wrapper around the function
+The function \code{fit_torpor} fit binomial mixture model using Bayesian inference.
+This function uses Rjags in the background and enable users to specify some
+sampling parameters and, if wanted, change the structure of the model directly.
+}
+\details{
+The function considers the assumed relation between MR and Ta (Speakman & Thomas 2003).
+In the hypothermic state (torpor) and above some threshold Ta (Tmin),
+MR follows an exponential curve reflecting the Arrhenius rate enhancing effect
+of temperature on chemical reactions, whereas below Tmin, it increases linearly
+with decreasing Ta to maintain a minimal Tb in torpor.
+In the euthermic state, MR solely increases linearly with decreasing Ta.
 }
 \examples{
 data(test_data)
+fit_torpor(MR = test_data[,2],
+Ta = test_data[, 1],
+BMR = 98,
+TLC = 28.88,
+Model = NULL,
+fitting_options = list(nc = 1))
 }

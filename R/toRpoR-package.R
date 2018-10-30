@@ -6,7 +6,7 @@
 #'Furthermore, it provides parameters’ estimations of the relation between
 #'ambient temperatures (Ta) and MR in both physiological stages. This package
 #'is aimed to support any physiologist working in thermal energetics. More information
-#'can be use
+#'can be found on the compagnon article Fasel et al. (in prep)
 #'
 #'This R package is center around the \code{\link{fit_torpor()}} functions which
 #'allow you to fit binary mixture model on metabolic rates data using Bayesian inference.
@@ -31,7 +31,7 @@
 #'Measures are presented in different colors depending of the metabolic stage
 #'and predicted values as well as 95% credibility interval (segmented lines)
 #'are presented. This function enable the user to replicates the analysis done in
-#'XXXX.
+#'Fasel et al. (in prep).
 #'
 #'@section get_prediction():
 #'The function provides the predicted MR and 95% credible interval boundaries

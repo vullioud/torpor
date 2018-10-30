@@ -1,20 +1,41 @@
 #' Fit Torpor
 #'
-#'wrapper around the function
+#'The function \code{fit_torpor} fit binomial mixture model using Bayesian inference.
+#'This function uses Rjags in the background and enable users to specify some
+#'sampling parameters and, if wanted, change the structure of the model directly.
+#'
+#'The function considers the assumed relation between MR and Ta (Speakman & Thomas 2003).
+#'In the hypothermic state (torpor) and above some threshold Ta (Tmin),
+#'MR follows an exponential curve reflecting the Arrhenius rate enhancing effect
+#'of temperature on chemical reactions, whereas below Tmin, it increases linearly
+#'with decreasing Ta to maintain a minimal Tb in torpor.
+#'In the euthermic state, MR solely increases linearly with decreasing Ta.
+#'
 #'@name fit_torpor
 #'@param MR a vector of Metabolic rate
-#'@param Ta a vector of Temperature (same length as Ta)
-#'@param BMR value for the focal specie
-#'@param TLC value for the focal specie
-#'@param Model path to model_file.txt
-#'@param fitting_options a list with specification for jags parameters
+#'@param Ta a vector of ambient Temperature (same length as MR)
+#'@param BMR BMR value for the focal specie
+#'@param TLC TLC value for the focal specie
+#'@param Model path to model_file.txt if the users want to use her/his own model structure
+#'@param fitting_options a list with specification for sampling parameters.
+#'The follwing parameters can be speficied:
+#'*ni = number of interation
+#'*nt = number of XXX
+#'*nb = number of burns
+#'*nc = number of chain
+#'
 #'@return a fitted jags object
 #'@import rjags
 #'@import jagsUI
 #'@export
 #'@examples
 #'data(test_data)
-#fit_torpor(MR = test_data[,2], Ta = test_data[, 1], BMR = 98, TLC = 28.88, Model = NULL, fitting_options = list(nc = 1))
+#'fit_torpor(MR = test_data[,2],
+#'Ta = test_data[, 1],
+#'BMR = 98,
+#'TLC = 28.88,
+#'Model = NULL,
+#'fitting_options = list(nc = 1))
 
 fit_torpor <- function(MR,
                        Ta,
