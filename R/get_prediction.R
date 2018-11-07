@@ -3,10 +3,21 @@
 #'extract prediction from the output of the model
 #'@name get_prediction
 #'@param model a fitted model from fit_torpor
-#'@param Temp a vector of temperatur for which the prediction should be made
+#'@param Ta a vector of temperatur for which the prediction should be made
 #'@return a data frame with predicted values
+#'@examples
+#'\dontrun{
+#'data(test_data2)
+#'test_mod <- fit_torpor(MR = test_data2[,2],
+#'Ta = test_data2[, 1],
+#'BMR = 98,
+#'TLC = 28.88,
+#'Model = NULL,
+#'fitting_options = list(nc = 1))
+#'get_prediction(test_mod, 20)
+#'}
 #'@export
-get_prediction <- function(model, Temp){
+get_prediction <- function(model, Ta){
 
   beta1<- (model$sims.list$beta1)
   beta2 <- (model$sims.list$beta2)
@@ -16,7 +27,7 @@ get_prediction <- function(model, Temp){
   Tmin <- (model$sims.list$Tmin)
   tlc <- (model$sims.list$tlc)
 
-  X <- Temp
+  X <- Ta
   Ymeant<- rep(NA,length(X))
   Y975t<- rep(NA,length(X))
   Y025t<- rep(NA,length(X))
@@ -24,7 +35,7 @@ get_prediction <- function(model, Temp){
   Y975n <- rep(NA,length(X))
   Y025n <- rep(NA,length(X))
 
-  for(i in 1:length(Temp)) {
+  for(i in 1:length(Ta)) {
     Ymeant[i] <- stats::median(funtorp(X[i],Tmin, int2, int3, beta1, beta2))
     Y975t[i] <- stats::quantile(funtorp(X[i],Tmin, int2, int3, beta1, beta2),0.975)
     Y025t[i] <- stats::quantile(funtorp(X[i],Tmin, int2, int3, beta1, beta2),0.025)
@@ -35,17 +46,17 @@ get_prediction <- function(model, Temp){
 
 
 #### if model$sims.list$G
-out1 <- data.frame(Temp = X,
-                  Group = rep("Torp", length(X)),
-                  mean_pred =  Ymeant,
-                  sup_95 = Y975t,
-                  inf_95 = Y025t)
+out1 <- data.frame(Ta = X,
+                  group = rep("Torp", length(X)),
+                  pred =  Ymeant,
+                  upr_95 = Y975t,
+                  lwr_95 = Y025t)
 
-out2 <- data.frame(Temp = X,
-                   Group = rep("Norm", length(X)),
-                   mean_pred =  Ymeann,
-                   sup_95 = Y975n,
-                   inf_95 = Y025n)
+out2 <- data.frame(Ta = X,
+                   group = rep("Norm", length(X)),
+                   pred =  Ymeann,
+                   upr_95 = Y975n,
+                   lwr_95 = Y025n)
 
 
 if(length(model$mean$G[model$mean$G>1.5]) == 0){
