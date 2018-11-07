@@ -10,5 +10,5 @@ CompleteArgs(fn)
 \item{fn}{a function}
 }
 \description{
-From Alex Courtiol Isorix package
+borrowed from Alex Courtiol Isorix package
 }

@@ -4,10 +4,12 @@
 \alias{fit_and_plot}
 \title{plot raw data and model output}
 \usage{
-fit_and_plot(model_out = NULL, MR, Ta, ...)
+fit_and_plot(model_out = NULL, ggplot1 = FALSE, MR, Ta, ...)
 }
 \arguments{
 \item{model_out}{a fitted model from fit torpor}
+
+\item{ggplot1}{logical if plot should be done in ggplot}
 
 \item{MR}{a vector with MR}
 
@@ -19,10 +21,15 @@ fit_and_plot(model_out = NULL, MR, Ta, ...)
 a plot
 }
 \description{
-plot the raw values and the fitted model
+The function provides a plot of the MR values over the respective Ta.
+Measures are presented in different colors depending of the metabolic
+stage and regression slopes (continuous lines) as well as 95% CI (segmented lines) are presented.
+For more flexibility the users are advised to use \link{\code{fit_torpor}} and \link{\code{get_prediction}}
 }
 \examples{
-data(test_data)
-fit_and_plot(MR = test_data[,2], Ta = test_data[,1], BMR = 98, TLC = 28.88,
-fitting_options = list(nc =1) )
+\dontrun{
+data(test_data2)
+fit_and_plot(MR = test_data2[,2], Ta = test_data2[,1], BMR = 1.49, TLC = 28.8,
+fitting_options = list(nc =1), ggplot1 = TRUE)
+}
 }

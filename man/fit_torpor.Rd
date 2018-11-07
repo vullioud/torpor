@@ -8,38 +8,40 @@ fit_torpor(MR, Ta, BMR, TLC, Model = NULL, fitting_options = list(ni =
   5e+05, nt = 10, nb = 3e+05, nc = 3))
 }
 \arguments{
-\item{MR}{a vector of Metabolic rate}
+\item{MR}{a vector of Metabolic rates}
 
-\item{Ta}{a vector of ambient Temperature (same length as MR)}
+\item{Ta}{a vector of ambient Temperatures (same length as MR)}
 
 \item{BMR}{BMR value for the focal specie}
 
 \item{TLC}{TLC value for the focal specie}
 
-\item{Model}{path to model_file.txt if the users want to use her/his own model structure}
+\item{Model}{path to model_file.txt if a different model is used}
 
-\item{fitting_options}{a list with specification for sampling parameters.
-The follwing parameters can be speficied:
-*ni = number of interation
-*nt = number of XXX
-*nb = number of burns
-*nc = number of chain}
+\item{fitting_options}{a list specifying sampling parameters. The follwing parameters can be speficied:
+\itemize{
+\item ni = number of itterations
+\item nt = thin rate
+\item nb = number of burns
+\item nc = number of chains
+}}
 }
 \value{
 a fitted jags object
 }
 \description{
 The function \code{fit_torpor} fit binomial mixture model using Bayesian inference.
-This function uses Rjags in the background and enable users to specify some
-sampling parameters and, if wanted, change the structure of the model directly.
-}
-\details{
+It uses Rjags in the background and enables users to specify some - but not all -
+sampling parameters. The structure of the model can also be changed. User who want more
+flexibility are encouraged to use Rjags directly.
 The function considers the assumed relation between MR and Ta (Speakman & Thomas 2003).
 In the hypothermic state (torpor) and above some threshold Ta (Tmin),
 MR follows an exponential curve reflecting the Arrhenius rate enhancing effect
 of temperature on chemical reactions, whereas below Tmin, it increases linearly
 with decreasing Ta to maintain a minimal Tb in torpor.
 In the euthermic state, MR solely increases linearly with decreasing Ta.
+CAUTION: This model should be applied only if enough evidence is available suggesting
+that the individuals under study will conform to the previously described pattern while in torpor.
 }
 \examples{
 data(test_data)

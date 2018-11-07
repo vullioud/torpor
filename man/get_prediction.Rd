@@ -4,16 +4,28 @@
 \alias{get_prediction}
 \title{Get Predictions}
 \usage{
-get_prediction(model, Temp)
+get_prediction(model, Ta)
 }
 \arguments{
 \item{model}{a fitted model from fit_torpor}
 
-\item{Temp}{a vector of temperatur for which the prediction should be made}
+\item{Ta}{a vector of temperatur for which the prediction should be made}
 }
 \value{
 a data frame with predicted values
 }
 \description{
 extract prediction from the output of the model
+}
+\examples{
+\dontrun{
+data(test_data2)
+test_mod <- fit_torpor(MR = test_data2[,2],
+Ta = test_data2[, 1],
+BMR = 98,
+TLC = 28.88,
+Model = NULL,
+fitting_options = list(nc = 1))
+get_prediction(test_mod, 20)
+}
 }
