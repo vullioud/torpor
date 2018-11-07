@@ -1,33 +1,32 @@
 #' Fit Torpor
 #'
 #'The function \code{fit_torpor} fit binomial mixture model using Bayesian inference.
-#'This function uses Rjags in the background and enable users to specify some
-#'sampling parameters and, if wanted, change the structure of the model directly.
-#'
+#'It uses Rjags in the background and enables users to specify some - but not all -
+#'sampling parameters. The structure of the model can also be changed. User who want more
+#'flexibility are encouraged to use Rjags directly.
 #'The function considers the assumed relation between MR and Ta (Speakman & Thomas 2003).
 #'In the hypothermic state (torpor) and above some threshold Ta (Tmin),
 #'MR follows an exponential curve reflecting the Arrhenius rate enhancing effect
 #'of temperature on chemical reactions, whereas below Tmin, it increases linearly
 #'with decreasing Ta to maintain a minimal Tb in torpor.
 #'In the euthermic state, MR solely increases linearly with decreasing Ta.
-#'
+#'CAUTION: This model should be applied only if enough evidence is available suggesting
+#'that the individuals under study will conform to the previously described pattern while in torpor.
 #'@name fit_torpor
-#'@param MR a vector of Metabolic rate
-#'@param Ta a vector of ambient Temperature (same length as MR)
+#'@param MR a vector of Metabolic rates
+#'@param Ta a vector of ambient Temperatures (same length as MR)
 #'@param BMR BMR value for the focal specie
 #'@param TLC TLC value for the focal specie
-#'@param Model path to model_file.txt if the users want to use her/his own model structure
-#'@param fitting_options a list with specification for sampling parameters.
-#'The follwing parameters can be speficied:
-#'*ni = number of interation
-#'*nt = number of XXX
-#'*nb = number of burns
-#'*nc = number of chain
-#'
+#'@param Model path to model_file.txt if a different model is used
+#'@param fitting_options a list specifying sampling parameters. The follwing parameters can be speficied:
+#' * ni = number of itterations
+#' * nt = thin rate
+#' * nb = number of burns
+#' * nc = number of chains
 #'@return a fitted jags object
+#'@export
 #'@import rjags
 #'@import jagsUI
-#'@export
 #'@examples
 #'data(test_data)
 #'fit_torpor(MR = test_data[,2],
@@ -45,87 +44,85 @@ fit_torpor <- function(MR,
                        fitting_options = list(ni = 500000,
                                               nt = 10,
                                               nb = 300000,
-                                              nc = 3)){
-
+                                              nc = 3)) {
   CompleteArgs(fit_torpor)
-## find the model if not given by the user
- if(is.null(Model)){
-   path_to_model <- system.file("extdata", "hetero.txt",  package = "toRpoR")
- } else {
-   path_to_model <- paste(Model)
+
+  ## check input
+  if (length(MR) != length(Ta)) {
+    stop("Ta and MR have not the same length")
   }
 
-## Returned values
-params_hetero <- c("tauy",
-                   "G",
-                   "p",
-                   "int1",
-                   "int2",
-                   "int3",
-                   "beta1",
-                   "beta2",
-                   "Tmin",
-                   "tlc",
-                   "BMR",
-                   "TMR",
-                   "TLC")
+  ## find the model if not given by the user
+  if (is.null(Model)) {
+    path_to_model <- system.file("extdata", "hetero.txt",  package = "toRpoR")
+  } else {
+    path_to_model <- paste(Model)
+  }
 
-## get the values for the models
-Y <- as.numeric(as.character(MR))
-Ta <- as.numeric(as.character(Ta))
-
-## check
-if(length(Y) != length(Ta)) {
-  stop("Ta and MR not the same length")
-}
-
-## remove NAs
-da <- cbind(Y,Ta)[!is.na(Y)&!is.na(Ta)&Ta<(TLC-2),]
-Y <-as.numeric(da[,1])
-Ta <-as.numeric(da[,2])
-
-
-## shuffle the data
-set.seed(666)
-ord <- order(stats::rnorm(length(Y),0,1))
-Y <- Y[ord]
-Ta <- Ta[ord]
-
-# create data list
-win.data <- list(Y = Y,
-                 NbObservations=length(Y),
-                 Ta=Ta,
-                 TLC=TLC,
-                 BMR=BMR)
-
-# create initial values
-inits<- list(
-    tauy=stats::runif(1),
-    p=stats::runif(2),
-    beta1=stats::runif(1,-0.1,0),
-    beta2=stats::runif(1,0.05,0.1),
-    TMR=stats::runif(1,0.1,0.18),
-    tlc=stats::runif(1,TLC,40)
+  ## Returned values
+  params_hetero <- c(
+    "tauy",
+    "G",
+    "p",
+    "int1",
+    "int2",
+    "int3",
+    "beta1",
+    "beta2",
+    "Tmin",
+    "tlc",
+    "BMR",
+    "TMR",
+    "TLC"
   )
-inits_hetero_list <- rep(list(inits), fitting_options[["nc"]])
 
-out <- jagsUI ::jags(data = win.data,
-                     inits = inits_hetero_list,
-                     parameters.to.save = params_hetero,
-                     model.file = path_to_model,
-                     n.chains = fitting_options[["nc"]],
-                     n.thin = fitting_options[["nt"]],
-                     n.iter = fitting_options[["ni"]],
-                     n.burnin = fitting_options[["nb"]],
-                     parallel=T, verbose = F)
+  ## get the values for the models /reorder the data and remove NA
+  set.seed(666)
+  da <- cbind(MR, Ta)[!is.na(MR) & !is.na(Ta) & Ta < (TLC - 2), ]
+  da <- da[sample(nrow(da)), ]
+  Y <- da[, "MR"]
+  Ta <- da[, "Ta"]
 
-return(out)
+  # create data list
+  win.data <- list(
+    Y = Y,
+    NbObservations = length(Y),
+    Ta = Ta,
+    TLC = TLC,
+    BMR = BMR
+  )
+
+  # create initial values
+  inits <- list(
+    tauy = stats::runif(1),
+    p = stats::runif(2),
+    beta1 = stats::runif(1, -0.1, 0),
+    beta2 = stats::runif(1, 0.05, 0.1),
+    TMR = stats::runif(1, 0.1, 0.18),
+    tlc = stats::runif(1, TLC, 40)
+  )
+  inits_hetero_list <- rep(list(inits), fitting_options[["nc"]])
+
+  out <- jagsUI::jags(
+    data = win.data,
+    inits = inits_hetero_list,
+    parameters.to.save = params_hetero,
+    model.file = path_to_model,
+    n.chains = fitting_options[["nc"]],
+    n.thin = fitting_options[["nt"]],
+    n.iter = fitting_options[["ni"]],
+    n.burnin = fitting_options[["nb"]],
+    parallel = T,
+    verbose = F
+  )
+
+  return(out)
 }
 
 
 #' CompleteArgs
 #'
-#'From Alex Courtiol Isorix package
+#'borrowed from Alex Courtiol Isorix package
 #'@name CompleteArgs
 #'@param fn a function
 CompleteArgs <- function(fn) {
