@@ -3,12 +3,12 @@
 #'The function provides a plot of the MR values over the respective Ta.
 #'Measures are presented in different colors depending of the metabolic
 #'stage and regression slopes (continuous lines) as well as 95% CI (segmented lines) are presented.
-#'For more flexibility the users are advised to use \link{\code{fit_torpor}} and \link{\code{get_prediction}}
+#'For more flexibility the users are advised to use XXX and XXX
 #'@name fit_and_plot
 #'@param MR a vector with MR
 #'@param Ta, a vector with Ta (same length as MR)
 #'@param model_out a fitted model from fit torpor
-#'@param ... arguments to fit the model in \code{\link{fit_torpor}} if not provided
+#'@param ... arguments to fit the model in XXX if not provided
 #'@param ggplot1 logical if plot should be done in ggplot
 #'@export
 #'@return a plot

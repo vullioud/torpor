@@ -1,7 +1,8 @@
-#' Get Predictions
+#' Get Prediction
 #'
 #'extract prediction from the output of the model
 #'@name get_prediction
+#'@aliases get_prediction
 #'@param model a fitted model from fit_torpor
 #'@param Ta a vector of temperatur for which the prediction should be made
 #'@return a data frame with predicted values

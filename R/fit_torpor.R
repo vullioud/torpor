@@ -13,6 +13,7 @@
 #'CAUTION: This model should be applied only if enough evidence is available suggesting
 #'that the individuals under study will conform to the previously described pattern while in torpor.
 #'@name fit_torpor
+#'@aliases fit_torpor
 #'@param MR a vector of Metabolic rates
 #'@param Ta a vector of ambient Temperatures (same length as MR)
 #'@param BMR BMR value for the focal specie

@@ -2,7 +2,7 @@
 % Please edit documentation in R/get_prediction.R
 \name{get_prediction}
 \alias{get_prediction}
-\title{Get Predictions}
+\title{Get Prediction}
 \usage{
 get_prediction(model, Ta)
 }

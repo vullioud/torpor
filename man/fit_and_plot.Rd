@@ -15,7 +15,7 @@ fit_and_plot(model_out = NULL, ggplot1 = FALSE, MR, Ta, ...)
 
 \item{Ta, }{a vector with Ta (same length as MR)}
 
-\item{...}{arguments to fit the model in \code{\link{fit_torpor}} if not provided}
+\item{...}{arguments to fit the model in XXX if not provided}
 }
 \value{
 a plot
@@ -24,7 +24,7 @@ a plot
 The function provides a plot of the MR values over the respective Ta.
 Measures are presented in different colors depending of the metabolic
 stage and regression slopes (continuous lines) as well as 95% CI (segmented lines) are presented.
-For more flexibility the users are advised to use \link{\code{fit_torpor}} and \link{\code{get_prediction}}
+For more flexibility the users are advised to use XXX and XXX
 }
 \examples{
 \dontrun{

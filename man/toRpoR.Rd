@@ -15,14 +15,14 @@ is aimed to support any physiologist working in thermal energetics. More informa
 can be found on the compagnon article Fasel et al. (in prep)
 }
 \details{
-This R package is center around the \code{\link{fit_torpor()}} functions which
+This R package is center around the XXX functions which
 allow you to fit binary mixture model on metabolic rates data using Bayesian inference.
 
 Note: This package is not ready for general use yet!
 }
 \section{fit_torpor}{
 
-The function \code{\link{fit_torpor()}} considers the assumed relation between
+The function XXX considers the assumed relation between
 MR and Ta (Speakman & Thomas 2003).In the hypothermic state (torpor) and above some threshold Ta (Tmin),
 MR follows an exponential curve reflecting the Arrhenius rate enhancing
 effect of temperature on chemical reactions, whereas below Tmin, it increases
@@ -32,8 +32,8 @@ euthermic state, MR solely increases linearly with decreasing Ta.
 
 \section{fit_and_plot}{
 
-The function \code{\link{fit_and_plot()}} is a wrapper function arround the \code{\link{fit_torpor()}}.
-It uses \code{\link{fit_torpor()}} to fit a model binomial mixture model using
+The function XXX is a wrapper function arround the XXX.
+It uses XXXX to fit a model binomial mixture model using
 Bayesian inference and plot the predicted value as well as the raw data.
 Measures are presented in different colors depending of the metabolic stage
 and predicted values as well as 95% credibility interval (segmented lines)
@@ -41,13 +41,13 @@ are presented. This function enable the user to replicates the analysis done in
 Fasel et al. (in prep).
 }
 
-\section{get_prediction()}{
+\section{get_prediction}{
 
 The function provides the predicted MR and 95% credible interval boundaries
 at a defined Ta given a certain model, in normothermic and/or torpid stage.
 }
 
-\section{get_Q10()}{
+\section{get_Q10}{
 
 The function provides the Q10 temperature coefficient, which represents the
 metabolic rates ratio measured at 10 °C Ta apart.
