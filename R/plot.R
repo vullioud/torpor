@@ -3,28 +3,28 @@
 #'The function provides a plot of the MR values over the respective Ta.
 #'Measures are presented in different colors depending of the metabolic
 #'stage and regression slopes (continuous lines) as well as 95% CI (segmented lines) are presented.
-#'For more flexibility the users are advised to use XXX and XXX
+#'For more flexibility the users are advised to use [fit_torpor()] and [get_prediction()] directly.
 #'@name fit_and_plot
 #'@param MR a vector with MR
 #'@param Ta, a vector with Ta (same length as MR)
-#'@param model_out a fitted model from fit torpor
-#'@param ... arguments to fit the model in XXX if not provided
-#'@param ggplot1 logical if plot should be done in ggplot
+#'@param mod a fitted model from fit torpor
+#'@param ... arguments to fit the model in [fit_torpor()] if no model output are provided
+#'@param plot_type character string specifying the type of plot desired. either "base" or "ggplot"
 #'@export
-#'@return a plot
+#'@return a base-R plot or a ggplot object
 #'@examples
 #'\dontrun{
-#'data(test_data2)
-#'fit_and_plot(MR = test_data2[,2], Ta = test_data2[,1], BMR = 1.49, TLC = 28.8,
-#'fitting_options = list(nc =1), ggplot1 = TRUE)
+#'data(test_data)
+#'fit_and_plot(MR = test_data[,2], Ta = test_data[,1], BMR = 29, TLC = 28.8,
+#'fitting_options = list(nc =1), plot_type = "ggplot")
 #'}
-fit_and_plot <- function(model_out = NULL, ggplot1 = FALSE, MR, Ta,...) {
+fit_and_plot <- function(mod = NULL, plot_type = "ggplot", MR, Ta,...) {
   # browser()
   ## fit a model if necessary
-  if(is.null(model_out)) {
+  if(is.null(mod)) {
     out <- fit_torpor(MR = MR, Ta = Ta,...)
   } else {
-    out <- model_out
+    out <- mod
   }
   TLC <- out$sims.list$TLC[1]
   BMR <- out$sims.list$BMR[1]
@@ -52,25 +52,46 @@ fit_and_plot <- function(model_out = NULL, ggplot1 = FALSE, MR, Ta,...) {
 
   # get the predictions
   pred <- get_prediction(out, seq(Tlimlo,Tlimup,length=100))
-  X <-  pred[pred$group == "Norm", "Ta"]
-  Ymeant <- pred[pred$group == "Torp", "pred"]
-  Y975t <- pred[pred$group == "Torp", "upr_95"]
-  Y025t <- pred[pred$group == "Torp", "lwr_95"]
-  Ymeann <- pred[pred$group == "Norm", "pred"]
-  Y975n <- pred[pred$group == "Norm", "upr_95"]
-  Y025n <- pred[pred$group == "Norm", "lwr_95"]
 
-  # if(ggplot == TRUE){
-  #   ggplot2::ggplot(da, aes(x = Ta, y = MR, col = G > 1.5))+
-  #     ggplot2::geom_point() +
-  #     xlim(c(min(da$Ta), max(da$Ta))) +
-  #     # ylim(c(min(da$MR), max(da$MR))) +
-  #     ggplot2::geom_line(data = pred[pred$group == "Norm", ], ggplot2::aes(x = Ta, y = pred), inherit.aes = F, col = "red", linetype = 2) +
-  #     ggplot2::geom_ribbon(data = pred[pred$group == "Norm", ], ggplot2::aes(x = Ta, ymin = lwr_95, ymax = upr_95), inherit.aes = F, alpha = 0.2, fill = "red", col = NA)+
-  #     ggplot2::geom_line(data = pred[pred$group == "Torp", ], ggplot2::aes(x = Ta, y = pred), inherit.aes = F, col = "blue", linetype = 2) +
-  #     ggplot2::geom_ribbon(data = pred[pred$group == "Torp", ], ggplot2::aes(x = Ta, ymin = lwr_95, ymax = upr_95), inherit.aes = F, alpha = 0.2, fill = "blue", col = NA)
-  #
-  # } else {
+  if(plot_type == "ggplot"){
+    G <- lwr_95 <- upr_95 <- NULL
+    ggplot2::ggplot(da, ggplot2::aes(x = Ta, y = MR, col = G > 1.5))+
+      ggplot2::geom_point() +
+      ggplot2::xlim(c(min(da$Ta), max(da$Ta))) +
+      # ylim(c(min(da$MR), max(da$MR))) +
+      ggplot2::geom_line(data = pred[pred$group == "Norm", ],
+                         ggplot2::aes(x = Ta, y = pred),
+                         inherit.aes = F,
+                         col = "red",
+                         linetype = 2) +
+      ggplot2::geom_ribbon(data = pred[pred$group == "Norm", ],
+                           ggplot2::aes(x = Ta, ymin = lwr_95, ymax = upr_95),
+                           inherit.aes = F,
+                           alpha = 0.2,
+                           fill = "red",
+                           col = NA)+
+      ggplot2::geom_line(data = pred[pred$group == "Torp", ],
+                         ggplot2::aes(x = Ta, y = pred),
+                         inherit.aes = F,
+                         col = "blue",
+                         linetype = 2) +
+      ggplot2::geom_ribbon(data = pred[pred$group == "Torp", ],
+                           ggplot2::aes(x = Ta, ymin = lwr_95, ymax = upr_95),
+                           inherit.aes = F,
+                           alpha = 0.2,
+                           fill = "blue",
+                           col = NA) +
+      ggplot2::scale_color_discrete("",
+                                    labels = c("Normothermy", "Torpor"))
+
+  } else {
+    X <-  pred[pred$group == "Norm", "Ta"]
+    Ymeant <- pred[pred$group == "Torp", "pred"]
+    Y975t <- pred[pred$group == "Torp", "upr_95"]
+    Y025t <- pred[pred$group == "Torp", "lwr_95"]
+    Ymeann <- pred[pred$group == "Norm", "pred"]
+    Y975n <- pred[pred$group == "Norm", "upr_95"]
+    Y025n <- pred[pred$group == "Norm", "lwr_95"]
 
   ## plot
   graphics::plot(Y~Ta,type="n",frame=F, xlim=c(Tlimlo, Tlimup),ylim=c(MRlo, MRup),ylab=ylab)
@@ -105,4 +126,5 @@ fit_and_plot <- function(model_out = NULL, ggplot1 = FALSE, MR, Ta,...) {
     graphics::plot(Y025n~X,xlim=c(Tlimlo, Tlimup),ylim=c(MRlo, MRup),type="l",lty=2,xaxt="n",frame=F,yaxt="n",ylab="",xlab="",col="red")}
 
     graphics::legend("topright",c("Normothermy","Torpor"),pch=19, col=c("red","blue"),bty="n")
-    }
+  }
+}
