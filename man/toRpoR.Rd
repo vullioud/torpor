@@ -22,7 +22,7 @@ Note: This package is not ready for general use yet!
 }
 \section{fit_torpor}{
 
-The function XXX considers the assumed relation between
+The function \code{\link[=fit_torpor]{fit_torpor()}} considers the assumed relation between
 MR and Ta (Speakman & Thomas 2003).In the hypothermic state (torpor) and above some threshold Ta (Tmin),
 MR follows an exponential curve reflecting the Arrhenius rate enhancing
 effect of temperature on chemical reactions, whereas below Tmin, it increases
@@ -32,8 +32,8 @@ euthermic state, MR solely increases linearly with decreasing Ta.
 
 \section{fit_and_plot}{
 
-The function XXX is a wrapper function arround the XXX.
-It uses XXXX to fit a model binomial mixture model using
+The function \code{\link[=fit_and_plot]{fit_and_plot()}} is a wrapper function arround the \code{\link[=fit_torpor]{fit_torpor()}} and \code{\link[=get_prediction]{get_prediction()}}.
+It uses \code{\link[=fit_torpor]{fit_torpor()}} to fit a binomial mixture model using
 Bayesian inference and plot the predicted value as well as the raw data.
 Measures are presented in different colors depending of the metabolic stage
 and predicted values as well as 95% credibility interval (segmented lines)
