@@ -4,14 +4,15 @@
 \alias{get_Q10}
 \title{get_Q10}
 \usage{
-get_Q10(model)
+get_Q10(mod)
 }
 \arguments{
-\item{model}{a fitted model from fit_torpor}
+\item{mod}{a fitted model from fit_torpor}
 }
 \value{
 the Q10 value
 }
 \description{
-compute the Q10 values
+The function provides the Q10 temperature coefficient,
+which represents the metabolic rates ratio measured at 10 °C Ta apart.
 }

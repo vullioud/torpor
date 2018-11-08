@@ -15,7 +15,8 @@ get_prediction(model, Ta)
 a data frame with predicted values
 }
 \description{
-extract prediction from the output of the model
+The function provides the MR estimates and 95% credible interval boundaries
+at a defined Ta in normothermic and/or torpid stage.
 }
 \examples{
 \dontrun{
