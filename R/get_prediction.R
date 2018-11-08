@@ -1,6 +1,7 @@
 #' Get Prediction
 #'
-#'extract prediction from the output of the model
+#'The function provides the MR estimates and 95% credible interval boundaries
+#'at a defined Ta in normothermic and/or torpid stage.
 #'@name get_prediction
 #'@aliases get_prediction
 #'@param model a fitted model from fit_torpor

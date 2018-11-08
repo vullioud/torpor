@@ -1,11 +1,13 @@
 #'get_Q10
 #'
-#'compute the Q10 values
+#'The function provides the Q10 temperature coefficient,
+#'which represents the metabolic rates ratio measured at 10 °C Ta apart.
+
 #'@name get_Q10
-#'@param model a fitted model from fit_torpor
+#'@param mod a fitted model from fit_torpor
 #'@return the Q10 value
 #'@export
-get_Q10 <- function(model){
+get_Q10 <- function(mod){
 
   beta1<- stats::median(model$sims.list$beta1)
   beta2 <- stats::median(model$sims.list$beta2)
@@ -21,7 +23,6 @@ get_Q10 <- function(model){
 
   if(length(model$mean$G[model$mean$G>1.5]) == 0){
     stop("no values in torpor")
-    out <- NA
   } else if (length(model$mean$G[model$mean$G<1.5]) == 0){
     out <- out
   } else {
