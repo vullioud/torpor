@@ -2,7 +2,9 @@
 
 export(fit_and_plot)
 export(fit_torpor)
+export(fit_torpor2)
 export(get_Q10)
 export(get_prediction)
 import(jagsUI)
 import(rjags)
+importFrom(stats,runif)
