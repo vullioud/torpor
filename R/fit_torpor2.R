@@ -13,7 +13,7 @@
 #'CAUTION: This model should be applied only if enough evidence is available suggesting
 #'that the individuals under study will conform to the previously described pattern while in torpor.
 #'@name fit_torpor2
-#'@aliases fit_torpor
+#'@aliases fit_torpor2
 #'@param MR a vector of Metabolic rates
 #'@param Ta a vector of ambient Temperatures (same length as MR)
 #'@param BMR BMR value for the focal specie
@@ -28,9 +28,10 @@
 #'@export
 #'@import rjags
 #'@import jagsUI
+#'@importFrom stats runif
 #'@examples
 #'data(test_data)
-#'fit_torpor(MR = test_data[,2],
+#'test <- fit_torpor2(MR = test_data[,2],
 #'Ta = test_data[, 1],
 #'BMR = 98,
 #'TLC = 28.88,
@@ -46,7 +47,7 @@ fit_torpor2 <- function(MR,
                                               nt = 10,
                                               nb = 300000,
                                               nc = 3)) {
-  CompleteArgs(fit_torpor)
+  CompleteArgs(fit_torpor2)
 
   ## check input
   if (length(MR) != length(Ta)) {
@@ -55,27 +56,27 @@ fit_torpor2 <- function(MR,
 
   ## find the model if not given by the user
   if (is.null(Model)) {
-    path_to_model <- system.file("extdata", "hetero.txt",  package = "toRpoR")
+    path_to_model <- system.file("extdata", "hetero2.txt",  package = "toRpoR")
   } else {
     path_to_model <- paste(Model)
   }
 
   ## Returned values
-  params_hetero <- c(
-    "tauy",
-    "G",
-    "p",
-    "int1",
-    "int2",
-    "int3",
-    "beta1",
-    "beta2",
-    "Tmin",
-    "tlc",
-    "BMR",
-    "TMR",
-    "TLC"
-  )
+  params_hetero <- c("tauy",
+                     "G",
+                     "p",
+                     "inte",
+                     "intc",
+                     "intr",
+                     "betat",
+                     "betac",
+                     "Tt",
+                     "TMR",
+                     "tlc",
+                     "diff",
+                     "BMR",
+                     "TLC",
+                     "Ym")
 
   ## get the values for the models /reorder the data and remove NA
   set.seed(666)
@@ -83,26 +84,30 @@ fit_torpor2 <- function(MR,
   da <- da[sample(nrow(da)), ]
   Y <- da[, "MR"]
   Ta <- da[, "Ta"]
+  Ym <- mean(Y, na.rm = T)
 
   # create data list
-  win.data <- list(
-    Y = Y,
-    NbObservations = length(Y),
-    Ta = Ta,
-    TLC = TLC,
-    BMR = BMR
-  )
+  win.data <- list(Y = Y/Ym,
+                   NbObservations=length(Y),
+                   Ta=Ta,
+                   TLC = TLC,
+                   BMR = BMR/Ym,
+                   Ym = Ym)
+
 
   # create initial values
   inits <- list(
-    tauy = stats::runif(1),
-    p = stats::runif(2),
-    beta1 = stats::runif(1, -0.1, 0),
-    beta2 = stats::runif(1, 0.05, 0.1),
-    TMR = stats::runif(1, 0.1, 0.18),
-    tlc = stats::runif(1, TLC, 40)
-  )
+      tau=runif(1,0.1,1),
+      p=runif(2),
+      betat=runif(1,-0.1,0),
+      tlc =runif(1,TLC,TLC+1),
+      Tt=runif(1),
+      TMR=runif(1,0,0.1),
+      diff=runif(1,1,2))
+
+  # create initial values
   inits_hetero_list <- rep(list(inits), fitting_options[["nc"]])
+
 
   out <- jagsUI::jags(
     data = win.data,
@@ -113,34 +118,10 @@ fit_torpor2 <- function(MR,
     n.thin = fitting_options[["nt"]],
     n.iter = fitting_options[["ni"]],
     n.burnin = fitting_options[["nb"]],
-    parallel = T,
-    verbose = F
+    parallel = TRUE,
+    verbose = FALSE,
+    store.data = FALSE
   )
 
   return(out)
-}
-
-
-#' CompleteArgs
-#'
-#'borrowed from Alex Courtiol Isorix package
-#'@name CompleteArgs
-#'@param fn a function
-CompleteArgs <- function(fn) {
-  ## This function should not be called by the user but is itself called by other functions.
-  ## It keeps the default list elements when
-  ## a new list with fewer elements is provided
-  env <- parent.frame()
-  args <- formals(fn)
-  for (arg.name in names(args)) {
-    if (is.call(arg <- args[[arg.name]])) {
-      if (arg[1] == "list()") {
-        arg.input <- mget(names(args), envir = env)[[arg.name]]
-        arg.full  <- eval(formals(fn)[[arg.name]])
-        arg.full.updated <- utils::modifyList(arg.full, arg.input)
-        assign(arg.name, arg.full.updated, envir = env)
-      }
-    }
-  }
-  return(NULL)
 }
