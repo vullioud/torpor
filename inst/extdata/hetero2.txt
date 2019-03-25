@@ -27,20 +27,21 @@ tauy[1] <- tau*diff
 diff~dnorm(0,0.1)T(1,)
 
 #Assumptions
-inte <- BMR-betat*Tlc
+inte <- BMR-betat*TLC
 intr <- TMR-betat*Tt
 betac <- log(TMR/BMR)/(Tt-tlc)
 log(intc) <- log(BMR)-betac*tlc
-
+ym <- Ym
 
 
 #Priors
 
 p[1:2] ~ ddirch(rep(1,2))
 
-betat~dnorm(0,0.0001)T(,0)
+betat ~ dnorm(0,0.0001)T(,0)
 TMR ~ dnorm(0,0.0001)T(0,BMR)
-Tt ~ dnorm(0,0.0001)T(,Tlc)
-tlc ~dnorm(0,0.0001)T(Tlc,)
+Tt ~ dnorm(0,0.0001)T(,TLC)
+tlc ~ dnorm(0,0.0001)T(TLC,)
 
 }
+
