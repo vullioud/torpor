@@ -1,0 +1,46 @@
+
+model{
+#Model
+    for (i in 1:NbObservations) {
+       Y[i] ~ dnorm(mu[i], sigma[i])
+       G[i] ~ dcat(p[1:2])
+mu[i] <-
+ifelse(G[i]==1,
+inte+betat*Ta[i],
+ifelse(Ta[i]>Tt,
+intc*exp(betac*Ta[i]),
+intr+betat*Ta[i]))
+
+sigma[i] <-
+ifelse(G[i]==1,
+sigmay[1],
+ifelse(Ta[i]>Tt,
+sigmay[2],
+sigmay[1]))
+}
+
+for(i in 1:2){
+sigmay[i] <- 1/pow(tauy[i],2)}
+tau ~ dunif(0.03,5)
+tauy[2] <- tau
+tauy[1] <- tau*diff
+diff~dnorm(0,0.1)T(1,)
+
+#Assumptions
+inte <- BMR-betat*Tlc
+intr <- TMR-betat*Tt
+betac <- log(TMR/BMR)/(Tt-tlc)
+log(intc) <- log(BMR)-betac*tlc
+
+
+
+#Priors
+
+p[1:2] ~ ddirch(rep(1,2))
+
+betat~dnorm(0,0.0001)T(,0)
+TMR ~ dnorm(0,0.0001)T(0,BMR)
+Tt ~ dnorm(0,0.0001)T(,Tlc)
+tlc ~dnorm(0,0.0001)T(Tlc,)
+
+}
