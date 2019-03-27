@@ -24,17 +24,17 @@
 #' * nt = thin rate
 #' * nb = number of burns
 #' * nc = number of chains
-#'@return a fitted jags object
+#'@return jagsUI object
 #'@export
 #'@import rjags
 #'@import jagsUI
 #'@importFrom stats runif
 #'@examples
-#'data(test_data)
-#'test <- fit_torpor2(MR = test_data[,2],
-#'Ta = test_data[, 1],
-#'BMR = 98,
-#'TLC = 28.88,
+#'data(test_data2)
+#'test <- fit_torpor2(MR = test_data2[,2],
+#'Ta = test_data2[, 1],
+#'BMR = 1.49,
+#'TLC = 28.8,
 #'Model = NULL,
 #'fitting_options = list(nc = 1))
 
@@ -74,8 +74,8 @@ fit_torpor2 <- function(MR,
                      "TMR",
                      "tlc",
                      "diff",
-                     "BMR",
                      "TLC",
+                     "BMR",
                      "Ym")
 
   ## get the values for the models /reorder the data and remove NA
@@ -84,7 +84,9 @@ fit_torpor2 <- function(MR,
   da <- da[sample(nrow(da)), ]
   Y <- da[, "MR"]
   Ta <- da[, "Ta"]
-  Ym <- mean(Y, na.rm = T)
+
+  ## get the mean to standardised Y and BMR
+  Ym <- mean(Y, na.rm = TRUE)
 
   # create data list
   win.data <- list(Y = Y/Ym,
@@ -92,7 +94,7 @@ fit_torpor2 <- function(MR,
                    Ta=Ta,
                    TLC = TLC,
                    BMR = BMR/Ym,
-                   Ym = Ym)
+                   Ym = Ym) ## included to be able to back-transform BMR and Y for predictions.
 
 
   # create initial values
@@ -125,3 +127,4 @@ fit_torpor2 <- function(MR,
 
   return(out)
 }
+

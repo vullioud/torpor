@@ -4,9 +4,10 @@
 #'at a defined Ta in normothermic and/or torpid stage.
 #'@name get_prediction2
 #'@aliases get_prediction2
-#'@param model a fitted model from fit_torpor
+#'@param mod a fitted model from fit_torpor
 #'@param Ta a vector of temperatur for which the prediction should be made
 #'@return a data frame with predicted values
+#'@export
 #'@examples
 #'\dontrun{
 #'data(test_data2)
@@ -14,47 +15,44 @@
 #'Ta = test_data2[, 1],
 #'BMR = 98,
 #'TLC = 28.88,
-#'Model = NULL,
+#'mod = NULL,
 #'fitting_options = list(nc = 1))
-#'get_prediction(test_mod, 20)
+#'get_prediction2(mod = test_mod, Ta = 1:20)
 #'}
-#'@export
-get_prediction2 <- function(model, Ta){
-  X <- Ta
+get_prediction2 <- function(mod, Ta){
 
 
-  betat<- model$sims.list$betat
-  betac <-model$sims.list$betac
-  inte <-model$sims.list$inte
-  intc <-model$sims.list$intc
-  intr <-model$sims.list$intr
-  Tt <-model$sims.list$Tt
-  tlc <-model$sims.list$tlc
+  # retrieved the posterior
+  betat <- mod$sims.list$betat
+  betac <-mod$sims.list$betac
+  inte <-mod$sims.list$inte
+  intc <-mod$sims.list$intc
+  intr <-mod$sims.list$intr
+  Tt <-mod$sims.list$Tt
+  tlc <-mod$sims.list$tlc
+  Ym <- mod$sims.list$Ym[1]
 
-  ##### tau to check if correct
-  model$sims.list$tauy
-  sd(model$sims.list$tauy[, 1])
-  sd(model$sims.list$tauy[, 2])
 
-  X <- Ta
+  X <- length(Ta)
   Ymeant <- rep(NA, X)
   Y975t <- rep(NA, X)
   Y025t <- rep(NA, X)
+
   Ymeann <- rep(NA, X)
   Y975n <- rep(NA, X)
   Y025n <- rep(NA, X)
 
-  for(i in 1:length(Ta)) {
-    Ymeant[i] <- stats::median(funtorp(X[i], Tt, intr, intc, betat, betac, Ym))
-    Y975t[i] <- stats::quantile(funtorp(X[i],Tt, intr, intc, betat, betac, Ym),0.975)
-    Y025t[i] <- stats::quantile(funtorp(X[i],Tt, intr, intc, betat, betac, Ym),0.025)
-    Ymeann[i] <- stats::median(funnorm(X[i], int1, beta1))
-    Y975n[i] <- stats::quantile(funnorm(X[i], int1, beta1),0.975)
-    Y025n[i] <- stats::quantile(funnorm(X[i], int1, beta1),0.025)
+  for(i in 1:X) {
+    Ymeant[i] <- stats::median(funtorp2(Ta[i], Tt, intr, intc, betat, betac, Ym))
+    Y975t[i] <- stats::quantile(funtorp2(Ta[i],Tt, intr, intc, betat, betac, Ym),0.975)
+    Y025t[i] <- stats::quantile(funtorp2(Ta[i],Tt, intr, intc, betat, betac, Ym),0.025)
+    Ymeann[i] <- stats::median(funnorm2(Ta[i], inte, betat, Ym))
+    Y975n[i] <- stats::quantile(funnorm2(Ta[i], inte, betat, Ym),0.975)
+    Y025n[i] <- stats::quantile(funnorm2(Ta[i], inte, betat, Ym),0.025)
   }
 
 
-  #### if model$sims.list$G
+  #### if mod$sims.list$G
   out1 <- data.frame(Ta = X,
                      group = rep("Torp", length(X)),
                      pred =  Ymeant,
@@ -68,9 +66,9 @@ get_prediction2 <- function(model, Ta){
                      lwr_95 = Y025n)
 
 
-  if(length(model$mean$G[model$mean$G>1.5]) == 0){
+  if(length(mod$mean$G[mod$mean$G>1.5]) == 0){
     out <- out2
-  } else if (length(model$mean$G[model$mean$G<1.5]) == 0){
+  } else if (length(mod$mean$G[mod$mean$G<1.5]) == 0){
     out <- out1
   } else {
     out <- rbind(out1, out2)
@@ -80,32 +78,36 @@ get_prediction2 <- function(model, Ta){
 
 }
 
-#' funtorp
+#' funtorp2
 #'
-#'fit the model for torpor bats
-#'@name funtorp
+#'fit the mod for torpor bats
+#'@name funtorp2
 #'@param x a temperature
-#'@param Tmin turning point T
-#'@param int2 intercept 1
-#'@param int3 intercept 2
-#'@param beta1 slope 1
-#'@param beta2 slope 2
+#'@param Tt turning point T
+#'@param intr intercept 1
+#'@param intc intercept 2
+#'@param betat slope 1
+#'@param betac slope 2
+#'@param Ym mean of Y to back-transform
 #'@return a metabolic value
 
 funtorp2 <- function(x, Tt, intr, intc, betat, betac, Ym) {
   out <- (ifelse(x<Tt,intr +betat*x,intc*exp(betac*x)))*Ym
   return(out)
 }
-#' funnorm
+
+
+#' funnorm2
 #'
-#'fit the model for normotermic bats
-#'@name funnorm
+#'fit the mod for normotermic bats
+#'@name funnorm2
 #'@param x a temperature
-#'@param int1 intercept 1
-#'@param beta1 slope 1
+#'@param inte intercept 1
+#'@param betat slope 1
+#'@param Ym mean of Y to back transform
 #'@return a metabolic value
 funnorm2 <- function(x, inte, betat, Ym) {
-  (inte +betat*x)*Ym
+  out <- (inte +betat*x)*Ym
   return(out)
 }
 
