@@ -27,9 +27,9 @@ stage and regression slopes (continuous lines) as well as 95% CI (segmented line
 For more flexibility the users are advised to use \code{\link[=fit_torpor]{fit_torpor()}} and \code{\link[=get_prediction]{get_prediction()}} directly.
 }
 \examples{
-\dontrun{
-data(test_data2)
-fit_and_plot2(MR = test_data[,2], Ta = test_data[,1], BMR = 29, TLC = 28.8,
+data(test_data3)
+plot1 <- fit_and_plot2(MR = test_data3[,2], Ta = test_data3[,1], BMR = 1.055, TLC = 29,
+fitting_options = list(nc =1), plot_type = "base")
+plot2 <- fit_and_plot2(MR = test_data3[,2], Ta = test_data3[,1], BMR = 1.055, TLC = 29,
 fitting_options = list(nc =1), plot_type = "ggplot")
-}
 }

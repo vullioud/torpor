@@ -5,7 +5,7 @@
 \title{Fit Torpor 2}
 \usage{
 fit_torpor2(MR, Ta, BMR, TLC, Model = NULL, fitting_options = list(ni =
-  5e+05, nt = 10, nb = 3e+05, nc = 3))
+  50000, nt = 2, nb = 30000, nc = 3))
 }
 \arguments{
 \item{MR}{a vector of Metabolic rates}
@@ -44,11 +44,11 @@ CAUTION: This model should be applied only if enough evidence is available sugge
 that the individuals under study will conform to the previously described pattern while in torpor.
 }
 \examples{
-data(test_data2)
-test <- fit_torpor2(MR = test_data2[,2],
-Ta = test_data2[, 1],
-BMR = 1.49,
-TLC = 28.8,
+data(test_data)
+test <- fit_torpor2(MR = test_data[,2],
+Ta = test_data[, 1],
+BMR = 98,
+TLC = 28.88,
 Model = NULL,
-fitting_options = list(nc = 1))
+fitting_options = list(nc = 3))
 }
