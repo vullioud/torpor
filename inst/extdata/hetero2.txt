@@ -31,6 +31,8 @@ inte <- BMR-betat*TLC
 intr <- TMR-betat*Tt
 betac <- log(TMR/BMR)/(Tt-tlc)
 log(intc) <- log(BMR)-betac*tlc
+
+#Unused argument to be passed to the results to back-transform Y and BMR
 ym <- Ym
 
 
