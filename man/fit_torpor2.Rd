@@ -27,7 +27,7 @@ fit_torpor2(MR, Ta, BMR, TLC, Model = NULL, fitting_options = list(ni =
 }}
 }
 \value{
-a fitted jags object
+jagsUI object
 }
 \description{
 The function \code{fit_torpor} fit binomial mixture model using Bayesian inference.
@@ -44,11 +44,11 @@ CAUTION: This model should be applied only if enough evidence is available sugge
 that the individuals under study will conform to the previously described pattern while in torpor.
 }
 \examples{
-data(test_data)
-fit_torpor2(MR = test_data[,2],
-Ta = test_data[, 1],
-BMR = 98,
-TLC = 28.88,
+data(test_data2)
+test <- fit_torpor2(MR = test_data2[,2],
+Ta = test_data2[, 1],
+BMR = 1.49,
+TLC = 28.8,
 Model = NULL,
 fitting_options = list(nc = 1))
 }
