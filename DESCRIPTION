@@ -17,6 +17,10 @@ Roxygen: list(markdown = TRUE)
 RoxygenNote: 6.1.1
 Imports:rjags, 
         jagsUI, 
-        ggplot2
+        ggplot2,
+        truncnorm, 
+        purrr, 
+        dplyr, 
+        overlapping
 
         
