@@ -30,22 +30,22 @@
 #'@import jagsUI
 #'@importFrom stats runif
 #'@examples
-#'data(test_data2)
-#'test <- fit_torpor2(MR = test_data2[,2],
-#'Ta = test_data2[, 1],
-#'BMR = 1.49,
-#'TLC = 28.8,
+#'data(test_data)
+#'test <- fit_torpor2(MR = test_data[,2],
+#'Ta = test_data[, 1],
+#'BMR = 98,
+#'TLC = 28.88,
 #'Model = NULL,
-#'fitting_options = list(nc = 1))
+#'fitting_options = list(nc = 3))
 
 fit_torpor2 <- function(MR,
                        Ta,
                        BMR,
                        TLC,
                        Model = NULL,
-                       fitting_options = list(ni = 500000,
-                                              nt = 10,
-                                              nb = 300000,
+                       fitting_options = list(ni = 50000,
+                                              nt = 2,
+                                              nb = 30000,
                                               nc = 3)) {
   CompleteArgs(fit_torpor2)
 
@@ -122,7 +122,7 @@ fit_torpor2 <- function(MR,
     n.burnin = fitting_options[["nb"]],
     parallel = TRUE,
     verbose = FALSE,
-    store.data = FALSE
+    store.data = TRUE
   )
 
   return(out)
