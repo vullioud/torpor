@@ -5,7 +5,6 @@
 #'stage and regression slopes (continuous lines) as well as 95% CI (segmented lines) are presented.
 #'For more flexibility the users are advised to use [fit_torpor()] and [get_prediction()] directly.
 #'@name fit_and_plot2
-#'@aliases fit_and_plot2
 #'@param MR a vector with MR
 #'@param Ta, a vector with Ta (same length as MR)
 #'@param mod a fitted model from fit torpor
@@ -14,48 +13,46 @@
 #'@export
 #'@return a base-R plot or a ggplot object
 #'@examples
-#'\dontrun{
-#'data(test_data)
-#'fit_and_plot(MR = test_data[,2], Ta = test_data[,1], BMR = 29, TLC = 28.8,
+#'data(test_data3)
+#'plot1 <- fit_and_plot2(MR = test_data3[,2], Ta = test_data3[,1], BMR = 1.055, TLC = 29,
+#'fitting_options = list(nc =1), plot_type = "base")
+#'plot2 <- fit_and_plot2(MR = test_data3[,2], Ta = test_data3[,1], BMR = 1.055, TLC = 29,
 #'fitting_options = list(nc =1), plot_type = "ggplot")
-#'}
-
 
 fit_and_plot2 <- function(mod = NULL, plot_type = "ggplot", MR, Ta,...) {
   # browser()
   ## fit a model if necessary
   if(is.null(mod)) {
-    out <- fit_torpor(MR = MR, Ta = Ta,...)
+    out <- fit_torpor2(MR = MR, Ta = Ta,...)
   } else {
     out <- mod
   }
 
   TLC <- out$sims.list$TLC[1]
-  BMR <- out$sims.list$BMR[1]
-
-  ## remove NAs / reshufled the data as done for the fit of the model
-  set.seed(666)
-  da <- as.data.frame(cbind(MR, Ta)[!is.na(MR) & !is.na(Ta) & Ta < (TLC - 2), ])
-  da <- da[sample(nrow(da)), ]
-
-  da$G <- as.numeric(out$mean$G)
-  da$hat <- out$Rhat$G
+  BMR <- out$sims.list$BMR[1]*out$sims.list$Ym[1]
+  # ## remove NAs / reshufled the data as done for the fit of the model
+  # set.seed(666)
+  # da <- as.data.frame(cbind(MR, Ta)[!is.na(MR) & !is.na(Ta) & Ta < (TLC - 2), ])
+  # da <- da[sample(nrow(da)), ]
 
 
-  Y <- da[, "MR"]
-  Ta <- da[, "Ta"]
+  Y <- MR <- out$data$Y*out$sims.list$Ym[1]
+  Ta <- out$data$Ta
 
   # plot params
   Tlimup <- max(Ta,na.rm=T)
   Tlimlo <- min(Ta,na.rm=T)
   MRup <- max(Y,na.rm=T)
   MRlo <- min(Y,na.rm=T)
-  ylab <- "MR"
 
 
+  da <- as.data.frame(cbind(Ta, MR))
+  da$G <- as.numeric(out$mean$G)
+  da$hat <- out$Rhat$G
 
-  # get the predictions
-  pred <- get_prediction(out, seq(Tlimlo,Tlimup,length=100))
+
+    # get the predictions
+  pred <- get_prediction2(out, seq(Tlimlo,Tlimup,length=100))
 
   if(plot_type == "ggplot"){
     G <- lwr_95 <- upr_95 <- NULL
@@ -129,6 +126,7 @@ fit_and_plot2 <- function(mod = NULL, plot_type = "ggplot", MR, Ta,...) {
 
       graphics::plot(Y025n~X,xlim=c(Tlimlo, Tlimup),ylim=c(MRlo, MRup),type="l",lty=2,xaxt="n",frame=F,yaxt="n",ylab="",xlab="",col="red")}
 
-    graphics::legend("topright",c("Normothermy","Torpor"),pch=19, col=c("red","blue"),bty="n")
+    graphics::legend("topright",c("Euthermy","Torpor"),pch=19, col=c("red","blue"),bty="n")
   }
 }
+
