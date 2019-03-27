@@ -28,8 +28,8 @@ For more flexibility the users are advised to use \code{\link[=fit_torpor]{fit_t
 }
 \examples{
 \dontrun{
-data(test_data)
-fit_and_plot(MR = test_data[,2], Ta = test_data[,1], BMR = 29, TLC = 28.8,
+data(test_data2)
+fit_and_plot2(MR = test_data[,2], Ta = test_data[,1], BMR = 29, TLC = 28.8,
 fitting_options = list(nc =1), plot_type = "ggplot")
 }
 }
