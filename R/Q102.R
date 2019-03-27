@@ -1,4 +1,4 @@
-#'get_Q10
+#'get_Q102
 #'
 #'The function provides the Q10 temperature coefficient,
 #'which represents the metabolic rates ratio measured at 10 °C Ta apart.
@@ -7,8 +7,6 @@
 #'@param mod a fitted model from fit_torpor
 #'@return the Q10 value
 #'@export
-get_Q102(mod)
-
 
 get_Q102 <- function(mod){
 
