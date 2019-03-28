@@ -5,7 +5,7 @@
 \title{Fit Torpor 2}
 \usage{
 fit_torpor2(MR, Ta, BMR, TLC, Model = NULL, fitting_options = list(ni =
-  50000, nt = 2, nb = 30000, nc = 3))
+  5e+05, nt = 10, nb = 3e+05, nc = 3))
 }
 \arguments{
 \item{MR}{a vector of Metabolic rates}
@@ -48,7 +48,7 @@ data(test_data)
 test <- fit_torpor2(MR = test_data[,2],
 Ta = test_data[, 1],
 BMR = 98,
-TLC = 28.88,
+TLC = 28.8,
 Model = NULL,
-fitting_options = list(nc = 3))
+fitting_options = list(nc = 1))
 }

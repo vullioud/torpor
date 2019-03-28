@@ -4,16 +4,17 @@
 \alias{fit_and_plot2}
 \title{plot raw data and model output}
 \usage{
-fit_and_plot2(mod = NULL, plot_type = "ggplot", MR, Ta, ...)
+fit_and_plot2(mod = NULL, plot_type = "ggplot", col_torp = "grey",
+  col_eut = "black", ...)
 }
 \arguments{
 \item{mod}{a fitted model from fit torpor}
 
 \item{plot_type}{character string specifying the type of plot desired. either "base" or "ggplot"}
 
-\item{MR}{a vector with MR}
+\item{col_torp}{plot col for torpor}
 
-\item{Ta, }{a vector with Ta (same length as MR)}
+\item{col_eut}{plot col for euthermie}
 
 \item{...}{arguments to fit the model in \code{\link[=fit_torpor]{fit_torpor()}} if no model output are provided}
 }
