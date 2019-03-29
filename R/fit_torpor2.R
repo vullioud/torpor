@@ -1,6 +1,6 @@
 #' Fit Torpor 2
 #'
-#'The function \code{fit_torpor} fit binomial mixture model using Bayesian inference.
+#'The function \code{fit_torpor2} fit binomial mixture model using Bayesian inference.
 #'It uses Rjags in the background and enables users to specify some - but not all -
 #'sampling parameters. The structure of the model can also be changed. User who want more
 #'flexibility are encouraged to use Rjags directly.
@@ -47,7 +47,7 @@ fit_torpor2 <- function(MR,
                                               nt = 10,
                                               nb = 300000,
                                               nc = 3)) {
-  CompleteArgs(fit_torpor2)
+  complete_args(fit_torpor2)
 
   ## check input
   if (length(MR) != length(Ta)) {
@@ -127,4 +127,39 @@ fit_torpor2 <- function(MR,
 
   return(out)
 }
+#'complete_args
+#'
+#'this function completes the arguments of a function. Should not
+#'be used directly by the user. Is used internally for fit_torpor2
+#'From Alex Courtiol
+#'
+#'@name complete_args
+#'@aliases complete_args
+#'@param fn a function
 
+complete_args <- function(fn) {
+  ## This function should not be called by the user.
+  ## It keeps the default list elements when
+  ## a new list with fewer elements is provided.
+  env <- parent.frame()
+  args <- formals(fn)
+  for (arg_name in names(args)) {
+    if (is.call(arg <- args[[arg_name]])) {
+      if (arg[1] == "list()") {
+        arg_input <- mget(names(args), envir = env)[[arg_name]]
+        arg_full  <- eval(formals(fn)[[arg_name]])
+        if (is.null(names(arg_input))) {
+          if (length(arg_input) == length(arg_full)) {
+            names(arg_input) <- names(arg_full)
+          }
+          else {
+            stop(paste("The list", arg_name, "should contain names, or be of length equal to the default."))
+          }
+        }
+        arg_full_updated <- utils::modifyList(arg_full, arg_input)
+        assign(arg_name, arg_full_updated, envir = env)
+      }
+    }
+  }
+  return(NULL)
+}
