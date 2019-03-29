@@ -4,7 +4,7 @@
 #' estimated parameters of the model. The check of overlap, Q10,
 #'@name get_summary
 #'@aliases get_summary
-#'@param mod a fitted model with fit_torpor
+#'@param mod a fitted model with fit_torpor2
 #'@return a list
 #'@import purrr
 #'@import overlapping
@@ -17,7 +17,7 @@
 #'BMR = 1.49,
 #'TLC = 28.8,
 #'Model = NULL,
-#'fitting_options = list(nc = 2))
+#'fitting_options = list(nc = 1))
 #'get_summary(mod = test2)
 
 get_summary <- function(mod){
