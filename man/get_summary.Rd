@@ -7,7 +7,7 @@
 get_summary(mod)
 }
 \arguments{
-\item{mod}{a fitted model with fit_torpor}
+\item{mod}{a fitted model with fit_torpor2}
 }
 \value{
 a list
@@ -23,6 +23,6 @@ Ta = test_data2[, 1],
 BMR = 1.49,
 TLC = 28.8,
 Model = NULL,
-fitting_options = list(nc = 2))
+fitting_options = list(nc = 1))
 get_summary(mod = test2)
 }
