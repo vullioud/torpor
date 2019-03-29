@@ -10,6 +10,7 @@
 #'@param ... arguments to fit the model in [fit_torpor()] if no model output are provided
 #'@param col_torp plot col for torpor
 #'@param col_eut plot col for euthermie
+#'@param pdf
 #'@export
 #'@return a base-R plot or a ggplot object
 #'@examples
@@ -19,7 +20,7 @@
 #'plot2 <- fit_and_plot2(MR = test_data3[,2], Ta = test_data3[,1], BMR = 1.055, TLC = 29,
 #'fitting_options = list(nc =1), plot_type = "ggplot")
 
-fit_and_plot2 <- function(mod = NULL, plot_type = "ggplot",col_torp = "grey", col_eut = "black",...) {
+fit_and_plot2 <- function(mod = NULL, plot_type = "ggplot",col_torp = "grey", col_eut = "black", pdf = FALSE, ...) {
   # browser()
   ## fit a model if necessary
   if(is.null(mod)) {
@@ -85,6 +86,9 @@ fit_and_plot2 <- function(mod = NULL, plot_type = "ggplot",col_torp = "grey", co
       ggplot2::scale_color_manual("",
                                     labels = c("Euthermy", "Torpor"),
                                     values =  c(col_eut, col_torp))
+    if (pdf == TRUE){
+      ggsave(filename = "plot.pdf", width = 7, units = "cm")
+    }
 
   } else {
     X <-  pred[pred$group == "Norm", "Ta"]

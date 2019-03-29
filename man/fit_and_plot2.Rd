@@ -5,7 +5,7 @@
 \title{plot raw data and model output}
 \usage{
 fit_and_plot2(mod = NULL, plot_type = "ggplot", col_torp = "grey",
-  col_eut = "black", ...)
+  col_eut = "black", pdf = FALSE, ...)
 }
 \arguments{
 \item{mod}{a fitted model from fit torpor}
