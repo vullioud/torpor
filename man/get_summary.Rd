@@ -17,10 +17,10 @@ This function return a comprehensive summary of the model fit. It returns the
 estimated parameters of the model. The check of overlap, Q10,
 }
 \examples{
-data(test_data2)
-test2 <- fit_torpor2(MR = test_data2[,2],
-Ta = test_data2[, 1],
-BMR = 1.49,
+data(test_data)
+test2 <- fit_torpor2(MR = test_data[,2],
+Ta = test_data[, 1],
+BMR = 29,
 TLC = 28.8,
 Model = NULL,
 fitting_options = list(nc = 1))

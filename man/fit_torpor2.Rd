@@ -30,7 +30,7 @@ fit_torpor2(MR, Ta, BMR, TLC, Model = NULL, fitting_options = list(ni =
 jagsUI object
 }
 \description{
-The function \code{fit_torpor} fit binomial mixture model using Bayesian inference.
+The function \code{fit_torpor2} fit binomial mixture model using Bayesian inference.
 It uses Rjags in the background and enables users to specify some - but not all -
 sampling parameters. The structure of the model can also be changed. User who want more
 flexibility are encouraged to use Rjags directly.

@@ -5,7 +5,7 @@
 \title{plot raw data and model output}
 \usage{
 fit_and_plot2(mod = NULL, plot_type = "ggplot", col_torp = "grey",
-  col_eut = "black", pdf = FALSE, ...)
+  col_eut = "black", ylab = "MR", xlab = "Ta", pdf = FALSE, ...)
 }
 \arguments{
 \item{mod}{a fitted model from fit torpor}
@@ -16,7 +16,11 @@ fit_and_plot2(mod = NULL, plot_type = "ggplot", col_torp = "grey",
 
 \item{col_eut}{plot col for euthermie}
 
-\item{...}{arguments to fit the model in \code{\link[=fit_torpor]{fit_torpor()}} if no model output are provided}
+\item{ylab}{y label}
+
+\item{xlab}{x label}
+
+\item{...}{arguments to fit the model in \code{\link[=fit_torpor2]{fit_torpor2()}} if no model output are provided}
 }
 \value{
 a base-R plot or a ggplot object
@@ -25,10 +29,11 @@ a base-R plot or a ggplot object
 The function provides a plot of the MR values over the respective Ta.
 Measures are presented in different colors depending of the metabolic
 stage and regression slopes (continuous lines) as well as 95% CI (segmented lines) are presented.
-For more flexibility the users are advised to use \code{\link[=fit_torpor]{fit_torpor()}} and \code{\link[=get_prediction]{get_prediction()}} directly.
+For more flexibility the users are advised to use \code{\link[=fit_torpor2]{fit_torpor2()}} and \code{\link[=get_prediction]{get_prediction()}} directly.
 }
 \examples{
 data(test_data3)
+fit_and_plot2(test, col_eut = "red", plot_type = "base", pdf = TRUE)
 plot1 <- fit_and_plot2(MR = test_data3[,2], Ta = test_data3[,1], BMR = 1.055, TLC = 29,
 fitting_options = list(nc =1), plot_type = "base")
 plot2 <- fit_and_plot2(MR = test_data3[,2], Ta = test_data3[,1], BMR = 1.055, TLC = 29,
