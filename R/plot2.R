@@ -3,32 +3,30 @@
 #'The function provides a plot of the MR values over the respective Ta.
 #'Measures are presented in different colors depending of the metabolic
 #'stage and regression slopes (continuous lines) as well as 95% CI (segmented lines) are presented.
-#'For more flexibility the users are advised to use [fit_torpor2()] and [get_prediction()] directly.
-#'@name fit_and_plot2
+#'For more flexibility the users are advied to use [fit_torpor()] and [get_prediction()] directly.
+#'@name fit_and_plot
 #'@param mod a fitted model from fit torpor
 #'@param plot_type character string specifying the type of plot desired. either "base" or "ggplot"
-#'@param ... arguments to fit the model in [fit_torpor2()] if no model output are provided
+#'@param ... arguments to fit the model in [fit_torpor()] if no model output are provided
 #'@param col_torp plot col for torpor
 #'@param col_eut plot col for euthermie
 #'@param ylab y label
 #'@param xlab x label
-#'@param pdf
+#'@param pdf logical if a .pdf copy of the plot should be saved
 #'@import ggplot2
 #'@export
 #'@return a base-R plot or a ggplot object
+#'@importFrom grDevices dev.off
 #'@examples
 #'data(test_data3)
-#'fit_and_plot2(test, col_eut = "red", plot_type = "base", pdf = TRUE)
-#'plot1 <- fit_and_plot2(MR = test_data3[,2], Ta = test_data3[,1], BMR = 1.055, TLC = 29,
-#'fitting_options = list(nc =1), plot_type = "base")
-#'plot2 <- fit_and_plot2(MR = test_data3[,2], Ta = test_data3[,1], BMR = 1.055, TLC = 29,
+#'fit_and_plot(MR = test_data3[,2], Ta = test_data3[,1], BMR = 1.055, TLC = 29,
 #'fitting_options = list(nc =1), plot_type = "ggplot")
 
-fit_and_plot2 <- function(mod = NULL, plot_type = "ggplot",col_torp = "grey", col_eut = "black", ylab = "MR", xlab = "Ta", pdf = FALSE, ...) {
-  # browser()
+fit_and_plot <- function(mod = NULL, plot_type = "ggplot",col_torp = "grey", col_eut = "black", ylab = "MR", xlab = "Ta", pdf = FALSE, ...) {
+   # browser()
   ## fit a model if necessary
   if(is.null(mod)) {
-    out <- fit_torpor2(...)
+    out <- fit_torpor(...)
   } else {
     out <- mod
   }
@@ -53,7 +51,7 @@ fit_and_plot2 <- function(mod = NULL, plot_type = "ggplot",col_torp = "grey", co
 
 
   # get the predictions
-  pred <- get_prediction2(out, seq(Tlimlo,Tlimup,length=100))
+  pred <- get_prediction(out, seq(Tlimlo,Tlimup,length=100))
   # check overlap
   xxx <- check_overlap(out)
 
