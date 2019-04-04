@@ -1,6 +1,6 @@
-#' Fit Torpor 2
+#' Fit Torpor
 #'
-#'The function \code{fit_torpor2} fit binomial mixture model using Bayesian inference.
+#'The function \code{fit_torpor} fit binomial mixture model using Bayesian inference.
 #'It uses Rjags in the background and enables users to specify some - but not all -
 #'sampling parameters. The structure of the model can also be changed. User who want more
 #'flexibility are encouraged to use Rjags directly.
@@ -12,8 +12,8 @@
 #'In the euthermic state, MR solely increases linearly with decreasing Ta.
 #'CAUTION: This model should be applied only if enough evidence is available suggesting
 #'that the individuals under study will conform to the previously described pattern while in torpor.
-#'@name fit_torpor2
-#'@aliases fit_torpor2
+#'@name fit_torpor
+#'@aliases fit_torpor
 #'@param MR a vector of Metabolic rates
 #'@param Ta a vector of ambient Temperatures (same length as MR)
 #'@param BMR BMR value for the focal specie
@@ -30,15 +30,15 @@
 #'@import jagsUI
 #'@importFrom stats runif
 #'@examples
-#'data(test_data)
-#'test <- fit_torpor2(MR = test_data[,2],
-#'Ta = test_data[, 1],
-#'BMR = 98,
-#'TLC = 28.8,
-#'Model = NULL,
+#'rm(list = ls())
+#'data(test_data3)
+#'test <- fit_torpor(MR = test_data3[,2],
+#'Ta = test_data3[, 1],
+#'BMR = 1.005,
+#'TLC = 29,
 #'fitting_options = list(nc = 1))
 
-fit_torpor2 <- function(MR,
+fit_torpor <- function(MR,
                        Ta,
                        BMR,
                        TLC,
@@ -47,7 +47,7 @@ fit_torpor2 <- function(MR,
                                               nt = 10,
                                               nb = 300000,
                                               nc = 3)) {
-  complete_args(fit_torpor2)
+  complete_args(fit_torpor)
 
   ## check input
   if (length(MR) != length(Ta)) {
@@ -130,7 +130,7 @@ fit_torpor2 <- function(MR,
 #'complete_args
 #'
 #'this function completes the arguments of a function. Should not
-#'be used directly by the user. Is used internally for fit_torpor2
+#'be used directly by the user. Is used internally for fit_torpor
 #'From Alex Courtiol
 #'
 #'@name complete_args
