@@ -11,6 +11,6 @@ complete_args(fn)
 }
 \description{
 this function completes the arguments of a function. Should not
-be used directly by the user. Is used internally for fit_torpor2
+be used directly by the user. Is used internally for fit_torpor
 From Alex Courtiol
 }

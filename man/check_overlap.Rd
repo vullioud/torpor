@@ -18,7 +18,7 @@ three key estimates of the model. tlc, Tt and betat.
 }
 \examples{
 #'data(test_data2)
-test <- fit_torpor2(MR = test_data2[,2],
+test <- fit_torpor(MR = test_data2[,2],
 Ta = test_data2[, 1],
 BMR = 1.49,
 TLC = 28.8,
