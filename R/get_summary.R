@@ -1,10 +1,10 @@
 #' get_summary
 #'
 #' This function return a comprehensive summary of the model fit. It returns the
-#' estimated parameters of the model. The check of overlap, Q10,
+#' estimated parameters of the model. The check of overlap
 #'@name get_summary
 #'@aliases get_summary
-#'@param mod a fitted model with fit_torpor2
+#'@param mod a fitted model with fit_torpor
 #'@return a list
 #'@import purrr
 #'@import overlapping
@@ -12,7 +12,7 @@
 #'@export
 #'@examples
 #'data(test_data)
-#'test2 <- fit_torpor2(MR = test_data[,2],
+#'test2 <- fit_torpor(MR = test_data[,2],
 #'Ta = test_data[, 1],
 #'BMR = 29,
 #'TLC = 28.8,
