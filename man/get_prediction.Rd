@@ -2,12 +2,12 @@
 % Please edit documentation in R/get_prediction2.R
 \name{get_prediction}
 \alias{get_prediction}
-\title{Get Prediction}
+\title{get Prediction}
 \usage{
 get_prediction(mod, Ta)
 }
 \arguments{
-\item{mod}{a fitted model from fit_torpor}
+\item{mod}{a fitted model from the function \code{\link[=fit_torpor]{fit_torpor()}}}
 
 \item{Ta}{a vector of temperatur for which the prediction should be made}
 }
@@ -15,8 +15,8 @@ get_prediction(mod, Ta)
 a data frame with predicted values
 }
 \description{
-The function provides the MR estimates and 95% credible interval boundaries
-at a defined Ta in normothermic and/or torpid stage.
+The function \code{\link[=get_prediction]{get_prediction()}} provides the predicted MR and 95CI bounds at
+a given Ta, in normothermic and/or torpid stage.
 }
 \examples{
 \dontrun{

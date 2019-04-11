@@ -13,8 +13,12 @@ get_summary(mod)
 a list
 }
 \description{
-This function return a comprehensive summary of the model fit. It returns the
-estimated parameters of the model. The check of overlap
+The function get_summary() provides a comprehensive summary of the output
+returned by fit_torpor(). Values of mean, 95CI bounds, median and
+Brooks–Gelman–Rubin criterion (i.e. chain convergence check) of parameters
+posterior distributions are provided. Additionally, prior posterior overlap
+values for different parameters are generated. Finally, the mean MR value used
+to standardize the MR variable is reported.
 }
 \examples{
 data(test_data)

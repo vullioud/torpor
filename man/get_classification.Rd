@@ -13,9 +13,10 @@ get_classification(mod)
 a data frame with classification and predicted MR
 }
 \description{
-The function returns a functions with the classification (torpor or euthermy)
-for the observed data. It also provides the mean predicted values of MR at the
-given Ta.
+The function get_classification() returns the raw data with the related
+predicted stage values (between 1 and 2), which leads to the stage
+classification (torpor or euthermy). Additionally, it also provides the
+predicted MR at the given Ta.
 }
 \examples{
 \dontrun{

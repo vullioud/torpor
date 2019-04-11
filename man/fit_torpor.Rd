@@ -30,18 +30,21 @@ fit_torpor(MR, Ta, BMR, TLC, Model = NULL, fitting_options = list(ni =
 jagsUI object
 }
 \description{
-The function \code{fit_torpor} fit binomial mixture model using Bayesian inference.
-It uses Rjags in the background and enables users to specify some - but not all -
-sampling parameters. The structure of the model can also be changed. User who want more
-flexibility are encouraged to use Rjags directly.
-The function considers the assumed relation between MR and Ta (Speakman & Thomas 2003).
-In the hypothermic state (torpor) and above some threshold Ta (Tmin),
-MR follows an exponential curve reflecting the Arrhenius rate enhancing effect
-of temperature on chemical reactions, whereas below Tmin, it increases linearly
-with decreasing Ta to maintain a minimal Tb in torpor.
-In the euthermic state, MR solely increases linearly with decreasing Ta.
-CAUTION: This model should be applied only if enough evidence is available suggesting
-that the individuals under study will conform to the previously described pattern while in torpor.
+The function fit_torpor() fits a binomial mixture model using Bayesian
+inference. It uses Rjags in the background and enables users to specify
+some - but not all - sampling parameters. The structure of the model can also
+be changed. User who want more flexibility are encouraged to use Rjags
+directly. The function considers the assumed relation between MR and Ta
+(Speakman & Thomas 2003). In the hypothermic state (torpor) and above some
+threshold Ta (Tmin), MR follows an exponential curve reflecting the Arrhenius
+rate enhancing effect of temperature on chemical reactions, whereas below
+Tmin, it increases linearly with decreasing Ta to maintain a minimal Tb in
+torpor. In the euthermic state, MR solely increases linearly with decreasing Ta.
+}
+\details{
+Note: This model should be applied only with sufficient sample size and if
+evidences suggest that individuals under study will conform to the previously
+described pattern while in torpor.
 }
 \examples{
 rm(list = ls())

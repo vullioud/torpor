@@ -4,12 +4,13 @@
 #'Measures are presented in different colors depending of the metabolic
 #'stage and regression slopes (continuous lines) as well as 95% CI (segmented lines) are presented.
 #'For more flexibility the users are advied to use [fit_torpor()] and [get_prediction()] directly.
+#'
 #'@name fit_and_plot
-#'@param mod a fitted model from fit torpor
-#'@param plot_type character string specifying the type of plot desired. either "base" or "ggplot"
-#'@param ... arguments to fit the model in [fit_torpor()] if no model output are provided
-#'@param col_torp plot col for torpor
-#'@param col_eut plot col for euthermie
+#'@param mod a fitted model from [fit_torpor()]
+#'@param plot_type A character string specifying the type of plot desired. Either "base" or "ggplot"
+#'@param ... arguments to fit the model in [fit_torpor()] if no model is provided
+#'@param col_torp color for torpor model fit and points
+#'@param col_eut color for euthermy model fit and points
 #'@param ylab y label
 #'@param xlab x label
 #'@param pdf logical if a .pdf copy of the plot should be saved

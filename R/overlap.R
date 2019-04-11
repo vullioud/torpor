@@ -1,9 +1,5 @@
 #' get_overlap
-#'
-#' This function compare the distribution of the posterior with the prior for a
-#' given parametters. It is used as a measure to decide which parameters has
-#' been correctly identified. The threshold is set at 0.30. Used internally in
-#' the function overlap_model
+
 #'@name get_overlap
 #'@aliases get_overlap
 #'@param mod a fitted model with fit_torpor
@@ -13,8 +9,6 @@
 #'@import purrr
 #'@import overlapping
 #'@import dplyr
-#'@export
-
 get_overlap <- function(mod, params, priors) {
 
     chains <- purrr::map_dfr(mod$samples, ~ as.data.frame(.x) %>%
@@ -25,8 +19,11 @@ get_overlap <- function(mod, params, priors) {
 
 #' check_overlap
 #'
-#' This function compare the distribution of the posterior with the prior for
-#' three key estimates of the model. tlc, Tt and betat.
+#'The function check_overlap() generates prior posterior overlap values for Tm,
+#'Tt and Betae.
+#'Note: Values larger than 0.3 should lead to the conclusion that conforming
+#'torpor, regulated torpor or thermoregulation respectively could not be modeled
+#' with the data provided (Fasel et al. (in prep)).
 #'@name check_overlap
 #'@aliases check_overlap
 #'@param mod a fitted model with fit_torpor

@@ -8,13 +8,13 @@ fit_and_plot(mod = NULL, plot_type = "ggplot", col_torp = "grey",
   col_eut = "black", ylab = "MR", xlab = "Ta", pdf = FALSE, ...)
 }
 \arguments{
-\item{mod}{a fitted model from fit torpor}
+\item{mod}{a fitted model from \code{\link[=fit_torpor]{fit_torpor()}}}
 
-\item{plot_type}{character string specifying the type of plot desired. either "base" or "ggplot"}
+\item{plot_type}{A character string specifying the type of plot desired. Either "base" or "ggplot"}
 
-\item{col_torp}{plot col for torpor}
+\item{col_torp}{color for torpor model fit and points}
 
-\item{col_eut}{plot col for euthermie}
+\item{col_eut}{color for euthermy model fit and points}
 
 \item{ylab}{y label}
 
@@ -22,7 +22,7 @@ fit_and_plot(mod = NULL, plot_type = "ggplot", col_torp = "grey",
 
 \item{pdf}{logical if a .pdf copy of the plot should be saved}
 
-\item{...}{arguments to fit the model in \code{\link[=fit_torpor]{fit_torpor()}} if no model output are provided}
+\item{...}{arguments to fit the model in \code{\link[=fit_torpor]{fit_torpor()}} if no model is provided}
 }
 \value{
 a base-R plot or a ggplot object

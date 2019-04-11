@@ -1,10 +1,10 @@
-#' Get Prediction
+#' get Prediction
 #'
-#'The function provides the MR estimates and 95% credible interval boundaries
-#'at a defined Ta in normothermic and/or torpid stage.
+#' The function [get_prediction()] provides the predicted MR and 95CI bounds at
+#' a given Ta, in normothermic and/or torpid stage.
 #'@name get_prediction
 #'@aliases get_prediction
-#'@param mod a fitted model from fit_torpor
+#'@param mod a fitted model from the function [fit_torpor()]
 #'@param Ta a vector of temperatur for which the prediction should be made
 #'@return a data frame with predicted values
 #'@export
@@ -113,9 +113,11 @@ funnorm2 <- function(x, inte, betat, Ym) {
 ################################################################################
 #' Get classification
 #'
-#'The function returns a functions with the classification (torpor or euthermy)
-#'for the observed data. It also provides the mean predicted values of MR at the
-#'given Ta.
+#'The function get_classification() returns the raw data with the related
+#'predicted stage values (between 1 and 2), which leads to the stage
+#'classification (torpor or euthermy). Additionally, it also provides the
+#'predicted MR at the given Ta.
+#'
 #'@name get_classification
 #'@aliases get_classification
 #'@param mod a fitted model from fit_torpor
