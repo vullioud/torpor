@@ -5,10 +5,18 @@ Version: 0.1.1
 Author: Colin Vullioud, Nicolas Fassel
 Maintainer: Colin Vullioud <colino.vullioud@gmail.com>
 Description: This package enables an objective and standardized distinction 
-             between torpid and euthermic metabolic rates (MR) measured in steady-state 
-             conditions. Furthermore, it provides parameters’ estimations of the relation 
-             between ambient temperatures (Ta) and MR in both physiological stages. 
-             This package is aimed to support any physiologist working in thermal energetics. 
+  between torpid and euthermic metabolic rates (MR) measured in steady-state 
+  conditions. Furthermore, it provides parameters’ estimations of the relation
+  between ambient temperatures (Ta) and MR in both physiological stages. This 
+  package is aimed to support any physiologist working in thermal energetics. 
+  More information can be found on the companion article Fasel et al. (in prep).
+  This R package is centered around the "standard" relationship between MR and Ta 
+  modelled by Humphries et al. (2002) and Speakman and Thomas (2003) for bats. 
+  The model additionally considers a potential metabolic inhibition during torpor 
+  (Geiser 2004, Withers et al. 2016). Predictions and function parameters are
+  estimated with a binary mixture model using Bayesian inference.
+  Note: This package is not aimed for general use without careful researcher’s 
+  attention. Several elements of consideration are discussed in Fasel et al. (in prep).
 License: GPL (>=2)
 Depends: R (>= 2.10)
 Encoding: UTF-8
