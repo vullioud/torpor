@@ -5,7 +5,7 @@
 #'stage and regression slopes (continuous lines) as well as 95% CI (segmented lines) are presented.
 #'For more flexibility the users are advied to use [fit_torpor()] and [get_prediction()] directly.
 #'
-#'@name fit_and_plot
+#'@name plot_torpor
 #'@param mod a fitted model from [fit_torpor()]
 #'@param plot_type A character string specifying the type of plot desired. Either "base" or "ggplot"
 #'@param ... arguments to fit the model in [fit_torpor()] if no model is provided
@@ -20,10 +20,10 @@
 #'@importFrom grDevices dev.off
 #'@examples
 #'data(test_data3)
-#'fit_and_plot(MR = test_data3[,2], Ta = test_data3[,1], BMR = 1.055, TLC = 29,
+#'plot_torpor(MR = test_data3[,2], Ta = test_data3[,1], BMR = 1.055, TLC = 29,
 #'fitting_options = list(nc =1), plot_type = "ggplot")
 
-fit_and_plot <- function(mod = NULL, plot_type = "ggplot",col_torp = "grey", col_eut = "black", ylab = "MR", xlab = "Ta", pdf = FALSE, ...) {
+plot_torpor<- function(mod = NULL, plot_type = "ggplot",col_torp = "grey", col_eut = "black", ylab = "MR", xlab = "Ta", pdf = FALSE, ...) {
    # browser()
   ## fit a model if necessary
   if(is.null(mod)) {
