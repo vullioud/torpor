@@ -17,8 +17,5 @@ get_overlap(mod, params, priors)
 a numeric value
 }
 \description{
-The function check_overlap() generates prior posterior overlap values for Tm, Tt and Betae.
-Note: Values larger than 0.3 should lead to the conclusion that conforming
-torpor, regulated torpor or thermoregulation respectively could not be modeled
-with the data provided (Fasel et al. (in prep)).
+get_overlap
 }

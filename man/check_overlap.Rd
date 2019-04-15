@@ -13,8 +13,11 @@ check_overlap(mod)
 a numeric value
 }
 \description{
-This function compare the distribution of the posterior with the prior for
-three key estimates of the model. tlc, Tt and betat.
+The function check_overlap() generates prior posterior overlap values for Tm,
+Tt and Betae.
+Note: Values larger than 0.3 should lead to the conclusion that conforming
+torpor, regulated torpor or thermoregulation respectively could not be modeled
+with the data provided (Fasel et al. (in prep)).
 }
 \examples{
 #'data(test_data2)
