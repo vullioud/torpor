@@ -135,7 +135,10 @@ funnorm2 <- function(x, inte, betat, Ym) {
 #'}
 
 get_classification <- function(mod){
-x <- data.frame(measured_MR = (mod$data$Y)*mod$data$Ym[1], measured_Ta = mod$data$Ta, predicted_G = mod$mean$G)
+x <- data.frame(measured_MR = (mod$data$Y)*mod$data$Ym[1],
+                measured_Ta = mod$data$Ta,
+                predicted_stage = mod$mean$G)
+
 betat <- mod$sims.list$betat
 betac <-mod$sims.list$betac
 inte <-mod$sims.list$inte
@@ -148,10 +151,10 @@ Ym <- mod$sims.list$Ym[1]
 
 X <- nrow(x)
 x$predicted_MR <- rep(NA, X)
-x$classification <- ifelse(x$predicted_G > 1.5, "Torpor", "Euthermy")
+x$classification <- ifelse(x$predicted_stage > 1.5, "Torpor", "Euthermy")
 
 for(i in 1:nrow(x)) {
-  if (x$predicted_G[i] > 1.5) {
+  if (x$predicted_stage[i] > 1.5) {
   x$predicted_MR[i] <- stats::median(funtorp2(x$measured_Ta[i], Tt, intr, intc, betat, betac, Ym))
   } else {
   x$predicted_MR[i] <- stats::median(funnorm2(x$measured_Ta[i], inte, betat, Ym))
