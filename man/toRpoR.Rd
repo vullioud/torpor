@@ -30,9 +30,9 @@ linearly with decreasing Ta to maintain a minimal Tb in torpor. In the
 euthermic state, MR solely increases linearly with decreasing Ta.
 }
 
-\section{fit_and_plot}{
+\section{plot_torpor}{
 
-The function \code{\link[=fit_and_plot]{fit_and_plot()}} is a wrapper function arround the \code{\link[=fit_torpor]{fit_torpor()}} and \code{\link[=get_prediction]{get_prediction()}}.
+The function \code{\link[=plot_torpor]{plot_torpor()}} is a wrapper function arround the \code{\link[=fit_torpor]{fit_torpor()}} and \code{\link[=get_prediction]{get_prediction()}}.
 It uses \code{\link[=fit_torpor]{fit_torpor()}} to fit a binomial mixture model using
 Bayesian inference and plot the predicted value as well as the raw data.
 Measures are presented in different colors depending of the metabolic stage
@@ -47,9 +47,14 @@ The function provides the predicted MR and 95% credible interval boundaries
 at a defined Ta given a certain model, in normothermic and/or torpid stage.
 }
 
-\section{get_Q10}{
+\section{get_classification}{
 
-The function provides the Q10 temperature coefficient, which represents the
-metabolic rates ratio measured at 10 °C Ta apart.
+The function provides the classification of the individual points. It gives
+the estimated state.
+}
+
+\section{get_summary}{
+
+The function gives a summary of the model fit.
 }
 
