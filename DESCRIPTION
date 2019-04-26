@@ -2,7 +2,7 @@ Package: toRpoR
 Type: Package
 Title: Fit Torpor Models For Bats
 Version: 0.1.1
-Author: Colin Vullioud, Nicolas Fassel
+Author: Colin Vullioud, Nicolas Fasel
 Maintainer: Colin Vullioud <colino.vullioud@gmail.com>
 Description: This package enables an objective and standardized distinction 
   between torpid and euthermic metabolic rates (MR) measured in steady-state 
