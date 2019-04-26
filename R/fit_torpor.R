@@ -58,7 +58,7 @@ fit_torpor <- function(MR,
 
   ## find the model if not given by the user
   if (is.null(Model)) {
-    path_to_model <- system.file("extdata", "hetero2.txt",  package = "toRpoR")
+    path_to_model <- system.file("extdata", "hetero.txt",  package = "toRpoR")
   } else {
     path_to_model <- paste(Model)
   }
