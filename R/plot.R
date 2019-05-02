@@ -23,7 +23,7 @@
 #'plot_torpor(MR = test_data3[,2], Ta = test_data3[,1], BMR = 1.055, TLC = 29,
 #'fitting_options = list(nc =1), plot_type = "ggplot")
 
-plot_torpor<- function(mod = NULL, plot_type = "ggplot",col_torp = "grey", col_eut = "black", ylab = "MR", xlab = "Ta", pdf = FALSE, ...) {
+plot_torpor<- function(mod = NULL, plot_type = "ggplot",col_torp = "coral3", col_eut = "cornflowerblue", ylab = "M", xlab = "Ta", pdf = FALSE, ...) {
    # browser()
   ## fit a model if necessary
   if(is.null(mod)) {
@@ -89,8 +89,8 @@ plot_torpor<- function(mod = NULL, plot_type = "ggplot",col_torp = "grey", col_e
       ggplot2::scale_color_manual("",
                                     labels = c("Euthermy", "Torpor"),
                                     values =  c(col_eut, col_torp)) +
-      scale_y_continuous(name = paste(ylab)) +
-      scale_x_continuous(name = paste(xlab))
+      ggplot2::ylab(paste(ylab)) +
+      ggplot2::xlab(paste(xlab))
     if (pdf == TRUE){
       ggplot2::ggsave(plot, filename = "plot.pdf", width = 7, units = "cm")
     }
