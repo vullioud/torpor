@@ -4,8 +4,9 @@
 \alias{plot_torpor}
 \title{plot raw data and model output}
 \usage{
-plot_torpor(mod = NULL, plot_type = "ggplot", col_torp = "grey",
-  col_eut = "black", ylab = "MR", xlab = "Ta", pdf = FALSE, ...)
+plot_torpor(mod = NULL, plot_type = "ggplot", col_torp = "coral3",
+  col_eut = "cornflowerblue", ylab = "M", xlab = "Ta", pdf = FALSE,
+  ...)
 }
 \arguments{
 \item{mod}{a fitted model from \code{\link[=fit_torpor]{fit_torpor()}}}
