@@ -82,7 +82,7 @@ fit_torpor <- function(MR,
 
   ## get the values for the models /reorder the data and remove NA
   set.seed(666)
-  da <- cbind(MR, Ta)[!is.na(MR) & !is.na(Ta) & Ta < (TLC - 2), ]
+  da <- cbind(MR, Ta)[!is.na(MR) & !is.na(Ta) & Ta < (TLC), ]
   da <- da[sample(nrow(da)), ]
   Y <- da[, "MR"]
   Ta <- da[, "Ta"]
