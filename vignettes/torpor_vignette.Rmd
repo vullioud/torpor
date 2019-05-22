@@ -1,0 +1,126 @@
+---
+title: "toRpoR"
+author: "Colin Vullioud"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+# Model Details
+
+This R package is centered around the "standard" relationship between M and Ta modelled by Humphries et al. (2002) and Speakman and Thomas (2003) for bats. The model additionally considers a potential metabolic inhibition during torpor (Geiser 2004, Withers et al. 2016). 
+In details, the rate of metabolism of euthermic animals (Me) below the lower limit of the thermoneutral zone (or lower critical temperature, Tlc) increases linearly with decreasing Ta:
+
+$$ 
+M_e =  \alpha_e + \beta_e*T_a 
+$$
+
+The model also assumes that this line equals BMR at Tlc and therefore:
+
+$$
+\alpha_e = BMR - \beta_e * T_{lc}
+$$
+
+
+The rate of metabolism in torpor (Mt) follows an exponential curve between some threshold ambient temperature (Tt) and Tlc, reflecting the Arrhenius rate enhancing effect of temperature on chemical reactions. In this Ta range, torpor is referred to as "conforming torpor". 
+
+$$
+M_t = \alpha_c * \exp(\beta_c * T_a) \vee T_t \leq T_a \leq T_{lc}
+$$
+where: 
+
+$$ 
+\alpha_c = \frac{BMR}{\exp{(\beta_c * T_m})}
+$$
+
+Tm represents the extrapolated modelled temperature where the conforming torpor function reaches BMR. Below Tt, Mt increases linearly with decreasing Ta to maintain a minimal body temperature (Tb min). This state is usually referred to as "regulated torpor": 
+
+$$
+M_t = \alpha_r + \beta_r * T_a \vee T_a < T_t
+$$
+
+In accordance with the general trend observed (Geiser, 2004), we assume that:
+
+$$
+\beta_r = \beta_e
+$$
+
+The intercept of the regulated torpor function $(\alpha_r)$ and the coefficient of Ta in the conforming torpor function $(\beta_c)$ can be calculated using modelled 
+parameters with the following equations: 
+
+$$
+\alpha = TMR - \beta_r * T_t
+$$
+$$
+\beta_c = \frac{\log(\frac{BMR}{TMR})}{T_m - T_t}
+$$
+
+TMR is the minimal metabolic rate in torpor at Tt. 
+
+
+## Priors
+Predictions and function parameters are estimated with a binary mixture model using Bayesian inference.
+
+The prior distributions of the modelled parameters are specified in Table 1. Three different Markov chains are run during 500’000 iterations starting at random initial values within the range of parameter space. The initial convergence phase is excluded by dropping the first 300’000 iterations. Markov chains are thinned by a factor of 10 and the Brooks–Gelman–Rubin criterion ^R (Brooks & Gelman, 1998) is used to assess the convergence of chains (< 1.1). In addition, we consider that a parameter for which the overlap between the prior and the posterior distributions is greater than 30% is not identifiable. Prior and posterior distribution overlap is calculated with the function “MCMCtrace” of package "MCMCvis" (Youngflesh, 2018). The generation of truncated normal prior distributions is enabled by the function “rtruncnorm” of package "truncnorm" (Mersmann, Trautmann, Steuer, & Bornkamp, 2018). To ease parameter estimations, metabolic rate measurements are divided by their mean for standardization. 
+
+
+## 
+
+Note the various macros within the `vignette` section of the metadata block above. These are required in order to instruct R how to build the vignette. Note that you should change the `title` field and the `\VignetteIndexEntry` to match the title of your vignette.
+
+## An example
+
+
+## Figures
+
+The figure sizes have been customised so that you can easily put two images side-by-side. 
+
+```{r, fig.show='hold'}
+plot(1:10)
+plot(10:1)
+```
+
+You can enable figure captions by `fig_caption: yes` in YAML:
+
+    output:
+      rmarkdown::html_vignette:
+        fig_caption: yes
+
+Then you can use the chunk option `fig.cap = "Your figure caption."` in **knitr**.
+
+## More Examples
+
+You can write math expressions, e.g. $Y = X\beta + \epsilon$, footnotes^[A footnote here.], and tables, e.g. using `knitr::kable()`.
+
+```{r, echo=FALSE, results='asis'}
+knitr::kable(head(mtcars, 10))
+```
+
+Also a quote using `>`:
+ 
+## References
+
+
+Brooks, Gelman. 1998 General methods for monitoring convergence of iterative simulations. Journal of Computational and Graphical Statistics, 7, 434–455. (doi: 10.1080/10618600.1998.10474787)
+
+Humphries, Thomas, Speakman. 2002 Climate-mediated energetic constraints on the distribution of hibernating mammals. Nature 418, 313–316. (doi:10.1038/nature00828)
+
+Geiser. 2004. Metabolic rate and body temperature reduction during hibernation and daily torpor. Annual Review of Physiology 66:239-274.
+
+Mersmann, Trautmann, Steuer, Bornkamp. 2018 truncnorm: Truncated Normal Distribution, package version 1.0-8. URL: https://cran.r-project.org/package=truncnorm.
+
+Speakman, Thomas. 2004 Physiological ecology and energetics of bats. In Bat Biology (eds Kunz, Fenton), pp. 430–490. The University of Chicago Press.
+
+Youngflesh. 2018 MCMCvis: Tools to visualize, manipulate, and summarize MCMC output. Journal of Open Source Software 3:640. (doi: 10.21105/joss.00640)
+
+Withers, Cooper, Maloney, Bozinovic, and Neto. 2016. Ecological and environmental physiology of mammals. Oxford University Press.
