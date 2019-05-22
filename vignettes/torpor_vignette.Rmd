@@ -1,5 +1,5 @@
 ---
-title: "toRpoR"
+title: "toRpoR Model Specification"
 author: "Colin Vullioud"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
@@ -16,37 +16,36 @@ knitr::opts_chunk$set(
 )
 ```
 
-# Model Details
+## Model Details
 
-This R package is centered around the "standard" relationship between M and Ta modelled by Humphries et al. (2002) and Speakman and Thomas (2003) for bats. The model additionally considers a potential metabolic inhibition during torpor (Geiser 2004, Withers et al. 2016). 
-In details, the rate of metabolism of euthermic animals (Me) below the lower limit of the thermoneutral zone (or lower critical temperature, Tlc) increases linearly with decreasing Ta:
+The core model used in the function `fit_torpor()` of the `toRpoR` package is centered around the "standard" relationship between $M$ and $T_a$ modelled by Humphries et al. (2002) and Speakman and Thomas (2003) for bats. In addition, the model considers a potential metabolic inhibition during torpor (Geiser 2004, Withers et al. 2016). In details, the rate of metabolism of euthermic animals ($M_e$) below the lower limit of the thermoneutral zone (or lower critical temperature, $T_lc$) increases linearly with decreasing Ta:
 
 $$ 
-M_e =  \alpha_e + \beta_e*T_a 
+M_e =  \alpha_e + \beta_e \times T_a 
 $$
 
-The model also assumes that this line equals BMR at Tlc and therefore:
+The model also assumes that this line equals $BMR$ at $T_lc$ and therefore:
 
 $$
-\alpha_e = BMR - \beta_e * T_{lc}
+\alpha_e = BMR - \beta_e \times T_{lc}
 $$
 
 
-The rate of metabolism in torpor (Mt) follows an exponential curve between some threshold ambient temperature (Tt) and Tlc, reflecting the Arrhenius rate enhancing effect of temperature on chemical reactions. In this Ta range, torpor is referred to as "conforming torpor". 
+The rate of metabolism in torpor ($M_t$) follows an exponential curve between some threshold ambient temperature ($T_t$) and $T_lc$, reflecting the Arrhenius rate enhancing effect of temperature on chemical reactions. In this $T_a$ range, torpor is referred to as "conforming torpor". 
 
 $$
-M_t = \alpha_c * \exp(\beta_c * T_a) \vee T_t \leq T_a \leq T_{lc}
+M_t = \alpha_c \times \exp(\beta_c \times T_a) \vee T_t \leq T_a \leq T_{lc}
 $$
 where: 
 
 $$ 
-\alpha_c = \frac{BMR}{\exp{(\beta_c * T_m})}
+\alpha_c = \frac{BMR}{\exp{(\beta_c \times T_m})}
 $$
 
-Tm represents the extrapolated modelled temperature where the conforming torpor function reaches BMR. Below Tt, Mt increases linearly with decreasing Ta to maintain a minimal body temperature (Tb min). This state is usually referred to as "regulated torpor": 
+Tm represents the extrapolated modelled temperature where the conforming torpor function reaches $BMR$. Below $T_t$, $M_t$ increases linearly with decreasing $T_a$ to maintain a minimal body temperature ($T_b$ min). This state is usually referred to as "regulated torpor": 
 
 $$
-M_t = \alpha_r + \beta_r * T_a \vee T_a < T_t
+M_t = \alpha_r + \beta_r \times T_a \vee T_a < T_t
 $$
 
 In accordance with the general trend observed (Geiser, 2004), we assume that:
@@ -55,59 +54,99 @@ $$
 \beta_r = \beta_e
 $$
 
-The intercept of the regulated torpor function $(\alpha_r)$ and the coefficient of Ta in the conforming torpor function $(\beta_c)$ can be calculated using modelled 
-parameters with the following equations: 
+The intercept of the regulated torpor function $(\alpha_r)$ and the coefficient of $T_a$ in the conforming torpor function $(\beta_c)$ can be calculated using modelled parameters with the following equations: 
 
 $$
-\alpha = TMR - \beta_r * T_t
+\alpha = TMR - \beta_r \times T_t
 $$
 $$
 \beta_c = \frac{\log(\frac{BMR}{TMR})}{T_m - T_t}
 $$
 
-TMR is the minimal metabolic rate in torpor at Tt. 
+$TMR$ is the minimal metabolic rate in torpor at $T_t$. 
 
 
 ## Priors
 Predictions and function parameters are estimated with a binary mixture model using Bayesian inference.
 
-The prior distributions of the modelled parameters are specified in Table 1. Three different Markov chains are run during 500’000 iterations starting at random initial values within the range of parameter space. The initial convergence phase is excluded by dropping the first 300’000 iterations. Markov chains are thinned by a factor of 10 and the Brooks–Gelman–Rubin criterion ^R (Brooks & Gelman, 1998) is used to assess the convergence of chains (< 1.1). In addition, we consider that a parameter for which the overlap between the prior and the posterior distributions is greater than 30% is not identifiable. Prior and posterior distribution overlap is calculated with the function “MCMCtrace” of package "MCMCvis" (Youngflesh, 2018). The generation of truncated normal prior distributions is enabled by the function “rtruncnorm” of package "truncnorm" (Mersmann, Trautmann, Steuer, & Bornkamp, 2018). To ease parameter estimations, metabolic rate measurements are divided by their mean for standardization. 
+The prior distributions of the modelled parameters are specified in Table 1. By default, three different Markov chains are run during 500’000 iterations starting at random initial values within the range of parameter space. The initial convergence phase is excluded by dropping the first 300’000 iterations. Markov chains are thinned by a factor of 10 and the Brooks–Gelman–Rubin criterion ^R (Brooks & Gelman, 1998) is used to assess the convergence of chains (< 1.1). These parameters can be changed by the user with the argument `fitting_options` of the function `fit_torpor()`.   
 
 
-## 
-
-Note the various macros within the `vignette` section of the metadata block above. These are required in order to instruct R how to build the vignette. Note that you should change the `title` field and the `\VignetteIndexEntry` to match the title of your vignette.
-
-## An example
 
 
-## Figures
+In addition, we consider that a parameter for which the overlap between the prior and the posterior distributions is greater than 30% is not identifiable. Prior and posterior distribution overlap is calculated with the function `overlap()` of package `overlapping` (Pastore, 2018). The generation of truncated normal prior distributions is enabled by the function `rtruncnorm()` of package `truncnorm` (Mersmann, Trautmann, Steuer, & Bornkamp, 2018). To ease parameter estimations, metabolic rate measurements are divided by their mean for standardization. 
 
-The figure sizes have been customised so that you can easily put two images side-by-side. 
 
-```{r, fig.show='hold'}
-plot(1:10)
-plot(10:1)
+### Table 1
+| Estimated parameter                  | distribution | jAGS parameters           | Truncation |
+|:------------------------------------:|:------------:|:-------------------------:|:----------:|
+|Metabolic state membership probability| Dirichlet    |Concentrations (1,1)       | NA         |
+|$\beta_e$                             | Gaussian     |Mean(0), Precision(0.001)  | [ ; 0]     | 
+|$TMR$                                 | Gaussian     |Mean(0), Precision(0.001)  | [0; $BMR$] |
+|$T_t$                                 | Gaussian     |Mean(0), Precision(0.001)  |[ ;$T_{lc}$]|
+|$T_m$                                 | Gaussian     |Mean(0), Precision(0.001)  |[$T_{lc}$; ]|
+|$SD_c$                                | Uniform      |min(0.03), max(5)          | NA         |
+|$SD_r/SD_c$                           | Gaussian     |Mean(0), Precsion(0.1)     |[1; ]       |  
+With $TMR$ = minimal metabolic rate in torpor, $BMR$ = basal metabolic rate, $SD_c$ = standard deviation of conformed torpor metabolic rate, $SD_t$ = standard deviation of regulated torpor metabolic rate.
+
+## Jags model
+The priors are hard-coded in the model used in the package. 
+Users interested in testing other set of priors have the opportunity to do it by writing their own model and specifying the path to *.txt* model-file with the `Model` argument of the function `fit_torpor()`. 
+Users are not adviced to changed the model further as the functionality of the rest of the package can not be 
+guaranteed. 
+
+```{jags, jags model}
+model{
+#Model
+    for (i in 1:NbObservations) {
+       Y[i] ~ dnorm(mu[i], sigma[i])
+       G[i] ~ dcat(p[1:2])
+mu[i] <-
+ifelse(G[i]==1,
+inte+betat*Ta[i],
+ifelse(Ta[i]>Tt,
+intc*exp(betac*Ta[i]),
+intr+betat*Ta[i]))
+
+sigma[i] <-
+ifelse(G[i]==1,
+sigmay[1],
+ifelse(Ta[i]>Tt,
+sigmay[2],
+sigmay[1]))
+}
+
+for(i in 1:2){
+sigmay[i] <- 1/pow(tauy[i],2)}
+tau ~ dunif(0.03,5)
+tauy[2] <- tau
+tauy[1] <- tau*diff
+diff~dnorm(0,0.1)T(1,)
+
+#Assumptions
+inte <- BMR-betat*TLC
+intr <- TMR-betat*Tt
+betac <- log(TMR/BMR)/(Tt-tlc)
+log(intc) <- log(BMR)-betac*tlc
+
+#Unused argument to be passed to the results to back-transform Y and BMR
+ym <- Ym
+
+
+#Priors
+
+p[1:2] ~ ddirch(rep(1,2))
+
+betat ~ dnorm(0,0.0001)T(,0)
+TMR ~ dnorm(0,0.0001)T(0,BMR)
+Tt ~ dnorm(0,0.0001)T(,TLC)
+tlc ~ dnorm(0,0.0001)T(TLC,)
+
+}
+
 ```
 
-You can enable figure captions by `fig_caption: yes` in YAML:
 
-    output:
-      rmarkdown::html_vignette:
-        fig_caption: yes
-
-Then you can use the chunk option `fig.cap = "Your figure caption."` in **knitr**.
-
-## More Examples
-
-You can write math expressions, e.g. $Y = X\beta + \epsilon$, footnotes^[A footnote here.], and tables, e.g. using `knitr::kable()`.
-
-```{r, echo=FALSE, results='asis'}
-knitr::kable(head(mtcars, 10))
-```
-
-Also a quote using `>`:
- 
 ## References
 
 
@@ -121,6 +160,8 @@ Mersmann, Trautmann, Steuer, Bornkamp. 2018 truncnorm: Truncated Normal Distribu
 
 Speakman, Thomas. 2004 Physiological ecology and energetics of bats. In Bat Biology (eds Kunz, Fenton), pp. 430–490. The University of Chicago Press.
 
-Youngflesh. 2018 MCMCvis: Tools to visualize, manipulate, and summarize MCMC output. Journal of Open Source Software 3:640. (doi: 10.21105/joss.00640)
+Pastore, M. (2018). Overlapping: a R package for Estimating Overlapping in Empirical Distributions.
+The Journal of Open Source Software, 3 (32), 1023. URL: https://doi.org/10.21105/
+joss.01023
 
 Withers, Cooper, Maloney, Bozinovic, and Neto. 2016. Ecological and environmental physiology of mammals. Oxford University Press.
