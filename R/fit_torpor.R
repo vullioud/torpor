@@ -131,8 +131,7 @@ fit_torpor <- function(MR,
 }
 #'complete_args
 #'
-#'this function completes the arguments of a function. Should not
-#'be used directly by the user. Is used internally for fit_torpor
+#'this function is used internally for fit_torpor
 #'From Alex Courtiol
 #'
 #'@name complete_args
