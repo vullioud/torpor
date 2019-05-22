@@ -20,14 +20,14 @@ fit_torpor(MR, Ta, BMR, TLC, Model = NULL, fitting_options = list(ni =
 
 \item{fitting_options}{a list specifying sampling parameters. The follwing parameters can be speficied:
 \itemize{
-\item ni = number of itterations
-\item nt = thin rate
-\item nb = number of burns
-\item nc = number of chains
+\item ni = number of itterations: default, ni = 500000
+\item nt = thin rate: default nt = 10
+\item nb = number of burns: default nb = 300000
+\item nc = number of chains: default nc = 3
 }}
 }
 \value{
-jagsUI object
+fitted model in jags, using jagsUI. Return a
 }
 \description{
 The function fit_torpor() fits a binomial mixture model using Bayesian
