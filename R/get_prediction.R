@@ -2,6 +2,7 @@
 #'
 #' The function [get_prediction()] provides the predicted MR and 95CI bounds at
 #' a given Ta, in normothermic and/or torpid stage.
+#'
 #'@name get_prediction
 #'@aliases get_prediction
 #'@param mod a fitted model from the function [fit_torpor()]
@@ -42,12 +43,12 @@ get_prediction <- function(mod, Ta){
   Y025n <- rep(NA, X)
 
   for(i in 1:X) {
-    Ymeant[i] <- stats::median(funtorp2(Ta[i], Tt, intr, intc, betat, betac, Ym))
-    Y975t[i] <- stats::quantile(funtorp2(Ta[i],Tt, intr, intc, betat, betac, Ym),0.975)
-    Y025t[i] <- stats::quantile(funtorp2(Ta[i],Tt, intr, intc, betat, betac, Ym),0.025)
-    Ymeann[i] <- stats::median(funnorm2(Ta[i], inte, betat, Ym))
-    Y975n[i] <- stats::quantile(funnorm2(Ta[i], inte, betat, Ym),0.975)
-    Y025n[i] <- stats::quantile(funnorm2(Ta[i], inte, betat, Ym),0.025)
+    Ymeant[i] <- stats::median(funtorp(Ta[i], Tt, intr, intc, betat, betac, Ym))
+    Y975t[i] <- stats::quantile(funtorp(Ta[i],Tt, intr, intc, betat, betac, Ym),0.975)
+    Y025t[i] <- stats::quantile(funtorp(Ta[i],Tt, intr, intc, betat, betac, Ym),0.025)
+    Ymeann[i] <- stats::median(funnorm(Ta[i], inte, betat, Ym))
+    Y975n[i] <- stats::quantile(funnorm(Ta[i], inte, betat, Ym),0.975)
+    Y025n[i] <- stats::quantile(funnorm(Ta[i], inte, betat, Ym),0.025)
   }
 
 
@@ -77,10 +78,10 @@ get_prediction <- function(mod, Ta){
 
 }
 
-#' funtorp2
+#' funtorp
 #'
-#'fit the mod for torpor bats
-#'@name funtorp2
+#'fit the mod for torpor bats // used internally only
+#'@name funtorp
 #'@param x a temperature
 #'@param Tt turning point T
 #'@param intr intercept 1
@@ -90,22 +91,22 @@ get_prediction <- function(mod, Ta){
 #'@param Ym mean of Y to back-transform
 #'@return a metabolic value
 
-funtorp2 <- function(x, Tt, intr, intc, betat, betac, Ym) {
+funtorp <- function(x, Tt, intr, intc, betat, betac, Ym) {
   out <- (ifelse(x<Tt,intr +betat*x,intc*exp(betac*x)))*Ym
   return(out)
 }
 
 
-#' funnorm2
+#' funnorm
 #'
-#'fit the mod for normotermic bats
-#'@name funnorm2
+#'fit the mod for normotermic bats // used internally only
+#'@name funnorm
 #'@param x a temperature
 #'@param inte intercept 1
 #'@param betat slope 1
 #'@param Ym mean of Y to back transform
 #'@return a metabolic value
-funnorm2 <- function(x, inte, betat, Ym) {
+funnorm <- function(x, inte, betat, Ym) {
   out <- (inte +betat*x)*Ym
   return(out)
 }
@@ -155,9 +156,9 @@ x$classification <- ifelse(x$predicted_stage > 1.5, "Torpor", "Euthermy")
 
 for(i in 1:nrow(x)) {
   if (x$predicted_stage[i] > 1.5) {
-  x$predicted_MR[i] <- stats::median(funtorp2(x$measured_Ta[i], Tt, intr, intc, betat, betac, Ym))
+  x$predicted_MR[i] <- stats::median(funtorp(x$measured_Ta[i], Tt, intr, intc, betat, betac, Ym))
   } else {
-  x$predicted_MR[i] <- stats::median(funnorm2(x$measured_Ta[i], inte, betat, Ym))
+  x$predicted_MR[i] <- stats::median(funnorm(x$measured_Ta[i], inte, betat, Ym))
   }
 }
 return(x)
