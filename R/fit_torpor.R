@@ -22,11 +22,12 @@
 #'@param TLC TLC value for the focal specie
 #'@param Model path to model_file.txt if a different model is used
 #'@param fitting_options a list specifying sampling parameters. The follwing parameters can be speficied:
-#' * ni = number of itterations
-#' * nt = thin rate
-#' * nb = number of burns
-#' * nc = number of chains
-#'@return jagsUI object
+#' * ni = number of itterations: default, ni = 500000
+#' * nt = thin rate: default nt = 10
+#' * nb = number of burns: default nb = 300000
+#' * nc = number of chains: default nc = 3
+#'
+#'@return fitted model in jags, using jagsUI. Return a
 #'@export
 #'@import rjags
 #'@import jagsUI
