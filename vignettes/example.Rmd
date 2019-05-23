@@ -1,0 +1,86 @@
+---
+title: "An example"
+author: "Colin Vullioud"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+## An example 
+
+This vignette presents the basic workflow of the `toRpoR` package and goes through the different way of working with the package. 
+
+### The data 
+The raw data needed to fit the model with the function `fit_torpor()` consists of 
+a set of measure of Metabolic rate $(M)$ and associated ambient temperature $(T_a)$.
+These value can be vectors of the same length or columns of a data-frame. In this 
+example, we will use the data taken from the measurment of Geiser (1987) that comes 
+with the package. The data are accessible with the following command. 
+
+```{r, data}
+library(toRpoR)
+data(test_data2) 
+str(test_data2)
+dim(test_data2)
+``` 
+For this examples we thus get 103 observations of Vo2 of the bat species *Cercartetus lepidus*
+and the ambiant temperature at which the recording have been done. 
+
+
+$T_{lc}$ value and $BMR$ are also needed in order to fit the model. In the example
+data-set ths is found in the doccumentation of the data. You can find this by calling
+the help function on the data set. In this example by typing: `?test_data2`. 
+Once you get this information you are good to fit the model using the function
+`fit_torpor()`. `fit_torpor()` represents the core of the model and should be the first
+step in any analysis using the `toRpoR` package. For researcher not familiar with 
+R and are only interested in a visual representation of their data can skip this 
+step and use the `plot_torpor()` function directly. 
+
+Now that we get the information we need, we can fit the model with the following 
+call: 
+
+```{r, fit model}
+model <- fit_torpor(MR = test_data2[, "VO2ms"], Ta = test_data2[, "Ta"],
+                    BMR = 1.49, TLC = 28.8,
+                    fitting_options = list(ni = 5e+05,
+                                           nt = 10,
+                                           nb = 3e+05,
+                                           nc = 2))
+
+model2 <- fit_torpor(MR = test_data[, 2], Ta = test_data[,1])
+
+```
+
+The output of the `fit_torpor()` function is a list of class jagsUI. It can be 
+usefull for the researchers familiar with jagsUI and they are welcome to build their 
+analysis from that point. However, the rest of the package is designed to help researcher 
+to perform common task and ease the process of making sens of the model. 
+
+We recommand the user to first check the convergence. User can use the build in 
+function from `jagsUI` to check convergence. We also implemented a function to 
+check the overlap between the posterior and the prior distribution. We recommand
+to check this before analysing the result further. 
+
+To continue with our analysis of *Cercartetus lepidus* we will check for overlap: 
+
+```{r, check overlap}
+overlap <- check_overlap(mod = model)
+overlap
+``` 
+
+The function `check_overlap()` only check overlap for the $T_{lc}$, $T_t$, and 
+$\beta_t$. It will return a warning if the overlap is greater between 0.3. 
+
+
+
+

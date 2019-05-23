@@ -11,9 +11,10 @@
 #'Tmin, it increases linearly with decreasing Ta to maintain a minimal Tb in
 #'torpor. In the euthermic state, MR solely increases linearly with decreasing Ta.
 #'
-#'Note: This model should be applied only with sufficient sample size and if
+#'This model should be applied only with sufficient sample size and if
 #'evidences suggest that individuals under study will conform to the previously
 #'described pattern while in torpor.
+#'
 #'@name fit_torpor
 #'@aliases fit_torpor
 #'@param MR a vector of Metabolic rates
@@ -22,12 +23,12 @@
 #'@param TLC TLC value for the focal specie
 #'@param Model path to model_file.txt if a different model is used
 #'@param fitting_options a list specifying sampling parameters. The follwing parameters can be speficied:
-#' * ni = number of itterations: default, ni = 500000
+#' * ni = number of itterations: default ni = 500000
 #' * nt = thin rate: default nt = 10
 #' * nb = number of burns: default nb = 300000
 #' * nc = number of chains: default nc = 3
 #'
-#'@return fitted model in jags, using jagsUI. Return a
+#'@return fitted model. A list of class "JagsUI".
 #'@export
 #'@import rjags
 #'@import jagsUI
