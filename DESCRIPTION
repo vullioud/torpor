@@ -28,8 +28,7 @@ Imports: rjags,
         truncnorm, 
         purrr, 
         dplyr, 
-        overlapping
-Suggests: 
-    knitr,
-    rmarkdown
+        overlapping, 
+        knitr,
+        rmarkdown
 VignetteBuilder: knitr

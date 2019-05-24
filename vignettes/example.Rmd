@@ -50,14 +50,14 @@ Now that we get the information we need, we can fit the model with the following
 call: 
 
 ```{r, fit model}
-model <- fit_torpor(MR = test_data2[, "VO2ms"], Ta = test_data2[, "Ta"],
-                    BMR = 1.49, TLC = 28.8,
-                    fitting_options = list(ni = 5e+05,
-                                           nt = 10,
-                                           nb = 3e+05,
-                                           nc = 2))
-
-model2 <- fit_torpor(MR = test_data[, 2], Ta = test_data[,1])
+# model <- fit_torpor(MR = test_data2[, "VO2ms"], Ta = test_data2[, "Ta"],
+#                     BMR = 1.49, TLC = 28.8,
+#                     fitting_options = list(ni = 5e+05,
+#                                            nt = 10,
+#                                            nb = 3e+05,
+#                                            nc = 2))
+# 
+# model2 <- fit_torpor(MR = test_data[, 2], Ta = test_data[,1])
 
 ```
 
@@ -74,8 +74,8 @@ to check this before analysing the result further.
 To continue with our analysis of *Cercartetus lepidus* we will check for overlap: 
 
 ```{r, check overlap}
-overlap <- check_overlap(mod = model)
-overlap
+# overlap <- check_overlap(mod = model)
+# overlap
 ``` 
 
 The function `check_overlap()` only check overlap for the $T_{lc}$, $T_t$, and 
