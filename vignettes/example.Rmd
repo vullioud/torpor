@@ -18,10 +18,10 @@ knitr::opts_chunk$set(
 
 ## An example 
 
-This vignette presents the basic workflow of the `toRpoR` package and goes through the different way of working with the package. 
+This vignette presents a suggested workflow of the `toRpoR` package.
 
 ### The data 
-The raw data needed to fit the model with the function `fit_torpor()` consists of 
+The model needs data to fit with the function `fit_torpor()` consists of 
 a set of measure of Metabolic rate $(M)$ and associated ambient temperature $(T_a)$.
 These value can be vectors of the same length or columns of a data-frame. In this 
 example, we will use the data taken from the measurment of Geiser (1987) that comes 
@@ -36,7 +36,7 @@ dim(test_data2)
 For this examples we thus get 103 observations of Vo2 of the bat species *Cercartetus lepidus*
 and the ambiant temperature at which the recording have been done. 
 
-
+## get data 
 $T_{lc}$ value and $BMR$ are also needed in order to fit the model. In the example
 data-set ths is found in the doccumentation of the data. You can find this by calling
 the help function on the data set. In this example by typing: `?test_data2`. 
@@ -49,6 +49,7 @@ step and use the `plot_torpor()` function directly.
 Now that we get the information we need, we can fit the model with the following 
 call: 
 
+## fit model 
 ```{r, fit model}
 # model <- fit_torpor(MR = test_data2[, "VO2ms"], Ta = test_data2[, "Ta"],
 #                     BMR = 1.49, TLC = 28.8,
@@ -71,6 +72,8 @@ function from `jagsUI` to check convergence. We also implemented a function to
 check the overlap between the posterior and the prior distribution. We recommand
 to check this before analysing the result further. 
 
+
+## check overlap 
 To continue with our analysis of *Cercartetus lepidus* we will check for overlap: 
 
 ```{r, check overlap}
@@ -80,7 +83,8 @@ To continue with our analysis of *Cercartetus lepidus* we will check for overlap
 
 The function `check_overlap()` only check overlap for the $T_{lc}$, $T_t$, and 
 $\beta_t$. It will return a warning if the overlap is greater between 0.3. 
-
+ 
+##
 
 
 
