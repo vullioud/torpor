@@ -1,6 +1,6 @@
 ---
-title: "toRpoR Model Specification"
-author: "Colin Vullioud"
+title: "Model description"
+author: "Nicolas J. Fasel, Colin Vullioud, Michel Genoud"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
@@ -18,7 +18,7 @@ knitr::opts_chunk$set(
 
 ## Model Details
 
-The core model used in the function `fit_torpor()` of the `toRpoR` package is centered around the "standard" relationship between $M$ and $T_a$ modelled by Humphries et al. (2002) and Speakman and Thomas (2003) for bats. In addition, the model considers a potential metabolic inhibition during torpor (Geiser 2004, Withers et al. 2016). In details, the rate of metabolism of euthermic animals ($M_e$) below the lower limit of the thermoneutral zone (or lower critical temperature, $T_lc$) increases linearly with decreasing Ta:
+The core model used in the function `fit_torpor()` of the `toRpoR` package is centered around the "standard" relationship between $M$ and $T_a$ modelled by Humphries et al. (2002) and Speakman and Thomas (2003) for bats. In addition, the model considers a potential metabolic inhibition during torpor (Geiser 2004, Withers et al. 2016). In details, the rate of metabolism of euthermic animals ($M_e$) below the lower limit of the thermoneutral zone (or lower critical temperature, $T_{lc}$) increases linearly with decreasing $T_a$:
 
 $$ 
 M_e =  \alpha_e + \beta_e \times T_a 
@@ -31,10 +31,10 @@ $$
 $$
 
 
-The rate of metabolism in torpor ($M_t$) follows an exponential curve between some threshold ambient temperature ($T_t$) and $T_lc$, reflecting the Arrhenius rate enhancing effect of temperature on chemical reactions. In this $T_a$ range, torpor is referred to as "conforming torpor". 
+The rate of metabolism in torpor ($M_t$) follows an exponential curve between some threshold ambient temperature ($T_t$) and $T_{lc}$, reflecting the Arrhenius rate enhancing effect of temperature on chemical reactions. In this $T_a$ range, torpor is referred to as "conforming torpor". 
 
 $$
-M_t = \alpha_c \times \exp(\beta_c \times T_a) \vee T_t \leq T_a \leq T_{lc}
+M_t = \alpha_c \times \exp(\beta_c \times T_a) \mid T_t \leq T_a \leq T_{lc}
 $$
 where: 
 
@@ -42,10 +42,10 @@ $$
 \alpha_c = \frac{BMR}{\exp{(\beta_c \times T_m})}
 $$
 
-Tm represents the extrapolated modelled temperature where the conforming torpor function reaches $BMR$. Below $T_t$, $M_t$ increases linearly with decreasing $T_a$ to maintain a minimal body temperature ($T_b$ min). This state is usually referred to as "regulated torpor": 
+$T_m$ represents the extrapolated modelled temperature where the conforming torpor function reaches $BMR$. Below $T_t$, $M_t$ increases linearly with decreasing $T_a$ to maintain a minimal body temperature ($T_b$ min). This state is usually referred to as "regulated torpor": 
 
 $$
-M_t = \alpha_r + \beta_r \times T_a \vee T_a < T_t
+M_t = \alpha_r + \beta_r \times T_a \mid T_a < T_t
 $$
 
 In accordance with the general trend observed (Geiser, 2004), we assume that:
@@ -67,17 +67,9 @@ $TMR$ is the minimal metabolic rate in torpor at $T_t$.
 
 
 ## Priors
-Predictions and function parameters are estimated with a binary mixture model using Bayesian inference.
+Predictions and function parameters are estimated with a binary mixture model using Bayesian inference. The prior distributions of the modelled parameters are specified in Table 1.
 
-The prior distributions of the modelled parameters are specified in Table 1. By default, three different Markov chains are run during 500’000 iterations starting at random initial values within the range of parameter space. The initial convergence phase is excluded by dropping the first 300’000 iterations. Markov chains are thinned by a factor of 10 and the Brooks–Gelman–Rubin criterion ^R (Brooks & Gelman, 1998) is used to assess the convergence of chains (< 1.1). These parameters can be changed by the user with the argument `fitting_options` of the function `fit_torpor()`.   
-
-
-
-
-In addition, we consider that a parameter for which the overlap between the prior and the posterior distributions is greater than 30% is not identifiable. Prior and posterior distribution overlap is calculated with the function `overlap()` of package `overlapping` (Pastore, 2018). The generation of truncated normal prior distributions is enabled by the function `rtruncnorm()` of package `truncnorm` (Mersmann, Trautmann, Steuer, & Bornkamp, 2018). To ease parameter estimations, metabolic rate measurements are divided by their mean for standardization. 
-
-
-### Table 1
+#### Table 1
 | Estimated parameter                  | distribution | jAGS parameters           | Truncation |
 |:------------------------------------:|:------------:|:-------------------------:|:----------:|
 |Metabolic state membership probability| Dirichlet    |Concentrations (1,1)       | NA         |
@@ -87,9 +79,17 @@ In addition, we consider that a parameter for which the overlap between the prio
 |$T_m$                                 | Gaussian     |Mean(0), Precision(0.001)  |[$T_{lc}$; ]|
 |$SD_c$                                | Uniform      |min(0.03), max(5)          | NA         |
 |$SD_r/SD_c$                           | Gaussian     |Mean(0), Precsion(0.1)     |[1; ]       |  
-With $TMR$ = minimal metabolic rate in torpor, $BMR$ = basal metabolic rate, $SD_c$ = standard deviation of conformed torpor metabolic rate, $SD_t$ = standard deviation of regulated torpor metabolic rate.
+With $TMR$ = minimal metabolic rate in torpor, $BMR$ = basal metabolic rate, $SD_c$ = standard deviation of conformed torpor metabolic rate, $SD_t$ = standard deviation of regulated torpor metabolic rate. The precision parameter refers to the inverse of the variance ($1 / SD^2$)
 
-## Jags model
+
+### MCMC sampling 
+By default, three Markov chains are run during 500’000 iterations starting at random initial values within the range of parameter space. The initial convergence phase is excluded by dropping the first 300’000 iterations. Markov chains are thinned by a factor of 10 and the Brooks–Gelman–Rubin criterion $\hat{R}$ (Brooks & Gelman, 1998) is used to assess the convergence of chains (< 1.1). These parameters can be changed by the user with the argument `fitting_options` of the function `fit_torpor()`.   
+
+
+### Parameters identifiability
+In addition, we consider that a parameter for which the overlap between the prior and the posterior distributions is greater than 30% is not identifiable. Prior and posterior distribution overlap is calculated with the function `overlap()` of package `overlapping` (Pastore, 2018). The generation of truncated normal prior distributions is enabled by the function `rtruncnorm()` of package `truncnorm` (Mersmann, Trautmann, Steuer, & Bornkamp, 2018). To ease parameter estimations, metabolic rate measurements are divided by their mean for standardization. 
+
+## Jags code
 The priors are hard-coded in the model used in the package. 
 Users interested in testing other set of priors have the opportunity to do it by writing their own model and specifying the path to *.txt* model-file with the `Model` argument of the function `fit_torpor()`. 
 Users are not adviced to changed the model further as the functionality of the rest of the package can not be 
