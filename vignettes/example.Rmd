@@ -9,19 +9,13 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-```{r setup, include = FALSE}
-knitr::opts_chunk$set(
-  collapse = TRUE,
-  comment = "#>"
-)
-```
-
-## An example 
+## How to use toRpoR ? An example
 
 This vignette presents a suggested workflow of the `toRpoR` package.
 
+
 ### The data 
-The model needs data to fit with the function `fit_torpor()` consists of 
+In order to fit the model, we need data. The input for the main function `fit_torpor()` consists of 
 a set of measure of Metabolic rate $(M)$ and associated ambient temperature $(T_a)$.
 These value can be vectors of the same length or columns of a data-frame. In this 
 example, we will use the data taken from the measurment of Geiser (1987) that comes 
@@ -31,41 +25,72 @@ with the package. The data are accessible with the following command.
 library(toRpoR)
 data(test_data2) 
 str(test_data2)
-dim(test_data2)
 ``` 
-For this examples we thus get 103 observations of Vo2 of the bat species *Cercartetus lepidus*
-and the ambiant temperature at which the recording have been done. 
+For this examples we thus get 103 observations of Vo2 of the species *Cercartetus lepidus*
+and the ambiant temperature at which the recording have been made. 
 
-## get data 
 $T_{lc}$ value and $BMR$ are also needed in order to fit the model. In the example
-data-set ths is found in the doccumentation of the data. You can find this by calling
+data-sets these values are found in the doccumentation of the data. We can find this by calling
 the help function on the data set. In this example by typing: `?test_data2`. 
-Once you get this information you are good to fit the model using the function
+Once we get this information we are good to fit the model using the function
 `fit_torpor()`. `fit_torpor()` represents the core of the model and should be the first
-step in any analysis using the `toRpoR` package. For researcher not familiar with 
+step in any analysis using the `toRpoR` package. Researchers not familiar with 
 R and are only interested in a visual representation of their data can skip this 
-step and use the `plot_torpor()` function directly. 
+step and use the `plot_torpor()` function directly but this is not recommended as 
+problems might remain unnoticed. 
 
-Now that we get the information we need, we can fit the model with the following 
-call: 
+The model is fitted with the following call: 
 
 ## fit model 
 ```{r, fit model}
-# model <- fit_torpor(MR = test_data2[, "VO2ms"], Ta = test_data2[, "Ta"],
-#                     BMR = 1.49, TLC = 28.8,
-#                     fitting_options = list(ni = 5e+05,
-#                                            nt = 10,
-#                                            nb = 3e+05,
-#                                            nc = 2))
-# 
+model <- fit_torpor(MR = test_data2[, "VO2ms"], Ta = test_data2[, "Ta"],
+                    BMR = 1.49, TLC = 28.8,
+                    fitting_options = list(ni = 5e+05,
+                                           nt = 10,
+                                           nb = 3e+05,
+                                           nc = 2))
+head(model)
+
+# fake data -> warning check  overlap check 
 # model2 <- fit_torpor(MR = test_data[, 2], Ta = test_data[,1])
+# model2
+```
+
+The output of the `fit_torpor()` function is a list of class `jagsUI`. 
+Researchers familiar with jagsUI are welcome to build their analysis from that point. 
+However, the rest of the package is designed to help researcher perform common 
+task and ease the process of making sens of the model. 
+
+
+## Summary
+
+The first step and the best way to have a quick view on the model is to call the
+function `get_summary()` on the fitted model. This will return a list with the 
+parameter estimates, their credible interval, the $\hat{R}$ value.... 
+
+```{r, get_summary}
+summary <- get_summary(model)
 
 ```
 
-The output of the `fit_torpor()` function is a list of class jagsUI. It can be 
-usefull for the researchers familiar with jagsUI and they are welcome to build their 
-analysis from that point. However, the rest of the package is designed to help researcher 
-to perform common task and ease the process of making sens of the model. 
+the parameter estimates are accessible by: 
+
+```{r, parameter estimates}
+summary$parameter_estimates
+```
+
+If the $\hat{R}$ values are distant from 1 we recommand to refit the model and 
+increase the number of iteration and the burn-in. This is done by setting the 
+parameter `fitting_options = list(ni = "something bigger", nb = "something bigger")`
+
+
+and the overlap by: 
+
+```{r, overlap}
+
+summary$overlap
+``` 
+
 
 We recommand the user to first check the convergence. User can use the build in 
 function from `jagsUI` to check convergence. We also implemented a function to 
@@ -73,7 +98,20 @@ check the overlap between the posterior and the prior distribution. We recommand
 to check this before analysing the result further. 
 
 
-## check overlap 
+
+## obtain classifcation and/or summary
+
+## check convergence 
+R hat mod_output -> summary > 1.1
+
+
+plot possible avec jagsUI::traceplot(mod, "parameter")
+
+si problem _> augmenter increase ni, nb. 
+
+summary donne overlap aussi 
+
+## check parameters identifiability (sugested by the authors)  
 To continue with our analysis of *Cercartetus lepidus* we will check for overlap: 
 
 ```{r, check overlap}
@@ -82,8 +120,14 @@ To continue with our analysis of *Cercartetus lepidus* we will check for overlap
 ``` 
 
 The function `check_overlap()` only check overlap for the $T_{lc}$, $T_t$, and 
-$\beta_t$. It will return a warning if the overlap is greater between 0.3. 
- 
+$\beta_t$. It will return a warning if the overlap is greater between 0.3.
+## Evaluate output 
+
+prediction // classification // plot
+
+## plot the data and prediction 
+
+
 ##
 
 

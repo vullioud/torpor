@@ -132,7 +132,7 @@ fit_torpor <- function(MR,
 #'complete_args
 #'
 #'this function is used internally for fit_torpor
-#'From Alex Courtiol
+#'From Alex Courtiol - informed. He does not want to be listed as an author -
 #'
 #'@name complete_args
 #'@aliases complete_args
