@@ -36,11 +36,11 @@
 #'@examples
 #'rm(list = ls())
 #'data(test_data3)
-#'test <- fit_torpor(MR = test_data3[,2],
+#'test2 <- fit_torpor(MR = test_data3[,2],
 #'Ta = test_data3[, 1],
 #'BMR = 1.005,
 #'TLC = 29,
-#'fitting_options = list(nc = 1))
+#'fitting_options = list(nc = 2))
 
 fit_torpor <- function(MR,
                        Ta,
@@ -83,9 +83,7 @@ fit_torpor <- function(MR,
                      "Ym")
 
   ## get the values for the models /reorder the data and remove NA
-  set.seed(666)
   da <- cbind(MR, Ta)[!is.na(MR) & !is.na(Ta) & Ta < (TLC), ]
-  da <- da[sample(nrow(da)), ]
   Y <- da[, "MR"]
   Ta <- da[, "Ta"]
 
