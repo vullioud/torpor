@@ -1,6 +1,6 @@
 Package: toRpoR
 Type: Package
-Title: Fit Torpor Models For Bats
+Title: Assigning metabolic rate measurements to torpor and euthermia in heterothermic endotherms  
 Version: 0.1.1
 Authors@R: 
     c(person(given = "Colin",
