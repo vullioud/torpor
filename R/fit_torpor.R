@@ -21,7 +21,7 @@
 #'@param Ta a vector of ambient Temperatures (same length as MR)
 #'@param BMR BMR value for the focal specie
 #'@param TLC TLC value for the focal specie
-#'@param Model path to model_file.txt if a different model is used
+#'@param model path to model_file.txt if a different model is used
 #'@param fitting_options a list specifying sampling parameters. The follwing parameters can be speficied:
 #' * ni = number of itterations: default ni = 500000
 #' * nt = thin rate: default nt = 10
@@ -46,7 +46,7 @@ fit_torpor <- function(MR,
                        Ta,
                        BMR,
                        TLC,
-                       Model = NULL,
+                       model = NULL,
                        fitting_options = list(ni = 500000,
                                               nt = 10,
                                               nb = 300000,
@@ -59,10 +59,10 @@ fit_torpor <- function(MR,
   }
 
   ## find the model if not given by the user
-  if (is.null(Model)) {
+  if (is.null(model)) {
     path_to_model <- system.file("extdata", "hetero.txt",  package = "toRpoR")
   } else {
-    path_to_model <- paste(Model)
+    path_to_model <- paste(model)
   }
 
   ## Returned values
