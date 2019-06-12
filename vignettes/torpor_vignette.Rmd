@@ -4,7 +4,7 @@ author: "Nicolas J. Fasel, Colin Vullioud, Michel Genoud"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{toRpoR Model Specification}
+  %\VignetteIndexEntry{toRpoR Model description}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -91,59 +91,61 @@ In addition, we consider that a parameter for which the overlap between the prio
 
 ## Jags code
 The priors are hard-coded in the model used in the package. 
-Users interested in testing other set of priors have the opportunity to do it by writing their own model and specifying the path to *.txt* model-file with the `Model` argument of the function `fit_torpor()`. 
-Users are not adviced to changed the model further as the functionality of the rest of the package can not be 
+Users interested in testing other set of priors have the opportunity to do it by
+writing their own model and specifying the path to *.txt* model-file with the `model` 
+argument of the function `fit_torpor()`. Users are however not adviced to changed 
+the model further as the functionality of the rest of the package can not be 
 guaranteed. 
 
-```{r, jags model}
-# model{
-# #Model
-#     for (i in 1:NbObservations) {
-#        Y[i] ~ dnorm(mu[i], sigma[i])
-#        G[i] ~ dcat(p[1:2])
-# mu[i] <-
-# ifelse(G[i]==1,
-# inte+betat*Ta[i],
-# ifelse(Ta[i]>Tt,
-# intc*exp(betac*Ta[i]),
-# intr+betat*Ta[i]))
-# 
-# sigma[i] <-
-# ifelse(G[i]==1,
-# sigmay[1],
-# ifelse(Ta[i]>Tt,
-# sigmay[2],
-# sigmay[1]))
-# }
-# 
-# for(i in 1:2){
-# sigmay[i] <- 1/pow(tauy[i],2)}
-# tau ~ dunif(0.03,5)
-# tauy[2] <- tau
-# tauy[1] <- tau*diff
-# diff~dnorm(0,0.1)T(1,)
-# 
-# #Assumptions
-# inte <- BMR-betat*TLC
-# intr <- TMR-betat*Tt
-# betac <- log(TMR/BMR)/(Tt-tlc)
-# log(intc) <- log(BMR)-betac*tlc
-# 
-# #Unused argument to be passed to the results to back-transform Y and BMR
-# ym <- Ym
-# 
-# 
-# #Priors
-# 
-# p[1:2] ~ ddirch(rep(1,2))
-# 
-# betat ~ dnorm(0,0.0001)T(,0)
-# TMR ~ dnorm(0,0.0001)T(0,BMR)
-# Tt ~ dnorm(0,0.0001)T(,TLC)
-# tlc ~ dnorm(0,0.0001)T(TLC,)
-# 
-# }
-# 
+```{r, model, eval=FALSE}
+model{
+#Model
+    for (i in 1:NbObservations) {
+       Y[i] ~ dnorm(mu[i], sigma[i])
+       G[i] ~ dcat(p[1:2])
+mu[i] <-
+ifelse(G[i]==1,
+inte+betat*Ta[i],
+ifelse(Ta[i]>Tt,
+intc*exp(betac*Ta[i]),
+intr+betat*Ta[i]))
+
+sigma[i] <-
+ifelse(G[i]==1,
+sigmay[1],
+ifelse(Ta[i]>Tt,
+sigmay[2],
+sigmay[1]))
+}
+
+for(i in 1:2){
+sigmay[i] <- 1/pow(tauy[i],2)}
+tau ~ dunif(0.03,5)
+tauy[2] <- tau
+tauy[1] <- tau*diff
+diff~dnorm(0,0.1)T(1,)
+
+#Assumptions
+inte <- BMR-betat*TLC
+intr <- TMR-betat*Tt
+betac <- log(TMR/BMR)/(Tt-tlc)
+log(intc) <- log(BMR)-betac*tlc
+
+#Unused argument to be passed to the results to back-transform Y and BMR
+ym <- Ym
+
+
+#Priors
+
+p[1:2] ~ ddirch(rep(1,2))
+
+betat ~ dnorm(0,0.0001)T(,0)
+TMR ~ dnorm(0,0.0001)T(0,BMR)
+Tt ~ dnorm(0,0.0001)T(,TLC)
+tlc ~ dnorm(0,0.0001)T(TLC,)
+
+}
+
 ```
 
 
