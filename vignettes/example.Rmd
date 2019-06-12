@@ -11,62 +11,69 @@ vignette: >
 
 ## How to use toRpoR ? An example
 
-This vignette presents a suggested workflow of the `toRpoR` package.
+This vignette presents a suggested workflow of the `toRpoR` package. It is aimed 
+in priority at users not familiar with `jags` yet interested in understanding 
+the thermo-regulatory pattern of their favorit species. 
+
+This example is based on an example dataset, comming with the package. We develop 
+here a complete example on how to use the functions of the package and in which 
+order. At each step we also presents the options for the users and the possible 
+solution to common problems. This examples his however not an exhaustive presentation
+of the package. 
 
 
 ### The data 
-In order to fit the model, we need data. The input for the main function `fit_torpor()` consists of 
-a set of measure of Metabolic rate $(M)$ and associated ambient temperature $(T_a)$.
-These value can be vectors of the same length or columns of a data-frame. In this 
-example, we will use the data taken from the measurment of Geiser (1987) that comes 
-with the package. The data are accessible with the following command. 
+The first step in a analysis is to get data. In order to fit a model using the
+function `fit_torpor()` we need a set of measure of Metabolic rate $(M)$ and 
+the ambient temperature $(T_a)$ at which the measurment have been made. 
+These value can be vectors of the same length or two columns of a data-frame. In this 
+example, we will use the data taken from the measurment of Geiser (1987) of the 
+species *Cercartetus lepidus* that comes with the package. 
+
+The data are accessible with the following command. 
 
 ```{r, data}
 library(toRpoR)
 data(test_data2) 
 str(test_data2)
 ``` 
-For this examples we thus get 103 observations of Vo2 of the species *Cercartetus lepidus*
-and the ambiant temperature at which the recording have been made. 
+We get 103 observations of Vo2 of the species *Cercartetus lepidus*
 
-$T_{lc}$ value and $BMR$ are also needed in order to fit the model. In the example
-data-sets these values are found in the doccumentation of the data. We can find this by calling
-the help function on the data set. In this example by typing: `?test_data2`. 
-Once we get this information we are good to fit the model using the function
-`fit_torpor()`. `fit_torpor()` represents the core of the model and should be the first
+The lower critical temperature (i.e., lower limit of the thermoneutral zone, $T_{lc}$) 
+and the basal metabolic rate ($BMR$) are also needed in order to fit the model with 
+the `fit_torpor()` function. For the example datasets, these values are found in 
+the doccumentation of the data. We can find this by calling the help function on
+the data set. In this example by typing: `?test_data2`. 
+
+`fit_torpor()` represents the core function of the model and should be the first
 step in any analysis using the `toRpoR` package. Researchers not familiar with 
-R and are only interested in a visual representation of their data can skip this 
-step and use the `plot_torpor()` function directly but this is not recommended as 
-problems might remain unnoticed. 
+R and only interested in a visual representation of their data can skip this 
+step and use the `plot_torpor()` function directly. This option is however not 
+recommended as problems might remain unnoticed. 
 
 The model is fitted with the following call: 
 
 ## fit model 
-```{r, fit model}
+```{r, fit model, cache = TRUE}
 model <- fit_torpor(MR = test_data2[, "VO2ms"], Ta = test_data2[, "Ta"],
                     BMR = 1.49, TLC = 28.8,
                     fitting_options = list(ni = 5e+05,
                                            nt = 10,
                                            nb = 3e+05,
                                            nc = 2))
-head(model)
-
-# fake data -> warning check  overlap check 
-# model2 <- fit_torpor(MR = test_data[, 2], Ta = test_data[,1])
-# model2
 ```
 
-The output of the `fit_torpor()` function is a list of class `jagsUI`. 
+The output of the `fit_torpor()` function is a list of class `jagsUI`. This can be
+impressive for the user not familiar with jags. Hence the rest of the package offer
+several function to make sens of it, check its consistency and represent it graphically. 
 Researchers familiar with jagsUI are welcome to build their analysis from that point. 
-However, the rest of the package is designed to help researcher perform common 
-task and ease the process of making sens of the model. 
 
 
 ## Summary
 
-The first step and the best way to have a quick view on the model is to call the
-function `get_summary()` on the fitted model. This will return a list with the 
-parameter estimates, their credible interval, the $\hat{R}$ value.... 
+The first step and the best way to have a quick overview on the model outcome is to 
+call the function `get_summary()` on the fitted model. This will return a list with the essentials:
+A tibble with the parameter estimates, their credible interval and the $\hat{R}$ value.... 
 
 ```{r, get_summary}
 summary <- get_summary(model)
