@@ -39,16 +39,16 @@ Rhat <- unlist(mod$Rhat[params])
 ## frame the output in a df
 x <- as.data.frame(cbind(mean, CI_2.5, median, CI_97.5, Rhat))
 x$parameter <- rownames(x)
-x$parameter[x$parameter == "betat"] <- "betae"
+x$parameter[x$parameter == "betat"] <- "betat"
 x$parameter[x$parameter == "tlc"] <- "Tm"
 x <- x[,c(6,1,2,3,4, 5)]
 rownames(x) <- NULL
 
 out$parameter_estimates <- x
-out$Ym <- mod$mean$Ym
 ############### OVERLAP
 out$overlap <- check_overlap(mod)
-##############
+############## mean Y
+out$Ym <- mod$mean$Ym
 return(out)
 
 }
