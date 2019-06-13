@@ -41,9 +41,9 @@ We get 103 observations of Vo2 of the species *Cercartetus lepidus*
 
 The lower critical temperature (i.e., lower limit of the thermoneutral zone, $T_{lc}$) 
 and the basal metabolic rate ($BMR$) are also needed in order to fit the model with 
-the `fit_torpor()` function. For the example datasets, these values are found in 
+the `fit_torpor()` function. For the package's datasets, these values are found in 
 the doccumentation of the data. We can find this by calling the help function on
-the data set. In this example by typing: `?test_data2`. 
+the data set. For this example we access them by typing: `?test_data2`. 
 
 `fit_torpor()` represents the core function of the model and should be the first
 step in any analysis using the `toRpoR` package. Researchers not familiar with 
@@ -54,14 +54,18 @@ recommended as problems might remain unnoticed.
 The model is fitted with the following call: 
 
 ## fit model 
-```{r, fit model, cache = TRUE}
+```{r, fit model}
 model <- fit_torpor(MR = test_data2[, "VO2ms"], Ta = test_data2[, "Ta"],
                     BMR = 1.49, TLC = 28.8,
-                    fitting_options = list(ni = 5e+05,
+                    fitting_options = list(ni = 5e+03,
                                            nt = 10,
-                                           nb = 3e+05,
-                                           nc = 2))
+                                           nb = 3e+03,
+                                           nc = 4))
 ```
+
+Note that for the purpose of this vignette we only run 5000 iterations with 3000 
+burned in. The results are thus not robust in any way as the $\hat{R}$ values will 
+show it. 
 
 The output of the `fit_torpor()` function is a list of class `jagsUI`. This can be
 impressive for the user not familiar with jags. Hence the rest of the package offer
@@ -71,71 +75,111 @@ Researchers familiar with jagsUI are welcome to build their analysis from that p
 
 ## Summary
 
-The first step and the best way to have a quick overview on the model outcome is to 
-call the function `get_summary()` on the fitted model. This will return a list with the essentials:
-A tibble with the parameter estimates, their credible interval and the $\hat{R}$ value.... 
+Once the model if fitted, it is recommanded to have an overlook at the results. 
+This can be achieved via the function `get_summary()`. This will return a list with the essentials:
+A tibble with the mean and median of parameter estimates, the 95 credible interval and the $\hat{R}$ value.
+It also reports the parameters identification and the the mean Y which can be 
+useful to back-transform the predictions. The later can be omitted by the general 
+users but can be useful in some cases.  
 
 ```{r, get_summary}
 summary <- get_summary(model)
-
 ```
 
-the parameter estimates are accessible by: 
+the parameter estimates are accessible with: 
 
 ```{r, parameter estimates}
 summary$parameter_estimates
 ```
 
-If the $\hat{R}$ values are distant from 1 we recommand to refit the model and 
-increase the number of iteration and the burn-in. This is done by setting the 
+### Check convergence
+If the $\hat{R}$ values, given in the summary tibble are distant from 1 we recommand to refit the model and 
+increase the number of iteration and burn-in respectively. This is done by setting the 
 parameter `fitting_options = list(ni = "something bigger", nb = "something bigger")`
 
+It is also possible to look graphicaly at the convergence using the `jagsUI` 
+function `traceplot()`. Let's have a look at the convergence for the parameters 
+`betat` and `betac`. 
 
-and the overlap by: 
-
-```{r, overlap}
-
-summary$overlap
-``` 
+```{r, traceplot betat}
+jagsUI::traceplot(model, c("betat", "betac"))
+```
 
 
 We recommand the user to first check the convergence. User can use the build in 
-function from `jagsUI` to check convergence. We also implemented a function to 
-check the overlap between the posterior and the prior distribution. We recommand
-to check this before analysing the result further. 
+function from `jagsUI` to check convergence. 
 
 
+## check parameters identifiability 
+In addition to check of the convergence it is advised, in order to trust the 
+results of the model, to test the identifiability of the parameters. This is done
+by comparing the prior distribution to the posterior. If the overlap is greater 
+than 0.3 the parameter is considered to be not identified and a warning will be 
+sent to the user. The parameter identifiability is done for the $T_{lc}$, $T_t$, and 
+$\beta_t$. 
 
-## obtain classifcation and/or summary
-
-## check convergence 
-R hat mod_output -> summary > 1.1
-
-
-plot possible avec jagsUI::traceplot(mod, "parameter")
-
-si problem _> augmenter increase ni, nb. 
-
-summary donne overlap aussi 
-
-## check parameters identifiability (sugested by the authors)  
 To continue with our analysis of *Cercartetus lepidus* we will check for overlap: 
 
-```{r, check overlap}
-# overlap <- check_overlap(mod = model)
-# overlap
+```{r message=TRUE, warning=TRUE, paged.print=FALSE}
+summary$overlap
 ``` 
-
-The function `check_overlap()` only check overlap for the $T_{lc}$, $T_t$, and 
-$\beta_t$. It will return a warning if the overlap is greater between 0.3.
 ## Evaluate output 
 
-prediction // classification // plot
+Once the basic check are done, we can go on to evalutation of the results. There is 
+two main function to deal with prediction. The first gives the classification for
+the raw data based on the prediction of the model (`get_classification()`), the other 
+give the predicted $MR$ in torpor and euthermy for a given $T_a$ (`get_prediction()`). 
+Finaly we can plot the result using the function `plot_torpor()`
 
-## plot the data and prediction 
+
+### Classification 
+
+Once the convergence and the identifiability of the parameters are checked, we can 
+look at the classification and the prediction for our data. `get_classification`
+will classify the measured points either in torpor or eutermy. 
+
+```{r, get_classification}
+classification <- get_classification(model)
+
+head(classification)
+```
 
 
-##
+We get a tibble with the classification for each point and other addition information. 
 
+### Prediction 
+
+```{r, get_prediction}
+prediction <- get_prediction(model, 22)
+
+head(prediction)
+```
+We get the predicted $MR$ for the given temperature, both in torpor and in euthermy 
+according to the model. 
+
+
+### plot the data and prediction
+
+finally a built in function allow the user to plot the results. It can be done in 
+base-R or in ggplot. 
+
+```{r, plot}
+plot <- plot_torpor(model, plot_type = "ggplot", ylab = "MR")
+plot 
+
+plot2 <- plot_torpor(model, plot_type = "base", ylab = "MR")
+plot2
+```
+
+
+The plot can be directly saved as a pdf using the argument `pdf = TRUE` or custom
+further using either ggplot or graphic. 
+
+
+```{r, plot custom}
+plot + ggplot2::ggtitle("Cercartetus lepidus") +
+  ggplot2::theme_minimal() +
+  ggplot2::ylab("Test")
+```
 
 
