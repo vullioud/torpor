@@ -54,13 +54,13 @@ get_prediction <- function(mod, Ta){
 
   #### if mod$sims.list$G
   out1 <- data.frame(Ta = Ta,
-                     group = rep("Torp", length(X)),
+                     group = rep("Torpor", length(X)),
                      pred =  Ymeant,
                      upr_95 = Y975t,
                      lwr_95 = Y025t)
 
   out2 <- data.frame(Ta = Ta,
-                     group = rep("Norm", length(X)),
+                     group = rep("Euthermy", length(X)),
                      pred =  Ymeann,
                      upr_95 = Y975n,
                      lwr_95 = Y025n)
