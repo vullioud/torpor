@@ -6,9 +6,6 @@
 #'@param params a parameter of the model
 #'@param priors a posterior distribution (as. numerical vector)
 #'@return a numeric value
-#'@import purrr
-#'@import overlapping
-#'@import dplyr
 get_overlap <- function(mod, params, priors) {
 
     chains <- purrr::map_dfr(mod$samples, ~ as.data.frame(.x) %>%
@@ -31,12 +28,12 @@ get_overlap <- function(mod, params, priors) {
 #'@export
 #'@import truncnorm
 #'@examples
-#'#'data(test_data2)
+#'data(test_data2)
 #'test <- fit_torpor(MR = test_data2[,2],
 #'Ta = test_data2[, 1],
 #'BMR = 1.49,
 #'TLC = 28.8,
-#'Model = NULL,
+#'model = NULL,
 #'fitting_options = list(nc = 1))
 #'check_overlap(mod = test)
 

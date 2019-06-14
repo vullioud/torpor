@@ -20,12 +20,12 @@ torpor, regulated torpor or thermoregulation respectively could not be modeled
 with the data provided (Fasel et al. (in prep)).
 }
 \examples{
-#'data(test_data2)
+data(test_data2)
 test <- fit_torpor(MR = test_data2[,2],
 Ta = test_data2[, 1],
 BMR = 1.49,
 TLC = 28.8,
-Model = NULL,
+model = NULL,
 fitting_options = list(nc = 1))
 check_overlap(mod = test)
 }

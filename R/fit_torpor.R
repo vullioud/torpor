@@ -30,7 +30,6 @@
 #'
 #'@return fitted model. A list of class "JagsUI".
 #'@export
-#'@import rjags
 #'@import jagsUI
 #'@importFrom stats runif
 #'@examples
@@ -40,6 +39,7 @@
 #'Ta = test_data3[, 1],
 #'BMR = 1.005,
 #'TLC = 29,
+#'model = NULL,
 #'fitting_options = list(nc = 2))
 
 fit_torpor <- function(MR,

@@ -13,7 +13,6 @@
 #'@return a list
 #'@import purrr
 #'@import overlapping
-#'@import dplyr
 #'@export
 #'@examples
 #'data(test_data)
@@ -21,7 +20,7 @@
 #'Ta = test_data[, 1],
 #'BMR = 29,
 #'TLC = 28.8,
-#'Model = NULL,
+#'model = NULL,
 #'fitting_options = list(nc = 1))
 #'get_summary(mod = test2)
 

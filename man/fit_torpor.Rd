@@ -53,5 +53,6 @@ test2 <- fit_torpor(MR = test_data3[,2],
 Ta = test_data3[, 1],
 BMR = 1.005,
 TLC = 29,
+model = NULL,
 fitting_options = list(nc = 2))
 }
