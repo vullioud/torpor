@@ -14,7 +14,7 @@
 #'Note: This package is not ready for general use yet!
 #'
 #'@docType package
-#'@name toRpoR
+#'@name torpor
 #'
 #'@section fit_torpor:
 #'The function [fit_torpor()] considers the assumed relation between

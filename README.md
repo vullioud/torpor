@@ -7,6 +7,7 @@ Note: This package is not aimed for general use without careful researcher’s a
 
 ToRpoR is using jags in the background and thus you should make sure to have [jags](http://mcmc-jags.sourceforge.net) installed 
 on your machine. Once jags is properly installed and working you can installed toRpoR in R by typing:  
+
 ```R 
 library(devtools)
 devtools::intsall_github("vullioud/toRpoR")

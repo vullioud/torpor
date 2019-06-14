@@ -57,7 +57,7 @@ plot_torpor<- function(mod = NULL, plot_type = "ggplot",col_torp = "coral3", col
   xxx <- check_overlap(out)
 
 
-  ###### plot GGplot first
+  ###### plot ggplot first
   if(plot_type == "ggplot"){
     G <- lwr_95 <- upr_95 <- NULL
     plot <- ggplot2::ggplot(da, ggplot2::aes(x = Ta, y = MR, col = G > 1.5))+

@@ -4,7 +4,7 @@
 \alias{fit_torpor}
 \title{Fit Torpor}
 \usage{
-fit_torpor(MR, Ta, BMR, TLC, Model = NULL, fitting_options = list(ni =
+fit_torpor(MR, Ta, BMR, TLC, model = NULL, fitting_options = list(ni =
   5e+05, nt = 10, nb = 3e+05, nc = 3))
 }
 \arguments{
@@ -16,18 +16,18 @@ fit_torpor(MR, Ta, BMR, TLC, Model = NULL, fitting_options = list(ni =
 
 \item{TLC}{TLC value for the focal specie}
 
-\item{Model}{path to model_file.txt if a different model is used}
+\item{model}{path to model_file.txt if a different model is used}
 
 \item{fitting_options}{a list specifying sampling parameters. The follwing parameters can be speficied:
 \itemize{
-\item ni = number of itterations: default, ni = 500000
+\item ni = number of itterations: default ni = 500000
 \item nt = thin rate: default nt = 10
 \item nb = number of burns: default nb = 300000
 \item nc = number of chains: default nc = 3
 }}
 }
 \value{
-fitted model in jags, using jagsUI. Return a
+fitted model. A list of class "JagsUI".
 }
 \description{
 The function fit_torpor() fits a binomial mixture model using Bayesian
@@ -42,16 +42,16 @@ Tmin, it increases linearly with decreasing Ta to maintain a minimal Tb in
 torpor. In the euthermic state, MR solely increases linearly with decreasing Ta.
 }
 \details{
-Note: This model should be applied only with sufficient sample size and if
+This model should be applied only with sufficient sample size and if
 evidences suggest that individuals under study will conform to the previously
 described pattern while in torpor.
 }
 \examples{
 rm(list = ls())
 data(test_data3)
-test <- fit_torpor(MR = test_data3[,2],
+test2 <- fit_torpor(MR = test_data3[,2],
 Ta = test_data3[, 1],
 BMR = 1.005,
 TLC = 29,
-fitting_options = list(nc = 1))
+fitting_options = list(nc = 2))
 }

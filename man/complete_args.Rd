@@ -11,5 +11,5 @@ complete_args(fn)
 }
 \description{
 this function is used internally for fit_torpor
-From Alex Courtiol
+From Alex Courtiol - informed. He does not want to be listed as an author -
 }
