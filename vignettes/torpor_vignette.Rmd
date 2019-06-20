@@ -4,7 +4,7 @@ author: "Nicolas J. Fasel, Colin Vullioud, Michel Genoud"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{toRpoR Model description}
+  %\VignetteIndexEntry{torpor Model description}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

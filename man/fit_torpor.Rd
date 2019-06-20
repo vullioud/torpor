@@ -54,5 +54,5 @@ Ta = test_data3[, 1],
 BMR = 1.005,
 TLC = 29,
 model = NULL,
-fitting_options = list(nc = 2))
+fitting_options = list(ni = 5000, nb = 3000, nc = 2))
 }

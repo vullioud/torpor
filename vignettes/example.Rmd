@@ -11,7 +11,7 @@ vignette: >
 
 ## How to use toRpoR ? An example
 
-This vignette presents a suggested workflow of the `toRpoR` package. It is aimed 
+This vignette presents a suggested workflow of the `torpor` package. It is aimed 
 in priority at users not familiar with `jags` yet interested in understanding 
 the thermo-regulatory pattern of their favorit species. 
 
@@ -33,7 +33,7 @@ species *Cercartetus lepidus* that comes with the package.
 The data are accessible with the following command. 
 
 ```{r, data}
-library(toRpoR)
+library(torpor)
 data(test_data2) 
 str(test_data2)
 ``` 
