@@ -40,7 +40,7 @@
 #'BMR = 1.005,
 #'TLC = 29,
 #'model = NULL,
-#'fitting_options = list(nc = 2))
+#'fitting_options = list(ni = 5000, nb = 3000, nc = 2))
 
 fit_torpor <- function(MR,
                        Ta,
@@ -60,7 +60,7 @@ fit_torpor <- function(MR,
 
   ## find the model if not given by the user
   if (is.null(model)) {
-    path_to_model <- system.file("extdata", "hetero.txt",  package = "toRpoR")
+    path_to_model <- system.file("extdata", "hetero.txt",  package = "torpor")
   } else {
     path_to_model <- paste(model)
   }
