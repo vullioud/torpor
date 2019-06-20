@@ -60,7 +60,7 @@ model <- fit_torpor(MR = test_data2[, "VO2ms"], Ta = test_data2[, "Ta"],
                     fitting_options = list(ni = 5e+03,
                                            nt = 10,
                                            nb = 3e+03,
-                                           nc = 4))
+                                           nc = 2))
 ```
 
 Note that for the purpose of this vignette we only run 5000 iterations with 3000 
