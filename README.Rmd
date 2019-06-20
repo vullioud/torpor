@@ -27,7 +27,7 @@ Note: This package is not aimed for general use without careful researcher’s a
 ToRpoR is using jags in the background and thus you should make sure to have [jags](http://mcmc-jags.sourceforge.net) installed 
 on your machine. Once jags is properly installed and working you can installed torpor in R by typing:  
 
-```{r, installation }
+```{r eval=FALSE, include=TRUE}
 library(remotes)
 remotes::install_github("vullioud/torpor", build_opts =  c("--build_vignettes"),force=TRUE)
 ```

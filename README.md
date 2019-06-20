@@ -25,47 +25,6 @@ R by typing:
 ``` r
 library(remotes)
 remotes::install_github("vullioud/torpor", build_opts =  c("--build_vignettes"),force=TRUE)
-#> Downloading GitHub repo vullioud/torpor@master
-#> 
-#>   
-   Warning: unknown option ‘--build_vignettes’
-#> 
-  
-   checking for file ‘/tmp/RtmpFRRx4y/remotes6a303b7f64d8/vullioud-torpor-251f7f8/DESCRIPTION’ ...
-  
-   checking for file ‘/tmp/RtmpFRRx4y/remotes6a303b7f64d8/vullioud-torpor-251f7f8/DESCRIPTION’ ... 
-  
-✔  checking for file ‘/tmp/RtmpFRRx4y/remotes6a303b7f64d8/vullioud-torpor-251f7f8/DESCRIPTION’
-#> 
-  
-─  preparing ‘torpor’:
-#> 
-  
-✔  checking DESCRIPTION meta-information
-#> 
-  
-─  installing the package to build vignettes
-#> 
-  
-   creating vignettes ...
-  
-✔  creating vignettes (40.4s)
-#> 
-  
-─  checking for LF line-endings in source and make files and shell scripts (452ms)
-#> 
-  
-─  checking for empty or unneeded directories
-#> ─  looking to see if a ‘data/datalist’ file should be added
-#> 
-  
-─  building ‘torpor_0.1.1.tar.gz’
-#> 
-  
-   
-#> 
-#> Installing package into '/home/colin/R/x86_64-pc-linux-gnu-library/3.6'
-#> (as 'lib' is unspecified)
 ```
 
 The package will be submitted to cran in the forseeable future.
