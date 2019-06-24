@@ -23,7 +23,7 @@
 #'plot_torpor(MR = test_data3[,2], Ta = test_data3[,1], BMR = 1.055, TLC = 29,
 #'fitting_options = list(nc =1), plot_type = "ggplot")
 
-plot_torpor<- function(mod = NULL, plot_type = "ggplot",col_torp = "coral3", col_eut = "cornflowerblue", ylab = "M", xlab = "Ta", pdf = FALSE, ...) {
+plot_torpor<- function(mod = NULL, plot_type = "ggplot",col_torp = "cornflowerblue", col_eut = "coral3", ylab = "M", xlab = "Ta", pdf = FALSE, ...) {
    # browser()
   ## fit a model if necessary
   if(is.null(mod)) {
@@ -64,23 +64,23 @@ plot_torpor<- function(mod = NULL, plot_type = "ggplot",col_torp = "coral3", col
       ggplot2::geom_point() +
       ggplot2::xlim(c(min(da$Ta), max(da$Ta))) +
       # ylim(c(min(da$MR), max(da$MR))) +
-      ggplot2::geom_line(data = pred[pred$group == "Norm", ],
+      ggplot2::geom_line(data = pred[pred$group == "Euthermy", ],
                          ggplot2::aes(x = Ta, y = pred),
                          inherit.aes = F,
                          col = col_eut,
                          linetype = 2) +
-      ggplot2::geom_ribbon(data = pred[pred$group == "Norm", ],
+      ggplot2::geom_ribbon(data = pred[pred$group == "Euthermy", ],
                            ggplot2::aes(x = Ta, ymin = lwr_95, ymax = upr_95),
                            inherit.aes = F,
                            alpha = 0.2,
                            fill = col_eut,
                            col = NA)+
-      ggplot2::geom_line(data = pred[pred$group == "Torp", ],
+      ggplot2::geom_line(data = pred[pred$group == "Torpor", ],
                          ggplot2::aes(x = Ta, y = pred),
                          inherit.aes = F,
                          col = col_torp,
                          linetype = 2) +
-      ggplot2::geom_ribbon(data = pred[pred$group == "Torp", ],
+      ggplot2::geom_ribbon(data = pred[pred$group == "Torpor", ],
                            ggplot2::aes(x = Ta, ymin = lwr_95, ymax = upr_95),
                            inherit.aes = F,
                            alpha = 0.2,
@@ -97,13 +97,13 @@ plot_torpor<- function(mod = NULL, plot_type = "ggplot",col_torp = "coral3", col
 
     return(plot)
   } else {
-    X <-  pred[pred$group == "Norm", "Ta"]
-    Ymeant <- pred[pred$group == "Torp", "pred"]
-    Y975t <- pred[pred$group == "Torp", "upr_95"]
-    Y025t <- pred[pred$group == "Torp", "lwr_95"]
-    Ymeann <- pred[pred$group == "Norm", "pred"]
-    Y975n <- pred[pred$group == "Norm", "upr_95"]
-    Y025n <- pred[pred$group == "Norm", "lwr_95"]
+    X <-  pred[pred$group == "Euthermy", "Ta"]
+    Ymeant <- pred[pred$group == "Torpor", "pred"]
+    Y975t <- pred[pred$group == "Torpor", "upr_95"]
+    Y025t <- pred[pred$group == "Torpor", "lwr_95"]
+    Ymeann <- pred[pred$group == "Euthermy", "pred"]
+    Y975n <- pred[pred$group == "Euthermy", "upr_95"]
+    Y025n <- pred[pred$group == "Euthermy", "lwr_95"]
     ylab <- paste(ylab)
     xlab <- paste(xlab)
 
