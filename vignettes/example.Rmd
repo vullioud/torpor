@@ -9,16 +9,16 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-## How to use toRpoR ? An example
+## How to use torpor ? An example
 
 This vignette presents a suggested workflow of the `torpor` package. It is aimed 
-in priority at users not familiar with `jags` yet interested in understanding 
+in priority at users not familiar with `rjags` yet interested in understanding 
 the thermo-regulatory pattern of their favorit species. 
 
-This example is based on an example dataset, comming with the package. We develop 
-here a complete example on how to use the functions of the package and in which 
+This example is based on one of the example datasets. We go through a complete 
+example on how to use the functions of the package and in which 
 order. At each step we also presents the options for the users and the possible 
-solution to common problems. This examples his however not an exhaustive presentation
+solution to common problems. Note however, that this examples his not an exhaustive presentation
 of the package. 
 
 
@@ -28,7 +28,7 @@ function `fit_torpor()` we need a set of measure of Metabolic rate $(M)$ and
 the ambient temperature $(T_a)$ at which the measurment have been made. 
 These value can be vectors of the same length or two columns of a data-frame. In this 
 example, we will use the data taken from the measurment of Geiser (1987) of the 
-species *Cercartetus lepidus* that comes with the package. 
+species *Cercartetus lepidus*.
 
 The data are accessible with the following command. 
 
@@ -46,7 +46,7 @@ the doccumentation of the data. We can find this by calling the help function on
 the data set. For this example we access them by typing: `?test_data2`. 
 
 `fit_torpor()` represents the core function of the model and should be the first
-step in any analysis using the `toRpoR` package. Researchers not familiar with 
+step in any analysis using the `torpor` package. Researchers not familiar with 
 R and only interested in a visual representation of their data can skip this 
 step and use the `plot_torpor()` function directly. This option is however not 
 recommended as problems might remain unnoticed. 
@@ -64,13 +64,12 @@ model <- fit_torpor(MR = test_data2[, "VO2ms"], Ta = test_data2[, "Ta"],
 ```
 
 Note that for the purpose of this vignette we only run 5000 iterations with 3000 
-burned in. The results are thus not robust in any way as the $\hat{R}$ values will 
-show it. 
+burned in. The results are thus not trusthworthy.
 
 The output of the `fit_torpor()` function is a list of class `jagsUI`. This can be
-impressive for the user not familiar with jags. Hence the rest of the package offer
-several function to make sens of it, check its consistency and represent it graphically. 
-Researchers familiar with jagsUI are welcome to build their analysis from that point. 
+intimidating for the user not familiar with this package. Therefore, the rest of the package offers
+several functions to make sens of the model, check its consistency and represent it graphically. 
+Researchers familiar with jagsUI can build their analysis from that point. 
 
 
 ## Summary
@@ -78,9 +77,7 @@ Researchers familiar with jagsUI are welcome to build their analysis from that p
 Once the model if fitted, it is recommanded to have an overlook at the results. 
 This can be achieved via the function `get_summary()`. This will return a list with the essentials:
 A tibble with the mean and median of parameter estimates, the 95 credible interval and the $\hat{R}$ value.
-It also reports the parameters identification and the the mean Y which can be 
-useful to back-transform the predictions. The later can be omitted by the general 
-users but can be useful in some cases.  
+It also reports the parameters identification. 
 
 ```{r, get_summary}
 summary <- get_summary(model)
@@ -93,9 +90,9 @@ summary$parameter_estimates
 ```
 
 ### Check convergence
-If the $\hat{R}$ values, given in the summary tibble are distant from 1 we recommand to refit the model and 
-increase the number of iteration and burn-in respectively. This is done by setting the 
-parameter `fitting_options = list(ni = "something bigger", nb = "something bigger")`
+If the $\hat{R}$ values, given in the summary tibble are distant **to be precised** from 1 we recommand to refit the model and 
+increase the number of iteration and burn-in respectively. This can be done by setting the 
+parameter `fitting_options = list(ni = , nb = )`
 
 It is also possible to look graphicaly at the convergence using the `jagsUI` 
 function `traceplot()`. Let's have a look at the convergence for the parameters 
@@ -105,38 +102,36 @@ function `traceplot()`. Let's have a look at the convergence for the parameters
 jagsUI::traceplot(model, c("betat", "betac"))
 ```
 
-
-We recommand the user to first check the convergence. User can use the build in 
-function from `jagsUI` to check convergence. 
-
-
 ## check parameters identifiability 
 In addition to check of the convergence it is advised, in order to trust the 
 results of the model, to test the identifiability of the parameters. This is done
 by comparing the prior distribution to the posterior. If the overlap is greater 
-than 0.3 the parameter is considered to be not identified and a warning will be 
+than 30% the parameter is considered to be not identified and a warning will be 
 sent to the user. The parameter identifiability is done for the $T_{lc}$, $T_t$, and 
 $\beta_t$. 
 
-To continue with our analysis of *Cercartetus lepidus* we will check for overlap: 
+The ovelap is also given by the `get_summary()` function. Let's continue with 
+our analysis of *Cercartetus lepidus*: 
 
 ```{r message=TRUE, warning=TRUE, paged.print=FALSE}
 summary$overlap
 ``` 
+
 ## Evaluate output 
 
-Once the basic check are done, we can go on to evalutation of the results. There is 
-two main function to deal with prediction. The first gives the classification for
-the raw data based on the prediction of the model (`get_classification()`), the other 
+Once the basic check are done, we can go on to evalutation of the results. There are 
+two main functions to deal with predictions. The first gives the classification for
+the raw data based on the predictions of the model (`get_classification()`), the other 
 give the predicted $MR$ in torpor and euthermy for a given $T_a$ (`get_prediction()`). 
 Finaly we can plot the result using the function `plot_torpor()`
 
 
 ### Classification 
 
-Once the convergence and the identifiability of the parameters are checked, we can 
-look at the classification and the prediction for our data. `get_classification`
-will classify the measured points either in torpor or eutermy. 
+To look at the classification and the prediction for our data we use the function `get_classification()`
+which will classify the measured points either in torpor or eutermy and returns a 
+tibble with the classification (predicted_stage), the predicted $M_r$, the measured $M_r$
+and the measured $T_a$. 
 
 ```{r, get_classification}
 classification <- get_classification(model)
@@ -145,30 +140,44 @@ head(classification)
 ```
 
 
-We get a tibble with the classification for each point and other addition information. 
 
 ### Prediction 
+The `get_prediction()` function is slightly different as it takes a vector of $T_a$ 
+as input and return the predicted $M_r$ both in torpor and in euthermy and the 95 credible interval. 
+For example let's see what are the predicted $M_r$ for a $T_a$ of 22°C. 
 
 ```{r, get_prediction}
 prediction <- get_prediction(model, 22)
 
 head(prediction)
 ```
-We get the predicted $MR$ for the given temperature, both in torpor and in euthermy 
-according to the model. 
-
 
 ### plot the data and prediction
 
-finally a built in function allow the user to plot the results. It can be done in 
-base-R or in ggplot. 
+finally a built-in function allow the user to plot the results. A few parameters 
+can be modulated by the user directly (labels with `xlab` and `ylab`, colors with `col_torp` and `col_eut`). 
+It is also possible to save the plot using the arguments `pdf = TRUE`. Finaly users 
+can choose if the prefer a base-R plot or a ggplot via the `plot_type` argument. This function 
+required arguments are provided. 
 
 ```{r, plot}
-plot <- plot_torpor(model, plot_type = "ggplot", ylab = "MR")
+plot <- plot_torpor(mod = model, plot_type = "ggplot", ylab = "MR")
 plot 
 
-plot2 <- plot_torpor(model, plot_type = "base", ylab = "MR")
+plot2 <- plot_torpor(MR = test_data2[, "VO2ms"], Ta = test_data2[, "Ta"],
+                    BMR = 1.49, TLC = 28.8,
+                    fitting_options = list(ni = 5e+03,
+                                           nt = 10,
+                                           nb = 3e+03,
+                                           nc = 2), 
+                    plot_type = "ggplot", 
+                    ylab = "MR")
 plot2
+
+plot3 <- plot_torpor(mod = model, plot_type = "base", ylab = "MR")
+plot3
+
+
 ```
 
 
@@ -178,8 +187,9 @@ further using either ggplot or graphic.
 
 ```{r, plot custom}
 plot + ggplot2::ggtitle("Cercartetus lepidus") +
+  ggplot2::ylab("Test") +
   ggplot2::theme_minimal() +
-  ggplot2::ylab("Test")
+  ggplot2::theme(legend.position="bottom")
 ```
 
 

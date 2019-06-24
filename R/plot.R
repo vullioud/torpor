@@ -40,10 +40,10 @@ plot_torpor<- function(mod = NULL, plot_type = "ggplot",col_torp = "cornflowerbl
   Ta <- out$data$Ta
 
   # plot params
-  Tlimup <- max(Ta,na.rm=T)
-  Tlimlo <- min(Ta,na.rm=T)
-  MRup <- max(Y,na.rm=T)
-  MRlo <- min(Y,na.rm=T)
+  Tlimup <- max(Ta,na.rm=TRUE)
+  Tlimlo <- min(Ta,na.rm=TRUE)
+  MRup <- max(Y,na.rm=TRUE)
+  MRlo <- min(Y,na.rm=TRUE)
 
 
   da <- as.data.frame(cbind(Ta, MR))
@@ -66,23 +66,23 @@ plot_torpor<- function(mod = NULL, plot_type = "ggplot",col_torp = "cornflowerbl
       # ylim(c(min(da$MR), max(da$MR))) +
       ggplot2::geom_line(data = pred[pred$group == "Euthermy", ],
                          ggplot2::aes(x = Ta, y = pred),
-                         inherit.aes = F,
+                         inherit.aes = FALSE,
                          col = col_eut,
                          linetype = 2) +
       ggplot2::geom_ribbon(data = pred[pred$group == "Euthermy", ],
                            ggplot2::aes(x = Ta, ymin = lwr_95, ymax = upr_95),
-                           inherit.aes = F,
+                           inherit.aes = FALSE,
                            alpha = 0.2,
                            fill = col_eut,
                            col = NA)+
       ggplot2::geom_line(data = pred[pred$group == "Torpor", ],
                          ggplot2::aes(x = Ta, y = pred),
-                         inherit.aes = F,
+                         inherit.aes = FALSE,
                          col = col_torp,
                          linetype = 2) +
       ggplot2::geom_ribbon(data = pred[pred$group == "Torpor", ],
                            ggplot2::aes(x = Ta, ymin = lwr_95, ymax = upr_95),
-                           inherit.aes = F,
+                           inherit.aes = FALSE,
                            alpha = 0.2,
                            fill = col_torp,
                            col = NA) +
@@ -111,7 +111,7 @@ plot_torpor<- function(mod = NULL, plot_type = "ggplot",col_torp = "cornflowerbl
     if(pdf == TRUE){
       pdf("plot.pdf")
     }
-    graphics::plot(Y~Ta,type="n",frame=F, xlim=c(Tlimlo, Tlimup),ylim=c(MRlo, MRup),ylab=ylab, xlab = xlab)
+    graphics::plot(Y~Ta,type="n",frame=FALSE, xlim=c(Tlimlo, Tlimup),ylim=c(MRlo, MRup),ylab=ylab, xlab = xlab)
     graphics::points(Y[out$mean$G<1.5&(out$Rhat$G<1.1|is.na(out$Rhat$G))]~Ta[out$mean$G<1.5&(out$Rhat$G<1.1|is.na(out$Rhat$G))],col= col_eut,pch=19)
     graphics::points(Y[out$mean$G>=1.5&(out$Rhat$G<1.1|is.na(out$Rhat$G))]~Ta[out$mean$G>=1.5&(out$Rhat$G<1.1|is.na(out$Rhat$G))],col= col_torp,pch=19)
     graphics::points(Y[out$mean$G>=1.5&out$Rhat$G>=1.1]~Ta[out$mean$G>=1.5&out$Rhat$G>=1.1],col= col_torp,pch=19)
@@ -119,28 +119,28 @@ plot_torpor<- function(mod = NULL, plot_type = "ggplot",col_torp = "cornflowerbl
 
 
     if(length(out$mean$G[out$mean$G>1.5&out$Rhat$G<=1.1])>0){
-      graphics::par(new=T)
+      graphics::par(new=TRUE)
 
-      graphics::plot(Ymeant~X,xlim=c(Tlimlo, Tlimup),ylim=c(MRlo, MRup),type="l",xaxt="n",frame=F,yaxt="n",ylab="",xlab="",col=col_torp)
-      graphics::par(new=T)
+      graphics::plot(Ymeant~X,xlim=c(Tlimlo, Tlimup),ylim=c(MRlo, MRup),type="l",xaxt="n",frame=FALSE,yaxt="n",ylab="",xlab="",col=col_torp)
+      graphics::par(new=TRUE)
 
-      graphics::plot(Y975t~X,xlim=c(Tlimlo, Tlimup),ylim=c(MRlo, MRup),type="l",lty=2,xaxt="n",frame=F,yaxt="n",ylab="",xlab="",col=col_torp)
-      graphics::par(new=T)
+      graphics::plot(Y975t~X,xlim=c(Tlimlo, Tlimup),ylim=c(MRlo, MRup),type="l",lty=2,xaxt="n",frame=FALSE,yaxt="n",ylab="",xlab="",col=col_torp)
+      graphics::par(new=TRUE)
 
-      graphics::plot(Y025t~X,xlim=c(Tlimlo, Tlimup),ylim=c(MRlo, MRup),type="l",lty=2,xaxt="n",frame=F,yaxt="n",ylab="",xlab="",col=col_torp)
+      graphics::plot(Y025t~X,xlim=c(Tlimlo, Tlimup),ylim=c(MRlo, MRup),type="l",lty=2,xaxt="n",frame=FALSE,yaxt="n",ylab="",xlab="",col=col_torp)
     }
 
 
     if(length(out$mean$G[out$mean$G<1.5&out$Rhat$G<=1.1])>0){
-      graphics::par(new=T)
+      graphics::par(new=TRUE)
 
-      graphics::plot(Ymeann~X,xlim=c(Tlimlo, Tlimup),ylim=c(MRlo, MRup),type="l",xaxt="n",frame=F,yaxt="n",ylab="",xlab="",col=col_eut)
-      graphics::par(new=T)
+      graphics::plot(Ymeann~X,xlim=c(Tlimlo, Tlimup),ylim=c(MRlo, MRup),type="l",xaxt="n",frame=FALSE,yaxt="n",ylab="",xlab="",col=col_eut)
+      graphics::par(new=TRUE)
 
-      graphics::plot(Y975n~X,xlim=c(Tlimlo, Tlimup),ylim=c(MRlo, MRup),type="l",lty=2,xaxt="n",frame=F,yaxt="n",ylab="",xlab="",col=col_eut)
-      graphics::par(new=T)
+      graphics::plot(Y975n~X,xlim=c(Tlimlo, Tlimup),ylim=c(MRlo, MRup),type="l",lty=2,xaxt="n",frame=FALSE,yaxt="n",ylab="",xlab="",col=col_eut)
+      graphics::par(new=TRUE)
 
-      graphics::plot(Y025n~X,xlim=c(Tlimlo, Tlimup),ylim=c(MRlo, MRup),type="l",lty=2,xaxt="n",frame=F,yaxt="n",ylab="",xlab="",col=col_eut)}
+      graphics::plot(Y025n~X,xlim=c(Tlimlo, Tlimup),ylim=c(MRlo, MRup),type="l",lty=2,xaxt="n",frame=FALSE,yaxt="n",ylab="",xlab="",col=col_eut)}
 
     graphics::legend("topright",c("Euthermy","Torpor"),pch=19, col=c(col_eut,col_torp),bty="n")
     if(pdf == TRUE){
