@@ -28,6 +28,7 @@ Imports:jagsUI,
         truncnorm, 
         purrr, 
         dplyr, 
+        magrittr,
         overlapping, 
         knitr,
         rmarkdown
