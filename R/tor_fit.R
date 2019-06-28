@@ -1,6 +1,6 @@
-#' Fit Torpor
+#' tor_fit
 #'
-#'The function fit_torpor() fits a binomial mixture model using Bayesian
+#'The function tor_fit() fits a binomial mixture model using Bayesian
 #'inference. It uses Rjags in the background and enables users to specify
 #'some - but not all - sampling parameters. The structure of the model can also
 #'be changed. User who want more flexibility are encouraged to use Rjags
@@ -10,13 +10,14 @@
 #'rate enhancing effect of temperature on chemical reactions, whereas below
 #'Tmin, it increases linearly with decreasing Ta to maintain a minimal Tb in
 #'torpor. In the euthermic state, MR solely increases linearly with decreasing Ta.
+#'More information about the model can be found in the vignette "model description".
 #'
 #'This model should be applied only with sufficient sample size and if
 #'evidences suggest that individuals under study will conform to the previously
 #'described pattern while in torpor.
 #'
-#'@name fit_torpor
-#'@aliases fit_torpor
+#'@name tor_fit
+#'@aliases tor_fit
 #'@param MR a vector of Metabolic rates
 #'@param Ta a vector of ambient Temperatures (same length as MR)
 #'@param BMR BMR value for the focal specie
@@ -35,14 +36,14 @@
 #'@examples
 #'rm(list = ls())
 #'data(test_data3)
-#'test2 <- fit_torpor(MR = test_data3[,2],
+#'test2 <- tor_fit(MR = test_data3[,2],
 #'Ta = test_data3[, 1],
 #'BMR = 1.005,
 #'TLC = 29,
 #'model = NULL,
 #'fitting_options = list(ni = 5000, nb = 3000, nc = 2))
 
-fit_torpor <- function(MR,
+tor_fit <- function(MR,
                        Ta,
                        BMR,
                        TLC,
@@ -51,7 +52,7 @@ fit_torpor <- function(MR,
                                               nt = 10,
                                               nb = 300000,
                                               nc = 3)) {
-  complete_args(fit_torpor)
+  complete_args(tor_fit)
 
   ## check input
   if (length(MR) != length(Ta)) {
@@ -131,7 +132,7 @@ fit_torpor <- function(MR,
 }
 #'complete_args
 #'
-#'this function is used internally for fit_torpor
+#'this function is used internally for tor_fit
 #'From Alex Courtiol - informed. He does not want to be listed as an author -
 #'
 #'@name complete_args

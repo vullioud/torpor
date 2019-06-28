@@ -1,28 +1,26 @@
 #' get Prediction
 #'
-#' The function [get_prediction()] provides the predicted MR and 95CI bounds at
+#' The function [tor_predict()] provides the predicted MR and 95CI bounds at
 #' a given Ta, in normothermic and/or torpid stage.
 #'
-#'@name get_prediction
-#'@aliases get_prediction
-#'@param mod a fitted model from the function [fit_torpor()]
+#'@name tor_predict
+#'@aliases tor_prediction
+#'@param mod a fitted model from the function [tor_fit()]
 #'@param Ta a vector of temperatur for which the prediction should be made
 #'@return a data frame with predicted values
 #'@export
 #'@examples
-#'\dontrun{
 #'data(test_data2)
-#'test_mod <- fit_torpor(MR = test_data2[,2],
+#'test_mod <- tor_fit(MR = test_data2[,2],
 #'Ta = test_data2[, 1],
 #'BMR = 1.49,
 #'TLC = 28.88,
-#'fitting_options = list(nc = 1))
-#'get_prediction(mod = test_mod, Ta = 1:20)
-#'}
-get_prediction <- function(mod, Ta){
+#'fitting_options = list(nc = 2, nb = 3000, ni = 5000))
+#'tor_predict(mod = test_mod, Ta = 1:20)
+tor_predict <- function(mod, Ta){
 
 
-  # retrieved the posterior
+  # retrieved the posterior of interest
   betat <- mod$sims.list$betat
   betac <-mod$sims.list$betac
   inte <-mod$sims.list$inte
@@ -43,45 +41,47 @@ get_prediction <- function(mod, Ta){
   Y025n <- rep(NA, X)
 
   for(i in 1:X) {
-    Ymeant[i] <- stats::median(funtorp(Ta[i], Tt, intr, intc, betat, betac, Ym))
-    Y975t[i] <- stats::quantile(funtorp(Ta[i],Tt, intr, intc, betat, betac, Ym),0.975)
-    Y025t[i] <- stats::quantile(funtorp(Ta[i],Tt, intr, intc, betat, betac, Ym),0.025)
-    Ymeann[i] <- stats::median(funnorm(Ta[i], inte, betat, Ym))
-    Y975n[i] <- stats::quantile(funnorm(Ta[i], inte, betat, Ym),0.975)
-    Y025n[i] <- stats::quantile(funnorm(Ta[i], inte, betat, Ym),0.025)
+    Ymeant[i] <- stats::median(tor_predict_fun(Ta[i], Tt, intr, intc, betat, betac, Ym))
+    Y975t[i] <- stats::quantile(tor_predict_fun(Ta[i],Tt, intr, intc, betat, betac, Ym),0.975)
+    Y025t[i] <- stats::quantile(tor_predict_fun(Ta[i],Tt, intr, intc, betat, betac, Ym),0.025)
+    Ymeann[i] <- stats::median(eut_predict_fun(Ta[i], inte, betat, Ym))
+    Y975n[i] <- stats::quantile(eut_predict_fun(Ta[i], inte, betat, Ym),0.975)
+    Y025n[i] <- stats::quantile(eut_predict_fun(Ta[i], inte, betat, Ym),0.025)
   }
 
 
-  #### if mod$sims.list$G
-  out1 <- data.frame(Ta = Ta,
+  #### values for torpor
+  out_tor <- data.frame(Ta = Ta,
                      group = rep("Torpor", length(X)),
                      pred =  Ymeant,
                      upr_95 = Y975t,
                      lwr_95 = Y025t)
 
-  out2 <- data.frame(Ta = Ta,
+  #### values for euthermy
+  out_eut <- data.frame(Ta = Ta,
                      group = rep("Euthermy", length(X)),
                      pred =  Ymeann,
                      upr_95 = Y975n,
                      lwr_95 = Y025n)
 
 
-  if(length(mod$mean$G[mod$mean$G>1.5]) == 0){
-    out <- out2
-  } else if (length(mod$mean$G[mod$mean$G<1.5]) == 0){
-    out <- out1
-  } else {
-    out <- rbind(out1, out2)
+
+  if(length(mod$mean$G[mod$mean$G>1.5]) == 0){ ## no torpor
+    out <- out_eut
+  } else if (length(mod$mean$G[mod$mean$G<1.5]) == 0){ ## no euthermy
+    out <- out_tor
+  } else { ## both torpor and euthermy
+    out <- rbind(out_tor, out_eut)
   }
 
   return(out)
 
 }
 
-#' funtorp
+#' tor_predict_fun
 #'
-#'fit the mod for torpor bats // used internally only
-#'@name funtorp
+#'Function to fit the model in torpor // used internally only
+#'@name tor_predict_fun
 #'@param x a temperature
 #'@param Tt turning point T
 #'@param intr intercept 1
@@ -91,51 +91,49 @@ get_prediction <- function(mod, Ta){
 #'@param Ym mean of Y to back-transform
 #'@return a metabolic value
 
-funtorp <- function(x, Tt, intr, intc, betat, betac, Ym) {
-  out <- (ifelse(x<Tt,intr +betat*x,intc*exp(betac*x)))*Ym
+tor_predict_fun <- function(x, Tt, intr, intc, betat, betac, Ym) {
+  out <- (ifelse(x<Tt,intr +betat*x,intc*exp(betac*x)))*Ym ## backtransform parameters to prediction for torpor
   return(out)
 }
 
 
-#' funnorm
+#' eut_predict_fun
 #'
-#'fit the mod for normotermic bats // used internally only
-#'@name funnorm
+#'function to fit the model in euthermy // used internally only
+#'@name eut_predict_fun
 #'@param x a temperature
 #'@param inte intercept 1
 #'@param betat slope 1
 #'@param Ym mean of Y to back transform
 #'@return a metabolic value
-funnorm <- function(x, inte, betat, Ym) {
+eut_predict_fun <- function(x, inte, betat, Ym) { ## backtransform parameters to prediction for euthermy
   out <- (inte +betat*x)*Ym
   return(out)
 }
 
 ################################################################################
-#' Get classification
+#' tor_classify
 #'
-#'The function get_classification() returns the raw data with the related
+#'The function tor_classify() returns the raw data with the related
 #'predicted stage values (between 1 and 2), which leads to the stage
 #'classification (torpor or euthermy). Additionally, it also provides the
 #'predicted MR at the given Ta.
 #'
-#'@name get_classification
-#'@aliases get_classification
-#'@param mod a fitted model from fit_torpor
+#'@name tor_classify
+#'@aliases tor_classify
+#'@param mod a fitted model from tor_fit
 #'@return a data frame with classification and predicted MR
 #'@export
 #'@examples
-#'\dontrun{
 #'data(test_data2)
-#'test_mod <- fit_torpor(MR = test_data2[,2],
+#'test_mod <- tor_fit(MR = test_data2[,2],
 #'Ta = test_data2[, 1],
 #'BMR = 1.49,
 #'TLC = 28.88,
-#'fitting_options = list(nc = 1))
-#'get_classification(mod = test_mod)
-#'}
+#'fitting_options = list(nc = 1, ni = 5000, nb = 3000))
+#'tor_classify(mod = test_mod)
 
-get_classification <- function(mod){
+tor_classify <- function(mod){
 x <- data.frame(measured_MR = (mod$data$Y)*mod$data$Ym[1],
                 measured_Ta = mod$data$Ta,
                 predicted_stage = mod$mean$G)
@@ -156,10 +154,12 @@ x$classification <- ifelse(x$predicted_stage > 1.5, "Torpor", "Euthermy")
 
 for(i in 1:nrow(x)) {
   if (x$predicted_stage[i] > 1.5) {
-  x$predicted_MR[i] <- stats::median(funtorp(x$measured_Ta[i], Tt, intr, intc, betat, betac, Ym))
+  x$predicted_MR[i] <- stats::median(tor_predict_fun(x$measured_Ta[i], Tt, intr, intc, betat, betac, Ym))
   } else {
-  x$predicted_MR[i] <- stats::median(funnorm(x$measured_Ta[i], inte, betat, Ym))
+  x$predicted_MR[i] <- stats::median(eut_predict_fun(x$measured_Ta[i], inte, betat, Ym))
   }
 }
 return(x)
 }
+
+

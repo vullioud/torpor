@@ -24,7 +24,7 @@ of the package.
 
 ### The data 
 The first step in a analysis is to get data. In order to fit a model using the
-function `fit_torpor()` we need a set of measure of Metabolic rate $(M)$ and 
+function `tor_fit()` we need a set of measure of Metabolic rate $(M)$ and 
 the ambient temperature $(T_a)$ at which the measurment have been made. 
 These value can be vectors of the same length or two columns of a data-frame. In this 
 example, we will use the data taken from the measurment of Geiser (1987) of the 
@@ -41,32 +41,32 @@ We get 103 observations of Vo2 of the species *Cercartetus lepidus*
 
 The lower critical temperature (i.e., lower limit of the thermoneutral zone, $T_{lc}$) 
 and the basal metabolic rate ($BMR$) are also needed in order to fit the model with 
-the `fit_torpor()` function. For the package's datasets, these values are found in 
+the `tor_fit()` function. For the package's datasets, these values are found in 
 the doccumentation of the data. We can find this by calling the help function on
 the data set. For this example we access them by typing: `?test_data2`. 
 
-`fit_torpor()` represents the core function of the model and should be the first
+`tor_fit()` represents the core function of the model and should be the first
 step in any analysis using the `torpor` package. Researchers not familiar with 
 R and only interested in a visual representation of their data can skip this 
-step and use the `plot_torpor()` function directly. This option is however not 
+step and use the `tor_plot()` function directly. This option is however not 
 recommended as problems might remain unnoticed. 
 
 The model is fitted with the following call: 
 
 ## fit model 
 ```{r, fit model}
-model <- fit_torpor(MR = test_data2[, "VO2ms"], Ta = test_data2[, "Ta"],
+model <- tor_fit(MR = test_data2[, "VO2ms"], Ta = test_data2[, "Ta"],
                     BMR = 1.49, TLC = 28.8,
-                    fitting_options = list(ni = 5e+03,
+                    fitting_options = list(ni = 5000,
                                            nt = 10,
-                                           nb = 3e+03,
+                                           nb = 3000,
                                            nc = 2))
 ```
 
 Note that for the purpose of this vignette we only run 5000 iterations with 3000 
 burned in. The results are thus not trusthworthy.
 
-The output of the `fit_torpor()` function is a list of class `jagsUI`. This can be
+The output of the `tor_fit()` function is a list of class `jagsUI`. This can be
 intimidating for the user not familiar with this package. Therefore, the rest of the package offers
 several functions to make sens of the model, check its consistency and represent it graphically. 
 Researchers familiar with jagsUI can build their analysis from that point. 
@@ -75,12 +75,12 @@ Researchers familiar with jagsUI can build their analysis from that point.
 ## Summary
 
 Once the model if fitted, it is recommanded to have an overlook at the results. 
-This can be achieved via the function `get_summary()`. This will return a list with the essentials:
+This can be achieved via the function `tor_summarise()`. This will return a list with the essentials:
 A tibble with the mean and median of parameter estimates, the 95 credible interval and the $\hat{R}$ value.
 It also reports the parameters identification. 
 
-```{r, get_summary}
-summary <- get_summary(model)
+```{r, tor summarise}
+summary <- tor_summarise(model)
 ```
 
 the parameter estimates are accessible with: 
@@ -110,7 +110,7 @@ than 30% the parameter is considered to be not identified and a warning will be
 sent to the user. The parameter identifiability is done for the $T_{lc}$, $T_t$, and 
 $\beta_t$. 
 
-The ovelap is also given by the `get_summary()` function. Let's continue with 
+The ovelap is also given by the `tor_summarise()` function. Let's continue with 
 our analysis of *Cercartetus lepidus*: 
 
 ```{r message=TRUE, warning=TRUE, paged.print=FALSE}
@@ -121,20 +121,20 @@ summary$overlap
 
 Once the basic check are done, we can go on to evalutation of the results. There are 
 two main functions to deal with predictions. The first gives the classification for
-the raw data based on the predictions of the model (`get_classification()`), the other 
-give the predicted $MR$ in torpor and euthermy for a given $T_a$ (`get_prediction()`). 
+the raw data based on the predictions of the model (`tor_classify()`), the other 
+give the predicted $MR$ in torpor and euthermy for a given $T_a$ (`tor_predict()`). 
 Finaly we can plot the result using the function `plot_torpor()`
 
 
 ### Classification 
 
-To look at the classification and the prediction for our data we use the function `get_classification()`
+To look at the classification and the prediction for our data we use the function `tor_classify()`
 which will classify the measured points either in torpor or eutermy and returns a 
 tibble with the classification (predicted_stage), the predicted $M_r$, the measured $M_r$
 and the measured $T_a$. 
 
-```{r, get_classification}
-classification <- get_classification(model)
+```{r, tor_classify}
+classification <- tor_classify(model)
 
 head(classification)
 ```
@@ -142,12 +142,12 @@ head(classification)
 
 
 ### Prediction 
-The `get_prediction()` function is slightly different as it takes a vector of $T_a$ 
+The `tor_predict()` function is slightly different as it takes a vector of $T_a$ 
 as input and return the predicted $M_r$ both in torpor and in euthermy and the 95 credible interval. 
 For example let's see what are the predicted $M_r$ for a $T_a$ of 22°C. 
 
-```{r, get_prediction}
-prediction <- get_prediction(model, 22)
+```{r, tor_predict}
+prediction <- tor_predict(model, 22)
 
 head(prediction)
 ```
@@ -161,10 +161,10 @@ can choose if the prefer a base-R plot or a ggplot via the `plot_type` argument.
 required arguments are provided. 
 
 ```{r, plot}
-plot <- plot_torpor(mod = model, plot_type = "ggplot", ylab = "MR")
+plot <- tor_plot(mod = model, plot_type = "ggplot", ylab = "MR")
 plot 
 
-plot2 <- plot_torpor(MR = test_data2[, "VO2ms"], Ta = test_data2[, "Ta"],
+plot2 <- tor_plot(MR = test_data2[, "VO2ms"], Ta = test_data2[, "Ta"],
                     BMR = 1.49, TLC = 28.8,
                     fitting_options = list(ni = 5e+03,
                                            nt = 10,
@@ -174,7 +174,7 @@ plot2 <- plot_torpor(MR = test_data2[, "VO2ms"], Ta = test_data2[, "Ta"],
                     ylab = "MR")
 plot2
 
-plot3 <- plot_torpor(mod = model, plot_type = "base", ylab = "MR")
+plot3 <- tor_plot(mod = model, plot_type = "base", ylab = "MR")
 plot3
 
 

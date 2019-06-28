@@ -1,10 +1,12 @@
 #' get_overlap
-
+#'
+#' Compare the distribution overlap between a prior and a posterior // used internally only
 #'@name get_overlap
 #'@aliases get_overlap
 #'@param mod a fitted model with fit_torpor
 #'@param params a parameter of the model
 #'@param priors a posterior distribution (as. numerical vector)
+#'@importFrom magrittr %>%
 #'@return a numeric value
 get_overlap <- function(mod, params, priors) {
 
@@ -14,30 +16,29 @@ get_overlap <- function(mod, params, priors) {
     as.numeric(round(overlapping::overlap(x = list(chains[,1], priors))$OV, digits = 3))
 }
 
-#' check_overlap
+#' tor_overlap
 #'
-#'The function check_overlap() generates prior posterior overlap values for Tm,
+#'The function tor_overlap() generates prior posterior overlap values for Tm,
 #'Tt and Betae.
 #'Note: Values larger than 0.3 should lead to the conclusion that conforming
 #'torpor, regulated torpor or thermoregulation respectively could not be modeled
 #' with the data provided (Fasel et al. (in prep)).
-#'@name check_overlap
-#'@aliases check_overlap
+#'@name tor_overlap
+#'@aliases tor_overlap
 #'@param mod a fitted model with fit_torpor
-#'@return a numeric value
+#'@return a list of 3. With overlapping values for tlc, Tt and Betat
 #'@export
-#'@import truncnorm
 #'@examples
 #'data(test_data2)
-#'test <- fit_torpor(MR = test_data2[,2],
+#'test <- tor_fit(MR = test_data2[,2],
 #'Ta = test_data2[, 1],
 #'BMR = 1.49,
 #'TLC = 28.8,
 #'model = NULL,
-#'fitting_options = list(nc = 1))
-#'check_overlap(mod = test)
+#'fitting_options = list(nc = 1, ni = 5000, nb = 3000))
+#'tor_overlap(mod = test)
 
-check_overlap <- function(mod){
+tor_overlap <- function(mod){
 
 prior_tlc <- truncnorm::rtruncnorm(20000,a= mod$mean$TLC,mean=0,sd=100)
 prior_Tt <- truncnorm::rtruncnorm(20000,b=mod$mean$TLC,mean=0,sd=100)

@@ -3,31 +3,30 @@
 #'The function provides a plot of the MR values over the respective Ta.
 #'Measures are presented in different colors depending of the metabolic
 #'stage and regression slopes (continuous lines) as well as 95% CI (segmented lines) are presented.
-#'For more flexibility the users are advied to use [fit_torpor()] and [get_prediction()] directly.
+#'For more flexibility the users are advied to use [tor_fit()] and [tor_predict()] directly.
 #'
-#'@name plot_torpor
-#'@param mod a fitted model from [fit_torpor()]
+#'@name tor_plot
+#'@param mod a fitted model from [tor_fit()]
 #'@param plot_type A character string specifying the type of plot desired. Either "base" or "ggplot"
-#'@param ... arguments to fit the model in [fit_torpor()] if no model is provided
+#'@param ... arguments to fit the model in [tor_fit()] if no model is provided
 #'@param col_torp color for torpor model fit and points
 #'@param col_eut color for euthermy model fit and points
 #'@param ylab y label
 #'@param xlab x label
 #'@param pdf logical if a .pdf copy of the plot should be saved
-#'@import ggplot2
 #'@export
 #'@return a base-R plot or a ggplot object
 #'@importFrom grDevices dev.off
 #'@examples
 #'data(test_data3)
-#'plot_torpor(MR = test_data3[,2], Ta = test_data3[,1], BMR = 1.055, TLC = 29,
-#'fitting_options = list(nc =1), plot_type = "ggplot")
+#'tor_plot(MR = test_data3[,2], Ta = test_data3[,1], BMR = 1.055, TLC = 29,
+#'fitting_options = list(nc =1, ni = 5000, nb = 3000), plot_type = "ggplot")
 
-plot_torpor<- function(mod = NULL, plot_type = "ggplot",col_torp = "cornflowerblue", col_eut = "coral3", ylab = "M", xlab = "Ta", pdf = FALSE, ...) {
+tor_plot <- function(mod = NULL, plot_type = "ggplot",col_torp = "cornflowerblue", col_eut = "coral3", ylab = "M", xlab = "Ta", pdf = FALSE, ...) {
    # browser()
   ## fit a model if necessary
   if(is.null(mod)) {
-    out <- fit_torpor(...)
+    out <- tor_fit(...)
   } else {
     out <- mod
   }
@@ -52,9 +51,9 @@ plot_torpor<- function(mod = NULL, plot_type = "ggplot",col_torp = "cornflowerbl
 
 
   # get the predictions
-  pred <- get_prediction(out, seq(Tlimlo,Tlimup,length=100))
+  pred <- tor_predict(out, seq(Tlimlo,Tlimup,length=100))
   # check overlap
-  xxx <- check_overlap(out)
+  xxx <- tor_overlap(out)
 
 
   ###### plot ggplot first
@@ -63,7 +62,6 @@ plot_torpor<- function(mod = NULL, plot_type = "ggplot",col_torp = "cornflowerbl
     plot <- ggplot2::ggplot(da, ggplot2::aes(x = Ta, y = MR, col = G > 1.5))+
       ggplot2::geom_point() +
       ggplot2::xlim(c(min(da$Ta), max(da$Ta))) +
-      # ylim(c(min(da$MR), max(da$MR))) +
       ggplot2::geom_line(data = pred[pred$group == "Euthermy", ],
                          ggplot2::aes(x = Ta, y = pred),
                          inherit.aes = FALSE,

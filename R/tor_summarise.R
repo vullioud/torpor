@@ -1,33 +1,31 @@
-#' get_summary
+#' tor_summarise
 #'
-#'The function get_summary() provides a comprehensive summary of the output
+#'The function tor_summarise() provides a comprehensive summary of the output
 #'returned by fit_torpor(). Values of mean, 95CI bounds, median and
 #'Brooks–Gelman–Rubin criterion (i.e. chain convergence check) of parameters
 #'posterior distributions are provided. Additionally, prior posterior overlap
 #'values for different parameters are generated. Finally, the mean MR value used
 #'to standardize the MR variable is reported.
 #'
-#'@name get_summary
-#'@aliases get_summary
+#'@name tor_summarise
+#'@aliases tor_summarise
 #'@param mod a fitted model with fit_torpor
-#'@return a list
-#'@import purrr
-#'@import overlapping
+#'@return a list of 2. The first element is a tibble with the parameter estimates, the second is the overlap values
 #'@export
 #'@examples
 #'data(test_data)
-#'test2 <- fit_torpor(MR = test_data[,2],
+#'test2 <- tor_fit(MR = test_data[,2],
 #'Ta = test_data[, 1],
 #'BMR = 29,
 #'TLC = 28.8,
 #'model = NULL,
-#'fitting_options = list(nc = 1))
-#'get_summary(mod = test2)
+#'fitting_options = list(nc = 1, ni = 5000, nb = 3000))
+#'tor_summarise(mod = test2)
 
-get_summary <- function(mod){
+tor_summarise <- function(mod){
 out <- list()
 
-params <- c("tauy", "inte", "intc", "intr", "betat", "betac", "Tt", "tlc")
+params <- c("tauy", "inte", "intc", "intr", "betat", "betac", "Tt", "tlc") ## params of interest
 
 mean <- unlist(mod$mean[params])
 CI_97.5 <- unlist(mod$q97.5[params])
@@ -45,9 +43,7 @@ rownames(x) <- NULL
 
 out$parameter_estimates <- x
 ############### OVERLAP
-out$overlap <- check_overlap(mod)
-############## mean Y
-out$Ym <- mod$mean$Ym
+out$overlap <- tor_overlap(mod)
 return(out)
 
 }
