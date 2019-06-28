@@ -24,7 +24,7 @@ $$
 M_e =  \alpha_e + \beta_e \times T_a 
 $$
 
-The model also assumes that this line equals $BMR$ at $T_lc$ and therefore:
+The model also assumes that this line equals $BMR$ at $T_{lc}$ and therefore:
 
 $$
 \alpha_e = BMR - \beta_e \times T_{lc}
