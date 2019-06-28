@@ -3,8 +3,9 @@
 
 # torpor
 
-<!-- badges: start -->
-
+![Project Status: WIP – Initial development is in progress, but there
+has not yet been a stable, usable release suitable for the
+public.](https://www.repostatus.org/badges/latest/wip.svg)
 <!-- badges: end -->
 
 ## Welcome to torpor
@@ -17,10 +18,11 @@ careful researcher’s attention.
 
 ## Installation
 
-ToRpoR is using jags in the background and thus you should make sure to
-have [jags](http://mcmc-jags.sourceforge.net) installed on your machine.
-Once jags is properly installed and working you can installed torpor in
-R by typing:
+Torpor is using jags (Just Another Gibbs Sampler) in the background and
+thus you should make sure to have
+[jags](http://mcmc-jags.sourceforge.net) installed on your machine. Once
+jags is properly installed and working you can installed torpor in R by
+typing:
 
 ``` r
 library(remotes)
@@ -29,7 +31,14 @@ remotes::install_github("vullioud/torpor", build_opts =  c("--build_vignettes"),
 
 The package will be submitted to cran in the forseeable future.
 
-## Where can I find more about toRpoR?
+## Where can I find more about torpor?
 
 You can learn more about the goal and the theory behind the package in
-the companion article (Fassel et al., in prep).
+the companion article (Fassel et al., in prep). A developped example and
+the model specification are also presented as vignettes. They can be
+accessed through `R` direcly
+
+``` r
+library(torpor)
+browseVignettes("torpor")
+```
