@@ -30,3 +30,8 @@ model = NULL,
 fitting_options = list(nc = 1, ni = 5000, nb = 3000))
 tor_summarise(mod = test2)
 }
+\seealso{
+Other summary: \code{\link{get_overlap}},
+  \code{\link{get_parameters}}, \code{\link{tor_overlap}}
+}
+\concept{summary}

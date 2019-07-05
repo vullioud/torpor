@@ -57,3 +57,7 @@ TLC = 29,
 model = NULL,
 fitting_options = list(ni = 5000, nb = 3000, nc = 2))
 }
+\seealso{
+Other fit: \code{\link{complete_args}}
+}
+\concept{fit}

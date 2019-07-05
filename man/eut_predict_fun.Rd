@@ -2,7 +2,7 @@
 % Please edit documentation in R/tor_predict.R
 \name{eut_predict_fun}
 \alias{eut_predict_fun}
-\title{eut_predict_fun}
+\title{eut_predict_fun // internal}
 \usage{
 eut_predict_fun(x, inte, betat, Ym)
 }
@@ -19,5 +19,10 @@ eut_predict_fun(x, inte, betat, Ym)
 a metabolic value
 }
 \description{
-function to fit the model in euthermy // used internally only
+function to fit the model in euthermy
 }
+\seealso{
+Other predict: \code{\link{tor_classify}},
+  \code{\link{tor_predict_fun}}, \code{\link{tor_predict}}
+}
+\concept{predict}

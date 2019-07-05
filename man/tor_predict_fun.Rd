@@ -2,7 +2,7 @@
 % Please edit documentation in R/tor_predict.R
 \name{tor_predict_fun}
 \alias{tor_predict_fun}
-\title{tor_predict_fun}
+\title{tor_predict_fun // internal}
 \usage{
 tor_predict_fun(x, Tt, intr, intc, betat, betac, Ym)
 }
@@ -25,5 +25,10 @@ tor_predict_fun(x, Tt, intr, intc, betat, betac, Ym)
 a metabolic value
 }
 \description{
-Function to fit the model in torpor // used internally only
+Function to fit the model in torpor
 }
+\seealso{
+Other predict: \code{\link{eut_predict_fun}},
+  \code{\link{tor_classify}}, \code{\link{tor_predict}}
+}
+\concept{predict}

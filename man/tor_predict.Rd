@@ -2,7 +2,6 @@
 % Please edit documentation in R/tor_predict.R
 \name{tor_predict}
 \alias{tor_predict}
-\alias{tor_prediction}
 \title{get Prediction}
 \usage{
 tor_predict(mod, Ta)
@@ -17,7 +16,7 @@ a data frame with predicted values
 }
 \description{
 The function \code{\link[=tor_predict]{tor_predict()}} provides the predicted MR and 95CI bounds at
-a given Ta, in normothermic and/or torpid stage.
+a given Ta, in euthermic and/or torpid stage.
 }
 \examples{
 data(test_data2)
@@ -28,3 +27,8 @@ TLC = 28.88,
 fitting_options = list(nc = 2, nb = 3000, ni = 5000))
 tor_predict(mod = test_mod, Ta = 1:20)
 }
+\seealso{
+Other predict: \code{\link{eut_predict_fun}},
+  \code{\link{tor_classify}}, \code{\link{tor_predict_fun}}
+}
+\concept{predict}
