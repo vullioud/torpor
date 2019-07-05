@@ -18,6 +18,7 @@
 #'
 #'@name tor_fit
 #'@aliases tor_fit
+#'@family fit
 #'@param MR a vector of Metabolic rates
 #'@param Ta a vector of ambient Temperatures (same length as MR)
 #'@param BMR BMR value for the focal specie
@@ -130,13 +131,16 @@ tor_fit <- function(MR,
 
   return(out)
 }
-#'complete_args
+##############################################################################
+
+#'complete_args // internal
 #'
 #'this function is used internally for tor_fit
 #'From Alex Courtiol - informed. He does not want to be listed as an author -
 #'
 #'@name complete_args
 #'@aliases complete_args
+#'@family fit
 #'@param fn a function
 
 complete_args <- function(fn) {
