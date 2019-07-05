@@ -1,7 +1,7 @@
 Package: torpor
 Type: Package
 Title: Assigning metabolic rate measurements to torpor and euthermia in heterothermic endotherms  
-Version: 0.1.1
+Version: 0.2.1
 Authors@R: 
     c(person(given = "Colin",
              family = "Vullioud",
@@ -23,7 +23,7 @@ LazyData: true
 SystemRequirements: jags
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 6.1.1
-Imports:jagsUI, 
+Imports: jagsUI, 
         ggplot2,
         truncnorm, 
         purrr, 
@@ -33,3 +33,5 @@ Imports:jagsUI,
         knitr,
         rmarkdown
 VignetteBuilder: knitr
+Suggests: 
+    testthat (>= 2.1.0)
