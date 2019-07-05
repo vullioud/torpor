@@ -1,10 +1,11 @@
 #' get Prediction
 #'
 #' The function [tor_predict()] provides the predicted MR and 95CI bounds at
-#' a given Ta, in normothermic and/or torpid stage.
+#' a given Ta, in euthermic and/or torpid stage.
 #'
 #'@name tor_predict
-#'@aliases tor_prediction
+#'@aliases tor_predict
+#'@family predict
 #'@param mod a fitted model from the function [tor_fit()]
 #'@param Ta a vector of temperatur for which the prediction should be made
 #'@return a data frame with predicted values
@@ -77,11 +78,14 @@ tor_predict <- function(mod, Ta){
   return(out)
 
 }
+################################################################################
 
-#' tor_predict_fun
+
+#' tor_predict_fun // internal
 #'
-#'Function to fit the model in torpor // used internally only
+#'Function to fit the model in torpor
 #'@name tor_predict_fun
+#'@family predict
 #'@param x a temperature
 #'@param Tt turning point T
 #'@param intr intercept 1
@@ -95,12 +99,14 @@ tor_predict_fun <- function(x, Tt, intr, intc, betat, betac, Ym) {
   out <- (ifelse(x<Tt,intr +betat*x,intc*exp(betac*x)))*Ym ## backtransform parameters to prediction for torpor
   return(out)
 }
+################################################################################
 
 
-#' eut_predict_fun
+#' eut_predict_fun // internal
 #'
-#'function to fit the model in euthermy // used internally only
+#'function to fit the model in euthermy
 #'@name eut_predict_fun
+#'@family predict
 #'@param x a temperature
 #'@param inte intercept 1
 #'@param betat slope 1
@@ -110,8 +116,9 @@ eut_predict_fun <- function(x, inte, betat, Ym) { ## backtransform parameters to
   out <- (inte +betat*x)*Ym
   return(out)
 }
-
 ################################################################################
+
+
 #' tor_classify
 #'
 #'The function tor_classify() returns the raw data with the related
@@ -121,6 +128,7 @@ eut_predict_fun <- function(x, inte, betat, Ym) { ## backtransform parameters to
 #'
 #'@name tor_classify
 #'@aliases tor_classify
+#'@family predict
 #'@param mod a fitted model from tor_fit
 #'@return a data frame with classification and predicted MR
 #'@export
@@ -161,5 +169,6 @@ for(i in 1:nrow(x)) {
 }
 return(x)
 }
+################################################################################
 
 
