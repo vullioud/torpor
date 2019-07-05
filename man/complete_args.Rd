@@ -2,7 +2,7 @@
 % Please edit documentation in R/tor_fit.R
 \name{complete_args}
 \alias{complete_args}
-\title{complete_args}
+\title{complete_args // internal}
 \usage{
 complete_args(fn)
 }
@@ -13,3 +13,7 @@ complete_args(fn)
 this function is used internally for tor_fit
 From Alex Courtiol - informed. He does not want to be listed as an author -
 }
+\seealso{
+Other fit: \code{\link{tor_fit}}
+}
+\concept{fit}
