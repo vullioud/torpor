@@ -3,10 +3,12 @@
 
 # torpor
 
-![Project Status: WIP – Initial development is in progress, but there
+\[![Project Status: WIP – Initial development is in progress, but there
 has not yet been a stable, usable release suitable for the
-public.](https://www.repostatus.org/badges/latest/wip.svg)
-<!-- badges: end -->
+public.](https://www.repostatus.org/badges/latest/wip.svg) [![Build
+Status](https://travis-ci.org/vullioud/torpor.svg?branch=master)](https://travis-ci.org/vullioud/torpor)
+[![Codecov test
+coverage](https://codecov.io/gh/vullioud/torpor/branch/master/graph/badge.svg)](https://codecov.io/gh/vullioud/torpor?branch=master)
 
 ## Welcome to torpor
 
@@ -18,9 +20,9 @@ careful researcher’s attention.
 
 ## Installation
 
-Torpor is using jags (Just Another Gibbs Sampler) in the background and
-thus you should make sure to have
-[jags](http://mcmc-jags.sourceforge.net) installed on your machine. Once
+Torpor is using `JAGS` (Just Another Gibbs Sampler) in the background
+and thus you should make sure to have
+[JAGS](http://mcmc-jags.sourceforge.net) installed on your machine. Once
 jags is properly installed and working you can installed torpor in R by
 typing:
 
