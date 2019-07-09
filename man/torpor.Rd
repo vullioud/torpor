@@ -12,13 +12,12 @@ and euthermic metabolic rates (MR) measured in steady-state conditions.
 Furthermore, it provides parameters’ estimations of the relation between
 ambient temperatures (Ta) and MR in both physiological stages. This package
 is aimed to support any physiologist working in thermal energetics. More information
-can be found on the compagnon article Fasel et al. (in prep)
+can be found on the compagnon article Fasel et al. (in prep) and in the vignettes.
 }
 \details{
-This R package is center around the XXX functions which
+This R package is center around the \code{\link[=tor_fit]{tor_fit()}} functions which
 allow you to fit binary mixture model on metabolic rates data using Bayesian inference.
-
-Note: This package is not ready for general use yet!
+#'
 }
 \section{tor_fit}{
 
@@ -32,13 +31,17 @@ euthermic state, MR solely increases linearly with decreasing Ta.
 
 \section{tor_plot}{
 
-The function \code{\link[=tor_plot]{tor_plot()}} is a wrapper function arround the \code{\link[=tor_plot]{tor_plot()}} and \code{\link[=tor_predict]{tor_predict()}}.
-It uses \code{\link[=tor_fit]{tor_fit()}} to fit a binomial mixture model using
+The function \code{\link[=tor_plot]{tor_plot()}} is a wrapper function arround the [tor_fit())] and [tor_predict()].
+It uses [tor_fit()] to fit a binomial mixture model using
 Bayesian inference and plot the predicted value as well as the raw data.
-Measures are presented in different colors depending of the metabolic stage
+Measures are presented in different colors depending of the metabolic staget(
 and predicted values as well as 95% credibility interval (segmented lines)
 are presented. This function enable the user to replicates the analysis done in
 Fasel et al. (in prep).
+
+[tor_fit())]: R:tor_fit())
+[tor_predict()]: R:tor_predict()
+[tor_fit()]: R:tor_fit()
 }
 
 \section{tor_predict}{

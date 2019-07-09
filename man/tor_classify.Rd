@@ -10,7 +10,7 @@ tor_classify(mod)
 \item{mod}{a fitted model from tor_fit}
 }
 \value{
-a data frame with classification and predicted MR
+a data.frame with classification and predicted MR
 }
 \description{
 The function tor_classify() returns the raw data with the related

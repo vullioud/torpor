@@ -12,7 +12,7 @@ tor_predict(mod, Ta)
 \item{Ta}{a vector of temperatur for which the prediction should be made}
 }
 \value{
-a data frame with predicted values
+a data.frame with predicted values
 }
 \description{
 The function \code{\link[=tor_predict]{tor_predict()}} provides the predicted MR and 95CI bounds at
