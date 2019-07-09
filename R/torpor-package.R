@@ -6,13 +6,11 @@
 #'Furthermore, it provides parameters’ estimations of the relation between
 #'ambient temperatures (Ta) and MR in both physiological stages. This package
 #'is aimed to support any physiologist working in thermal energetics. More information
-#'can be found on the compagnon article Fasel et al. (in prep)
+#'can be found on the compagnon article Fasel et al. (in prep) and in the vignettes.
 #'
-#'This R package is center around the XXX functions which
+#'This R package is center around the [tor_fit()] functions which
 #'allow you to fit binary mixture model on metabolic rates data using Bayesian inference.
-#'
-#'Note: This package is not ready for general use yet!
-#'
+#'#'
 #'@docType package
 #'@name torpor
 #'
@@ -25,10 +23,10 @@
 #'euthermic state, MR solely increases linearly with decreasing Ta.
 #'
 #'@section tor_plot:
-#'The function [tor_plot()] is a wrapper function arround the [tor_plot()] and [tor_predict()].
+#'The function [tor_plot()] is a wrapper function arround the [tor_fit())] and [tor_predict()].
 #'It uses [tor_fit()] to fit a binomial mixture model using
 #'Bayesian inference and plot the predicted value as well as the raw data.
-#'Measures are presented in different colors depending of the metabolic stage
+#'Measures are presented in different colors depending of the metabolic staget(
 #'and predicted values as well as 95% credibility interval (segmented lines)
 #'are presented. This function enable the user to replicates the analysis done in
 #'Fasel et al. (in prep).

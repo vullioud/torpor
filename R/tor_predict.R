@@ -8,7 +8,7 @@
 #'@family predict
 #'@param mod a fitted model from the function [tor_fit()]
 #'@param Ta a vector of temperatur for which the prediction should be made
-#'@return a data frame with predicted values
+#'@return a data.frame with predicted values
 #'@export
 #'@examples
 #'data(test_data2)
@@ -130,7 +130,7 @@ eut_predict_fun <- function(x, inte, betat, Ym) { ## backtransform parameters to
 #'@aliases tor_classify
 #'@family predict
 #'@param mod a fitted model from tor_fit
-#'@return a data frame with classification and predicted MR
+#'@return a data.frame with classification and predicted MR
 #'@export
 #'@examples
 #'data(test_data2)
