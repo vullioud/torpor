@@ -38,7 +38,7 @@ The package will be submitted to cran in the forseeable future.
 You can learn more about the goal and the theory behind the package in
 the companion article (Fassel et al., in prep). A developped example and
 the model specification are also presented as vignettes. They can be
-accessed through `R` direcly
+accessed through `R` direcly by typing.
 
 ``` r
 library(torpor)
