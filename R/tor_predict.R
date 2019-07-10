@@ -158,10 +158,10 @@ Ym <- mod$sims.list$Ym[1]
 
 X <- nrow(x)
 x$predicted_MR <- rep(NA, X)
-x$classification <- ifelse(x$predicted_stage > 1.5, "Torpor", "Euthermy")
+x$classification <- ifelse(x$predicted_state > 1.5, "Torpor", "Euthermy")
 
 for(i in 1:nrow(x)) {
-  if (x$predicted_stage[i] > 1.5) {
+  if (x$predicted_state[i] > 1.5) {
   x$predicted_MR[i] <- stats::median(tor_predict_fun(x$measured_Ta[i], Tt, intr, intc, betat, betac, Ym))
   } else {
   x$predicted_MR[i] <- stats::median(eut_predict_fun(x$measured_Ta[i], inte, betat, Ym))
