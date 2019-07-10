@@ -95,7 +95,6 @@ tor_plot <- function(mod = NULL, plot_type = "ggplot",col_torp = "cornflowerblue
 
     return(plot)
   } else {
-    X <-  pred[pred$group == "Euthermy", "Ta"]
     Ymeant <- pred[pred$group == "Torpor", "pred"]
     Y975t <- pred[pred$group == "Torpor", "upr_95"]
     Y025t <- pred[pred$group == "Torpor", "lwr_95"]
@@ -110,13 +109,12 @@ tor_plot <- function(mod = NULL, plot_type = "ggplot",col_torp = "cornflowerblue
       pdf("plot.pdf")
     }
     graphics::plot(Y~Ta,type="n",frame=FALSE, xlim=c(Tlimlo, Tlimup),ylim=c(MRlo, MRup),ylab=ylab, xlab = xlab)
-    graphics::points(Y[out$mean$G<1.5&(out$Rhat$G<1.1|is.na(out$Rhat$G))]~Ta[out$mean$G<1.5&(out$Rhat$G<1.1|is.na(out$Rhat$G))],col= col_eut,pch=19)
-    graphics::points(Y[out$mean$G>=1.5&(out$Rhat$G<1.1|is.na(out$Rhat$G))]~Ta[out$mean$G>=1.5&(out$Rhat$G<1.1|is.na(out$Rhat$G))],col= col_torp,pch=19)
-    graphics::points(Y[out$mean$G>=1.5&out$Rhat$G>=1.1]~Ta[out$mean$G>=1.5&out$Rhat$G>=1.1],col= col_torp,pch=19)
-    graphics::points(Y[out$mean$G<1.5&out$Rhat$G>=1.1]~Ta[out$mean$G<1.5&out$Rhat$G>=1.1],col= col_eut ,pch=19)
+    graphics::points(Y[out$mean$G>=1.5]~Ta[out$mean$G>=1.5],col= col_torp,pch=19)
+    graphics::points(Y[out$mean$G<1.5]~Ta[out$mean$G<1.5],col= col_eut ,pch=19)
 
 
-    if(length(out$mean$G[out$mean$G>1.5&out$Rhat$G<=1.1])>0){
+    if(length(out$mean$G[out$mean$G>1.5])>0){
+      X <-  pred[pred$group == "Torpor", "Ta"]
       graphics::par(new=TRUE)
 
       graphics::plot(Ymeant~X,xlim=c(Tlimlo, Tlimup),ylim=c(MRlo, MRup),type="l",xaxt="n",frame=FALSE,yaxt="n",ylab="",xlab="",col=col_torp)
@@ -129,7 +127,8 @@ tor_plot <- function(mod = NULL, plot_type = "ggplot",col_torp = "cornflowerblue
     }
 
 
-    if(length(out$mean$G[out$mean$G<1.5&out$Rhat$G<=1.1])>0){
+    if(length(out$mean$G[out$mean$G<1.5])>0){
+      X <-  pred[pred$group == "Euthermy", "Ta"]
       graphics::par(new=TRUE)
 
       graphics::plot(Ymeann~X,xlim=c(Tlimlo, Tlimup),ylim=c(MRlo, MRup),type="l",xaxt="n",frame=FALSE,yaxt="n",ylab="",xlab="",col=col_eut)
