@@ -11,11 +11,12 @@ vignette: >
 
 ## How to use torpor ? An example
 
-This vignette presents a suggested workflow of the `torpor` package. This package is firstly aimed at users not familiar with `rjags`, yet interested in investigating the thermo-regulatory pattern of their model species.
-This workflow is based on one of the provided datasets. We go through a complete analysis to illustrate how to use the package functions. At each step we also present some of the options for the users and the possible solution to expected problems. Note, however, that this example is not an exhaustive presentation of the package. 
+This vignette presents a suggested workflow of the `torpor` package. This package is firstly aimed at users not familiar with `rjags`, yet interested in investigating the thermoregulatory pattern of their model species, especially when the latter is a heterotherm and when metabolic rate measurements are to be assigned to either torpor or euthermia.
 
-### The data 
-The first step in that analysis is to get data. In order to fit a model using the function `tor_fit()` we need a set of measure of Metabolic rate $M$ and the ambient temperature $T_a$ at which the measurement have been made. These values can be vectors of the same length or two columns of a data-frame. In this example, we will use the data obtained from the Geiser (1987) on Tasmanian pygmy possum (*Cercartetus lepidus*).
+This workflow is based on one of the provided datasets. We go through a complete analysis to illustrate how to use the package functions. At each step we also present the options for the users and the possible solution to expected problems. Note, however, that this example does not present all aspects of the package. 
+
+### Fitting a model  
+The first step in any analysis is to get data. In order to fit a model using the function `tor_fit()` we need a set of measurements of Metabolic rate $M$ and the ambient temperature $T_a$ at which the measurements have been made. These values can be vectors of the same length or two columns of a data-frame. In the chosen example on the Tasmanian pygmy possum, *Cercartetus lepidus*, we have 103 metabolic rate values at various $T_a$ by digitalization of a figure (Geiser, 1987).
 
 The data are accessible with the following command. 
 
@@ -24,13 +25,10 @@ library(torpor)
 data(test_data2) 
 str(test_data2)
 ``` 
-We get 103 observations of $VO_2$ at different $T_a$ of the species *Cercartetus lepidus*
 
-he lower critical temperature (i.e., lower limit of the thermoneutral zone, $T_lc$ and the basal metabolic rate $BMR$ are also needed in order to fit the model with the `tor_fit()` function. These two values can be found in the documentation of the dataset (accessible through the help function `?test_data2`) for the present example or should be provided by the researcher when using her/his own data.
+The lower critical temperature (i.e., lower limit of the thermoneutral zone, $T_{lc}$ and the basal metabolic rate $BMR$ are also needed in order to fit the model with the `tor_fit()` function. These two values can be found in the documentation of the dataset (?test_data2) for the present example and should be provided by the researcher when using her/his own data. 
+`tor_fit()` represents the core function of the model and should be the first step in any analysis using the torpor package. Researchers not familiar with `R` and only interested in a visual representation of their data can skip this step and use the `tor_plot()` function directly. This option is however not recommended since problems might remain unnoticed. 
 
-`tor_fit()` represents the core function of the model and should be the first step in any analysis using the `torpor` package. Researchers not familiar with `R` and only interested in a visual representation of their data can skip this step and use the `tor_plot()` function directly. This option is however not recommended as problems might remain unnoticed.
-
-## fit model 
 The model is fitted with the following call: 
 
 ```{r, fit model}
@@ -44,24 +42,24 @@ model <- tor_fit(MR = test_data2[, "VO2ms"], Ta = test_data2[, "Ta"],
 Note that for the purpose of this vignette we only run 5000 iterations with 3000 
 burned-in. The results are thus not trusthworthy.
 
-The output of the `tor_fit()` function is a list of class `jagsUI`. This can be intimidating for the user not familiar with this package. Therefore, the rest of the package offers several functions to make more sense of the model output, check its consistency and represent it graphically. Researchers familiar with `jagsUI` can build their analysis from that point.
+The output of the `tor_fit()` function is a list of class `jagsUI`. This can be intimidating for the unfamiliar user. Therefore, the rest of the package offers several functions to make more sense of the model output, to check its consistency and represent it graphically. Researchers familiar with `jagsUI` can build their analysis from that point.
 
-## Summary
+## Checking the robustness of the model 
 
-Once the model if fitted, it is recommended to have an overlook at the results. This can be achieved via the function `tor_summarise()`. This function will return a list with the essentials: A data-frame with mean and median of parameter estimates, the 95% credible interval and the $\hat{R}$ value (i.e. chain convergence estimation). It also reports the parameters’ identifiability. 
+Once the model is fitted, it is recommended to have an overlook at the results. This can be achieved via the function `tor_summarise()`. The latter will return a list with the essentials: A data.frame with the mean and median of parameter estimates, the 95% credible interval and the $\hat{R}$ value (i.e. chain convergence estimation). It also reports the parameters’ identifiability. 
 
 ```{r, tor summarise}
 summary <- tor_summarise(model)
 ```
 
-the parameter estimates are accessible with: 
+The parameter estimates are accessible with: 
 
 ```{r, parameter estimates}
 summary$parameter_estimates
 ```
 
-### Check convergence
-If the $\hat{R}$ values, given in the summary data-frame are larger than 1.1, we recommend to refit the model and increase the number of iteration and burn-in respectively. This can be done by setting the parameter `fitting_options = list(ni = , nb = )`
+### Checking the convergence
+If the $\hat{R}$ values, given in the summary data.frame are larger than 1.1, we recommend to refit the model and increase the number of iterations and burn-ins respectively. This can be done by setting the parameter `fitting_options = list(ni = , nb = )`
 It is also possible to look graphicaly at the convergence using the `jagsUI` function `traceplot()`. Let's have a look at the convergence for the parameters `betat` and `betac`. 
 
 
@@ -69,22 +67,22 @@ It is also possible to look graphicaly at the convergence using the `jagsUI` fun
 jagsUI::traceplot(model, c("betat", "betac"))
 ```
 
-## check parameters identifiability 
-In addition to check of the convergence it is advised to control the identifiability of the parameters. This operation is done by comparing the prior with the posterior distributions. If the overlap is greater than 0.3 the parameter should be considered as not identifiable and a warning will be sent to the user. The parameter identifiability measure is done for the $T_{lc}$, $T_t$, and $\beta_t$. 
+### checking the parameters identifiability 
+In addition to check of the convergence it is advised to control the identifiability of the parameters. This is done by comparing the prior and the posterior distributions. If the overlap is greater than 0.3 the parameter should be considered as not identifiable and a warning will be sent to the user. Parameter identifiability is measured for $T_{lc}$, $T_t$, and $\beta_t$. 
 The ovelap is also given by the `tor_summarise()` function. Let's continue with our analysis of *Cercartetus lepidus*: 
 
 ```{r message=TRUE, warning=TRUE, paged.print=FALSE}
 summary$overlap
 ``` 
 
-## Evaluate output 
+### Making sens of the model 
 
-Once the basic checks have been done, we can go on with the evaluation of the output. There are two main functions to deal with predictions. `tor_classify()` firstly gives the classification for the raw data based on the predictions of the model. `tor_predict()` further give the predicted $MR$ in torpor and euthermy for a given $T_a$. Finally, we can plot the result using the function `plot_torpor()`.
+Once the basic checks have been done, we can go on with the evaluation of the output. There are two main functions that deal with predictions. `tor_classify()` firstly gives the classification of the raw data based on the predictions of the model. `tor_predict()` further gives the predicted $MR$ in torpor and euthermy for a given $T_a$. Finally, we can plot the result using the function `plot_torpor()`.
 
 
-### Classification 
+### Getteing the classification 
 
-To look at the classification and the prediction of the data we use the function `tor_classify()`, which will classify the measured points either in torpor or eutermy and returns a data-frame with the measured $MR$, the measured $T_a$, the predicted $MR$ and the classification (predicted_stage).
+To look at the classification of the data the corresponding predicted values we use the function `tor_classify()`, which will assign the measured metabolic values to either torpor or euthermy and returns a dataframe with the measured $MR$, the measured $T_a$, the predicted $MR$ and the classification (predicted_state).
 
 ```{r, tor_classify}
 classification <- tor_classify(model)
