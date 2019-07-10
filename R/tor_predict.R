@@ -144,7 +144,7 @@ eut_predict_fun <- function(x, inte, betat, Ym) { ## backtransform parameters to
 tor_classify <- function(mod){
 x <- data.frame(measured_MR = (mod$data$Y)*mod$data$Ym[1],
                 measured_Ta = mod$data$Ta,
-                predicted_stage = mod$mean$G)
+                predicted_state = mod$mean$G)
 
 betat <- mod$sims.list$betat
 betac <-mod$sims.list$betac
