@@ -103,7 +103,7 @@ head(prediction)
 
 ### plotting the data and predicted values 
 
-Finally a built-in function allows plot the results. A few parameters can be modulated by the user directly (labels with `xlab` and `ylab`, colors with `col_torp` and `col_eut`). It is also possible to save the plot using the arguments `pdf = TRUE`. Users can also choose if they prefer a base-R plot or a ggplot via the `plot_type` argument. 
+Finally a built-in function allows plot the results. The user can modulate (labels with `xlab` and `ylab`, colors with `col_torp` and `col_eut`) and can save the plot using the arguments `pdf = TRUE`. The `plot_type` argument also allows to choose between `ggplot` and `base-R`
 
 ```{r, plot}
 plot <- tor_plot(mod = model, plot_type = "ggplot", ylab = "MR")
@@ -122,7 +122,7 @@ plot2
 ```
 
 
-The plot can be custom further using either `ggplot` or `graphic`. 
+The plot can be changed further using either `ggplot2` or `graphic`. 
 
 
 ```{r, plot custom}
