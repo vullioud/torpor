@@ -1,8 +1,9 @@
-#'plot raw data and model output
+#'plot raw data and model prediction
 #'
 #'The function provides a plot of the MR values over the respective Ta.
-#'Measures are presented in different colors depending of the metabolic
-#'stage and regression slopes (continuous lines) as well as 95% CI (segmented lines) are presented.
+#'Raw data and modeled values are presented in different colors depending of the metabolic state.
+#`Modeled values are represented by continuous and stripped lines for the estimates’ median and 95CI bounds
+#`of the posterior distribution, respectively.
 #'For more flexibility the users are advied to use [tor_fit()] and [tor_predict()] directly.
 #'
 #'@name tor_plot

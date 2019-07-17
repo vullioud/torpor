@@ -1,7 +1,7 @@
 #' tor_summarise
 #'
-#'The function tor_summarise() provides a comprehensive summary of the output
-#'returned by fit_torpor(). Values of mean, 95CI bounds, median and
+#'[tor_summarise()] provides a comprehensive summary of the output
+#'returned by [tor_fit()]. Values of mean, 95CI bounds, median and
 #'Brooks–Gelman–Rubin criterion (i.e. chain convergence check) of parameters
 #'posterior distributions are provided. Additionally, prior posterior overlap
 #'values for different parameters are generated. Finally, the mean MR value used
@@ -10,7 +10,7 @@
 #'@name tor_summarise
 #'@aliases tor_summarise
 #'@family summary
-#'@param mod a fitted model with fit_torpor
+#'@param mod a fitted model with [tor_fit()]
 #'@return a list of 2. The first element is a tibble with the parameter estimates, the second is the overlap values
 #'@export
 #'@examples
@@ -36,7 +36,7 @@ return(out)
 
 #' tor_overlap
 #'
-#'The function tor_overlap() generates prior/posterior overlap values for Tm,
+#'[tor_overlap()] generates prior/posterior overlap values for Tm,
 #'Tt and Betat.
 #'Note: Values larger than 0.3 should lead to the conclusion that conforming
 #'torpor, regulated torpor or thermoregulation respectively could not be modeled
@@ -45,7 +45,7 @@ return(out)
 #'@name tor_overlap
 #'@aliases tor_overlap
 #'@family summary
-#'@param mod a fitted model with fit_torpor
+#'@param mod a fitted model with [tor_fit()]
 #'@return a list of 3. With overlapping values for tlc, Tt and Betat
 #'@export
 #'@examples
@@ -89,10 +89,10 @@ tor_overlap <- function(mod){
 #'get_parameters // internal
 #'
 #'Retrieves the parameters estimates from the model output
-#'it creates a dataframe used in the tor_summarise() function
+#'it creates a dataframe used in the [tor_summarise()] function
 #'@aliases get_parameters
 #'@family summary
-#'@param mod a fitted model with fit_torpor
+#'@param mod a fitted model with [tor_fit()]
 #'@return a data.frame
 
 
@@ -122,7 +122,7 @@ get_parameters <- function(mod) {
 #'@name get_overlap
 #'@aliases get_overlap
 #'@family summary
-#'@param mod a fitted model with fit_torpor
+#'@param mod a fitted model with [tor_fit()]
 #'@param params a parameter of the model
 #'@param priors a posterior distribution (as. numerical vector)
 #'@importFrom magrittr %>%

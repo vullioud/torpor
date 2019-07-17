@@ -1,7 +1,7 @@
 #' get Prediction
 #'
-#' The function [tor_predict()] provides the predicted MR and 95CI bounds at
-#' a given Ta, in euthermic and/or torpid stage.
+#' [tor_predict()] provides the predicted MR and 95CI bounds at
+#' a given Ta, in euthermic and/or torpid state.
 #'
 #'@name tor_predict
 #'@aliases tor_predict
@@ -121,8 +121,8 @@ eut_predict_fun <- function(x, inte, betat, Ym) { ## backtransform parameters to
 
 #' tor_classify
 #'
-#'The function tor_classify() returns the raw data with the related
-#'predicted stage values (between 1 and 2), which leads to the stage
+#'[tor_classify()] returns the raw data with the related
+#'predicted state values (between 1 and 2), which leads to the state
 #'classification (torpor or euthermy). Additionally, it also provides the
 #'predicted MR at the given Ta.
 #'

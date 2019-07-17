@@ -13,7 +13,7 @@ Authors@R:
 Description: This package enables an objective and standardized distinction 
     between torpid and euthermic metabolic rates (M) measured in steady-state 
     conditions. Furthermore, it provides parameters’ estimations of the relation 
-    between ambient temperatures (Ta) and M in both physiological stages. This 
+    between ambient temperatures (Ta) and M in both physiological states. This 
     package is aimed to support any physiologist working in thermal energetics. 
     More information can be found on the companion article Fasel et al. (in prep).
 License: GPL (>=2)
