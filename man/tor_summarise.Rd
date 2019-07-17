@@ -7,14 +7,14 @@
 tor_summarise(mod)
 }
 \arguments{
-\item{mod}{a fitted model with fit_torpor}
+\item{mod}{a fitted model with \code{\link[=tor_fit]{tor_fit()}}}
 }
 \value{
 a list of 2. The first element is a tibble with the parameter estimates, the second is the overlap values
 }
 \description{
-The function tor_summarise() provides a comprehensive summary of the output
-returned by fit_torpor(). Values of mean, 95CI bounds, median and
+\code{\link[=tor_summarise]{tor_summarise()}} provides a comprehensive summary of the output
+returned by \code{\link[=tor_fit]{tor_fit()}}. Values of mean, 95CI bounds, median and
 Brooks–Gelman–Rubin criterion (i.e. chain convergence check) of parameters
 posterior distributions are provided. Additionally, prior posterior overlap
 values for different parameters are generated. Finally, the mean MR value used

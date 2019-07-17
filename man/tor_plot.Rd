@@ -2,7 +2,7 @@
 % Please edit documentation in R/tor_plot.R
 \name{tor_plot}
 \alias{tor_plot}
-\title{plot raw data and model output}
+\title{plot raw data and model prediction}
 \usage{
 tor_plot(mod = NULL, plot_type = "ggplot",
   col_torp = "cornflowerblue", col_eut = "coral3", ylab = "M",
@@ -30,8 +30,7 @@ a base-R plot or a ggplot object
 }
 \description{
 The function provides a plot of the MR values over the respective Ta.
-Measures are presented in different colors depending of the metabolic
-stage and regression slopes (continuous lines) as well as 95% CI (segmented lines) are presented.
+Raw data and modeled values are presented in different colors depending of the metabolic state.
 For more flexibility the users are advied to use \code{\link[=tor_fit]{tor_fit()}} and \code{\link[=tor_predict]{tor_predict()}} directly.
 }
 \examples{

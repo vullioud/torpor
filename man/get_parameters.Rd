@@ -7,14 +7,14 @@
 get_parameters(mod)
 }
 \arguments{
-\item{mod}{a fitted model with fit_torpor}
+\item{mod}{a fitted model with \code{\link[=tor_fit]{tor_fit()}}}
 }
 \value{
 a data.frame
 }
 \description{
 Retrieves the parameters estimates from the model output
-it creates a dataframe used in the tor_summarise() function
+it creates a dataframe used in the \code{\link[=tor_summarise]{tor_summarise()}} function
 }
 \seealso{
 Other summary: \code{\link{get_overlap}},

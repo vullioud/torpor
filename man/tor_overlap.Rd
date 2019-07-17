@@ -7,13 +7,13 @@
 tor_overlap(mod)
 }
 \arguments{
-\item{mod}{a fitted model with fit_torpor}
+\item{mod}{a fitted model with \code{\link[=tor_fit]{tor_fit()}}}
 }
 \value{
 a list of 3. With overlapping values for tlc, Tt and Betat
 }
 \description{
-The function tor_overlap() generates prior/posterior overlap values for Tm,
+\code{\link[=tor_overlap]{tor_overlap()}} generates prior/posterior overlap values for Tm,
 Tt and Betat.
 Note: Values larger than 0.3 should lead to the conclusion that conforming
 torpor, regulated torpor or thermoregulation respectively could not be modeled

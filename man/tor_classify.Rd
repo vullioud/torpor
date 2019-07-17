@@ -13,8 +13,8 @@ tor_classify(mod)
 a data.frame with classification and predicted MR
 }
 \description{
-The function tor_classify() returns the raw data with the related
-predicted stage values (between 1 and 2), which leads to the stage
+\code{\link[=tor_classify]{tor_classify()}} returns the raw data with the related
+predicted state values (between 1 and 2), which leads to the state
 classification (torpor or euthermy). Additionally, it also provides the
 predicted MR at the given Ta.
 }

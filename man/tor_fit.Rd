@@ -30,21 +30,21 @@ tor_fit(MR, Ta, BMR, TLC, model = NULL, fitting_options = list(ni =
 fitted model. A list of class "JagsUI".
 }
 \description{
-The function tor_fit() fits a binomial mixture model using Bayesian
+tor_fit() fits a binomial mixture model using Bayesian
 inference. It uses Rjags in the background and enables users to specify
 some - but not all - sampling parameters. The structure of the model can also
-be changed. User who want more flexibility are encouraged to use Rjags
-directly. The function considers the assumed relation between MR and Ta
+be changed. Users who want more flexibility are encouraged to use Rjags
+directly. The function considers the assumed relation between metabolic rate (MR) and ambient temperature (Ta)
 (Speakman & Thomas 2003). In the hypothermic state (torpor) and above some
 threshold Ta (Tmin), MR follows an exponential curve reflecting the Arrhenius
 rate enhancing effect of temperature on chemical reactions, whereas below
 Tmin, it increases linearly with decreasing Ta to maintain a minimal Tb in
 torpor. In the euthermic state, MR solely increases linearly with decreasing Ta.
-More information about the model can be found in the vignette "model description".
+More information about the model can be found in the vignette \code{vignette("model description", package = "torpor")}.
 }
 \details{
-This model should be applied only with sufficient sample size and if
-evidences suggest that individuals under study will conform to the previously
+This model should be applied with sufficient sample size and if
+evidence suggest that individuals under study will conform to the previously
 described pattern while in torpor.
 }
 \examples{

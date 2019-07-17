@@ -4,7 +4,7 @@ author: "Nicolas J. Fasel, Colin Vullioud, Michel Genoud"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{torpor Model description}
+  %\VignetteIndexEntry{Model description}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -87,7 +87,7 @@ By default, three Markov chains are run during 500’000 iterations starting at 
 
 
 ### Parameters identifiability
-In addition, we consider that a parameter for which the overlap between the prior and the posterior distributions is greater than 30% is not identifiable. Prior and posterior distribution overlap is calculated with the function `overlap()` of package `overlapping` (Pastore, 2018). The generation of truncated normal prior distributions is enabled by the function `rtruncnorm()` of package `truncnorm` (Mersmann, Trautmann, Steuer, & Bornkamp, 2018). To ease parameter estimations, metabolic rate measurements are divided by their mean for standardization. 
+In addition, we consider that a parameter for which the overlap between the prior and the posterior distributions is greater than 30% is not identifiable. Prior and posterior distribution overlap is calculated with the function `overlap()` of package `overlapping` (Pastore, 2018). The generation of truncated normal prior distributions is enabled by the function `rtruncnorm()` of package `truncnorm` (Mersmann et al., 2018). To ease parameter estimations, metabolic rate measurements are divided by their mean for standardization. 
 
 ## Jags code
 The priors are hard-coded in the model used in the package. 

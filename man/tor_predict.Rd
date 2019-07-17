@@ -15,8 +15,8 @@ tor_predict(mod, Ta)
 a data.frame with predicted values
 }
 \description{
-The function \code{\link[=tor_predict]{tor_predict()}} provides the predicted MR and 95CI bounds at
-a given Ta, in euthermic and/or torpid stage.
+\code{\link[=tor_predict]{tor_predict()}} provides the predicted MR and 95CI bounds at
+a given Ta, in euthermic and/or torpid state.
 }
 \examples{
 data(test_data2)

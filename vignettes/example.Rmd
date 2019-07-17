@@ -16,7 +16,7 @@ This vignette presents a suggested workflow of the `torpor` package. This packag
 This workflow is based on one of the provided datasets. We go through a complete analysis to illustrate how to use the package functions. At each step we also present the options for the users and the possible solution to expected problems. Note, however, that this example does not present all aspects of the package. 
 
 ### Fitting a model  
-The first step in any analysis is to get data. In order to fit a model using the function `tor_fit()` we need a set of measurements of Metabolic rate $M$ and the ambient temperature $T_a$ at which the measurements have been made. These values can be vectors of the same length or two columns of a data-frame. In the chosen example on the Tasmanian pygmy possum, *Cercartetus lepidus*, we have 103 metabolic rate values at various $T_a$ by digitalization of a figure (Geiser, 1987).
+The first step in any analysis is to get data. In order to fit a model using the function `tor_fit()` we need a set of measurements of Metabolic rate $M$ and the ambient temperature $T_a$ at which the measurements have been made. These values can be vectors of the same length or two columns of a data.frame. In the chosen example on the Tasmanian pygmy possum, *Cercartetus lepidus*, we have 103 metabolic rate values at various $T_a$ by digitalization of a figure (Geiser, 1987).
 
 The data are accessible with the following command. 
 
