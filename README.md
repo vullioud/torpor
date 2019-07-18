@@ -32,8 +32,6 @@ library(remotes)
 remotes::install_github("vullioud/torpor", build_opts =  c("--build_vignettes"),force=TRUE)
 ```
 
-The package will be submitted to cran in the forseeable future.
-
 ## Where can I find more about torpor?
 
 You can learn more about the goal and the theory behind the package in

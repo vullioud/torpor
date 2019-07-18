@@ -1,6 +1,6 @@
 #'Plot raw data and predicted values
 #'
-#'[Tor_plot()] provides a plot of the metabolic rate (MR) values over the respective ambient temperature (Ta).
+#'[tor_plot()] provides a plot of the metabolic rate (MR) values over the respective ambient temperature (Ta).
 #'Raw data and predicted values are presented in different colors depending of the metabolic state.
 #`Predicted values are represented by continuous and stripped lines for the estimates’ median and 95CI bounds
 #`of the posterior distribution, respectively.

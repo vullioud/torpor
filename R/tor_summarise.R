@@ -93,6 +93,7 @@ tor_overlap <- function(mod){
 #'@family summary
 #'@param mod a fitted model from [tor_fit()]
 #'@return a data.frame
+#'@export
 #'@examples
 #'data(test_data2)
 #'test <- tor_fit(MR = test_data2[,2],
