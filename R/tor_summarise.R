@@ -1,17 +1,16 @@
-#' tor_summarise
+#' Model summary
 #'
 #'[tor_summarise()] provides a comprehensive summary of the output
 #'returned by [tor_fit()]. Values of mean, 95CI bounds, median and
 #'Brooks–Gelman–Rubin criterion (i.e. chain convergence check) of parameters
 #'posterior distributions are provided. Additionally, prior posterior overlap
-#'values for different parameters are generated. Finally, the mean MR value used
-#'to standardize the MR variable is reported.
+#'values for parameters tlc, Tt and Betat are generated.
 #'
 #'@name tor_summarise
 #'@aliases tor_summarise
 #'@family summary
-#'@param mod a fitted model with [tor_fit()]
-#'@return a list of 2. The first element is a tibble with the parameter estimates, the second is the overlap values
+#'@param mod a fitted model from [tor_fit()]
+#'@return a list of two data.frame. The first element returns the parameter estimates, the second reports the overlap values.
 #'@export
 #'@examples
 #'data(test_data)
@@ -34,22 +33,21 @@ return(out)
 }
 ##############################################################################
 
-#' tor_overlap
+#' Check priors/posteriors overlap
 #'
-#'[tor_overlap()] generates prior/posterior overlap values for Tm,
-#'Tt and Betat.
-#'Note: Values larger than 0.3 should lead to the conclusion that conforming
+#'[tor_overlap()] generates prior/posterior overlap values for Tlc,
+#'Tt and Betat. Values larger than 0.3 should lead to the conclusion that conforming
 #'torpor, regulated torpor or thermoregulation respectively could not be modeled
-#' with the data provided (Fasel et al. (in prep)). Can be used independently but is also used internally in
-#' tor_summarise()
+#'with the data provided (Fasel et al. (in prep)). [tor_overlap()] can be used independently but is also used internally in
+#'[tor_summarise()].
+#'
 #'@name tor_overlap
 #'@aliases tor_overlap
 #'@family summary
-#'@param mod a fitted model with [tor_fit()]
-#'@return a list of 3. With overlapping values for tlc, Tt and Betat
+#'@param mod a fitted model from [tor_fit()]
+#'@return a data.frame
 #'@export
 #'@examples
-
 #'data(test_data2)
 #'test <- tor_fit(MR = test_data2[,2],
 #'Ta = test_data2[, 1],
@@ -86,14 +84,24 @@ tor_overlap <- function(mod){
 }
 ##############################################################################
 
-#'get_parameters // internal
+#'Fetch parameters from model output
 #'
-#'Retrieves the parameters estimates from the model output
-#'it creates a dataframe used in the [tor_summarise()] function
+#'[get_parameters()] Retrieves the parameters estimates from the model output
+#'and creates a dataframe used in the [tor_summarise()] function
+#'
 #'@aliases get_parameters
 #'@family summary
-#'@param mod a fitted model with [tor_fit()]
+#'@param mod a fitted model from [tor_fit()]
 #'@return a data.frame
+#'@examples
+#'data(test_data2)
+#'test <- tor_fit(MR = test_data2[,2],
+#'Ta = test_data2[, 1],
+#'BMR = 1.49,
+#'TLC = 28.8,
+#'model = NULL,
+#'fitting_options = list(nc = 1, ni = 5000, nb = 3000))
+#'get_parameters(mod = test)
 
 
 get_parameters <- function(mod) {
@@ -119,10 +127,11 @@ get_parameters <- function(mod) {
 #' get_overlap // internal
 #'
 #' Compare the distribution overlap between a prior and a posterior // used internally only
+#'
 #'@name get_overlap
 #'@aliases get_overlap
 #'@family summary
-#'@param mod a fitted model with [tor_fit()]
+#'@param mod a fitted model from [tor_fit()]
 #'@param params a parameter of the model
 #'@param priors a posterior distribution (as. numerical vector)
 #'@importFrom magrittr %>%

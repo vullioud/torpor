@@ -1,20 +1,20 @@
-#'plot raw data and model prediction
+#'Plot raw data and predicted values
 #'
-#'The function provides a plot of the MR values over the respective Ta.
-#'Raw data and modeled values are presented in different colors depending of the metabolic state.
-#`Modeled values are represented by continuous and stripped lines for the estimates’ median and 95CI bounds
+#'[Tor_plot()] provides a plot of the metabolic rate (MR) values over the respective ambient temperature (Ta).
+#'Raw data and predicted values are presented in different colors depending of the metabolic state.
+#`Predicted values are represented by continuous and stripped lines for the estimates’ median and 95CI bounds
 #`of the posterior distribution, respectively.
-#'For more flexibility the users are advied to use [tor_fit()] and [tor_predict()] directly.
+#'For more flexibility the users can use [tor_fit()] and [tor_predict()] directly.
 #'
 #'@name tor_plot
 #'@param mod a fitted model from [tor_fit()]
 #'@param plot_type A character string specifying the type of plot desired. Either "base" or "ggplot"
-#'@param ... arguments to fit the model in [tor_fit()] if no model is provided
-#'@param col_torp color for torpor model fit and points
-#'@param col_eut color for euthermy model fit and points
+#'@param col_torp color for torpor model prediction and points
+#'@param col_eut color for euthermy model prediction and points
 #'@param ylab y label
 #'@param xlab x label
 #'@param pdf logical if a .pdf copy of the plot should be saved
+#'@param ... arguments to fit a model with [tor_fit()] if no model is provided
 #'@export
 #'@return a base-R plot or a ggplot object
 #'@importFrom grDevices dev.off
@@ -23,8 +23,15 @@
 #'tor_plot(MR = test_data3[,2], Ta = test_data3[,1], BMR = 1.055, TLC = 29,
 #'fitting_options = list(nc =1, ni = 5000, nb = 3000), plot_type = "ggplot")
 
-tor_plot <- function(mod = NULL, plot_type = "ggplot",col_torp = "cornflowerblue", col_eut = "coral3", ylab = "M", xlab = "Ta", pdf = FALSE, ...) {
-   # browser()
+tor_plot <- function(mod = NULL,
+                     plot_type = "ggplot",
+                     col_torp = "cornflowerblue",
+                     col_eut = "coral3",
+                     ylab = "M",
+                     xlab = "Ta",
+                     pdf = FALSE,
+                     ...) {
+
   ## fit a model if necessary
   if(is.null(mod)) {
     out <- tor_fit(...)
@@ -32,6 +39,7 @@ tor_plot <- function(mod = NULL, plot_type = "ggplot",col_torp = "cornflowerblue
     out <- mod
   }
 
+  ## retrieve values from the model
   TLC <- out$sims.list$TLC[1]
   BMR <- out$sims.list$BMR[1]*out$sims.list$Ym[1]
 
@@ -39,27 +47,30 @@ tor_plot <- function(mod = NULL, plot_type = "ggplot",col_torp = "cornflowerblue
   Y <- MR <- out$data$Y*out$sims.list$Ym[1]
   Ta <- out$data$Ta
 
-  # plot params
+  # plotting limits
   Tlimup <- max(Ta,na.rm=TRUE)
   Tlimlo <- min(Ta,na.rm=TRUE)
   MRup <- max(Y,na.rm=TRUE)
   MRlo <- min(Y,na.rm=TRUE)
 
-
+  ## data
   da <- as.data.frame(cbind(Ta, MR))
   da$G <- as.numeric(out$mean$G)
   da$hat <- out$Rhat$G
 
 
-  # get the predictions
+  ## get the predictions
   pred <- tor_predict(out, seq(Tlimlo,Tlimup,length=100))
-  # check overlap
-  xxx <- tor_overlap(out)
+
+  ## check overlap ## warning if > 0.3
+  tor_overlap(out)
 
 
-  ###### plot ggplot first
+  ## ggplot
   if(plot_type == "ggplot"){
-    G <- lwr_95 <- upr_95 <- NULL
+
+    G <- lwr_95 <- upr_95 <- NULL ## check
+
     plot <- ggplot2::ggplot(da, ggplot2::aes(x = Ta, y = MR, col = G > 1.5))+
       ggplot2::geom_point() +
       ggplot2::xlim(c(min(da$Ta), max(da$Ta))) +
@@ -90,12 +101,16 @@ tor_plot <- function(mod = NULL, plot_type = "ggplot",col_torp = "cornflowerblue
                                     values =  c(col_eut, col_torp)) +
       ggplot2::ylab(paste(ylab)) +
       ggplot2::xlab(paste(xlab))
+
     if (pdf == TRUE){
       ggplot2::ggsave(plot, filename = "plot.pdf", width = 7, units = "cm")
     }
 
     return(plot)
+
+  ## base-R plot
   } else {
+    # get values
     Ymeant <- pred[pred$group == "Torpor", "pred"]
     Y975t <- pred[pred$group == "Torpor", "upr_95"]
     Y025t <- pred[pred$group == "Torpor", "lwr_95"]
@@ -105,7 +120,7 @@ tor_plot <- function(mod = NULL, plot_type = "ggplot",col_torp = "cornflowerblue
     ylab <- paste(ylab)
     xlab <- paste(xlab)
 
-    ## plot
+   ## plot
     if(pdf == TRUE){
       pdf("plot.pdf")
     }

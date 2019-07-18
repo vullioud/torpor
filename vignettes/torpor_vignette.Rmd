@@ -18,13 +18,13 @@ knitr::opts_chunk$set(
 
 ## Model Details
 
-The core model used in the function `fit_torpor()` of the `torpor` package is centered around the "standard" relationship between $M$ and $T_a$ modelled by Humphries et al. (2002) and Speakman and Thomas (2003) for bats. In addition, the model considers a potential metabolic inhibition during torpor (Geiser 2004, Withers et al. 2016). In details, the rate of metabolism of euthermic animals ($M_e$) below the lower limit of the thermoneutral zone (or lower critical temperature, $T_{lc}$) increases linearly with decreasing $T_a$:
+The core model used in the function `fit_torpor()` of the `torpor` package is centered around the "standard" relationship between metabolic rate ($M$) and ambient temperature ($T_a$) modelled by Humphries et al. (2002) and Speakman and Thomas (2003) for bats. In addition, the model considers a potential metabolic inhibition during torpor (Geiser 2004, Withers et al. 2016). In details, the rate of metabolism of euthermic animals ($M_e$) below the lower limit of the thermoneutral zone (or lower critical temperature, $T_{lc}$) increases linearly with decreasing $T_a$:
 
 $$ 
 M_e =  \alpha_e + \beta_e \times T_a 
 $$
 
-The model also assumes that this line equals $BMR$ at $T_{lc}$ and therefore:
+The model also assumes that this line equals the basal metabolic rate ($BMR$) at $T_{lc}$ and therefore:
 
 $$
 \alpha_e = BMR - \beta_e \times T_{lc}
@@ -63,7 +63,7 @@ $$
 \beta_c = \frac{\log(\frac{BMR}{TMR})}{T_m - T_t}
 $$
 
-$TMR$ is the minimal metabolic rate in torpor at $T_t$. 
+Where $TMR$ is the minimal metabolic rate in torpor at $T_t$. 
 
 
 ## Priors
