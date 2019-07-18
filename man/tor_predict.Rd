@@ -2,21 +2,21 @@
 % Please edit documentation in R/tor_predict.R
 \name{tor_predict}
 \alias{tor_predict}
-\title{get Prediction}
+\title{get predictions}
 \usage{
 tor_predict(mod, Ta)
 }
 \arguments{
-\item{mod}{a fitted model from the function \code{\link[=tor_fit]{tor_fit()}}}
+\item{mod}{a fitted model from \code{\link[=tor_fit]{tor_fit()}}}
 
-\item{Ta}{a vector of temperatur for which the prediction should be made}
+\item{Ta}{a vector of temperature}
 }
 \value{
-a data.frame with predicted values
+a data.frame
 }
 \description{
-\code{\link[=tor_predict]{tor_predict()}} provides the predicted MR and 95CI bounds at
-a given Ta, in euthermic and/or torpid state.
+\code{\link[=tor_predict]{tor_predict()}} provides the predicted metabolic rate (MR) and 95CI bounds at
+a given ambient temperature (Ta), in euthermic and/or torpid state.
 }
 \examples{
 data(test_data2)

@@ -1,4 +1,4 @@
-#'toRpoR: Binary mixture model aimed at distinguishing torpid and
+#'torpor: Binary mixture model aimed at distinguishing torpid and
 #'euthermic metabolic rates
 #'
 #'This package enables an objective and standardized distinction between torpid
@@ -8,8 +8,8 @@
 #'is aimed to support any physiologist working in thermal energetics. More information
 #'can be found on the compagnon article Fasel et al. (in prep) and in the vignettes.
 #'
-#'This R package is center around the [tor_fit()] functions which
-#'allow to fit binary mixture model on metabolic rates data using Bayesian inference.
+#'This package is center around the [tor_fit()] function which
+#'allows to fit binary mixture model on metabolic rates data using Bayesian inference.
 #'#'
 #'@docType package
 #'@name torpor

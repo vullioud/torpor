@@ -7,16 +7,16 @@
 tor_classify(mod)
 }
 \arguments{
-\item{mod}{a fitted model from tor_fit}
+\item{mod}{a fitted model from \code{\link[=tor_fit]{tor_fit()}}}
 }
 \value{
-a data.frame with classification and predicted MR
+a data.frame
 }
 \description{
 \code{\link[=tor_classify]{tor_classify()}} returns the raw data with the related
 predicted state values (between 1 and 2), which leads to the state
 classification (torpor or euthermy). Additionally, it also provides the
-predicted MR at the given Ta.
+predicted metabolic rate (MR) at the given ambient temperature (Ta).
 }
 \examples{
 data(test_data2)

@@ -1,14 +1,14 @@
-#' get Prediction
+#' get predictions
 #'
-#' [tor_predict()] provides the predicted MR and 95CI bounds at
-#' a given Ta, in euthermic and/or torpid state.
+#' [tor_predict()] provides the predicted metabolic rate (MR) and 95CI bounds at
+#' a given ambient temperature (Ta), in euthermic and/or torpid state.
 #'
 #'@name tor_predict
 #'@aliases tor_predict
 #'@family predict
-#'@param mod a fitted model from the function [tor_fit()]
-#'@param Ta a vector of temperatur for which the prediction should be made
-#'@return a data.frame with predicted values
+#'@param mod a fitted model from [tor_fit()]
+#'@param Ta a vector of temperature
+#'@return a data.frame
 #'@export
 #'@examples
 #'data(test_data2)
@@ -79,8 +79,7 @@ tor_predict <- function(mod, Ta){
 
 }
 ################################################################################
-
-
+#'
 #' tor_predict_fun // internal
 #'
 #'Function to fit the model in torpor
@@ -93,7 +92,7 @@ tor_predict <- function(mod, Ta){
 #'@param betat slope 1
 #'@param betac slope 2
 #'@param Ym mean of Y to back-transform
-#'@return a metabolic value
+#'@return a numerical value
 
 tor_predict_fun <- function(x, Tt, intr, intc, betat, betac, Ym) {
   out <- (ifelse(x<Tt,intr +betat*x,intc*exp(betac*x)))*Ym ## backtransform parameters to prediction for torpor
@@ -111,7 +110,7 @@ tor_predict_fun <- function(x, Tt, intr, intc, betat, betac, Ym) {
 #'@param inte intercept 1
 #'@param betat slope 1
 #'@param Ym mean of Y to back transform
-#'@return a metabolic value
+#'@return a numerical value
 eut_predict_fun <- function(x, inte, betat, Ym) { ## backtransform parameters to prediction for euthermy
   out <- (inte +betat*x)*Ym
   return(out)
@@ -124,13 +123,13 @@ eut_predict_fun <- function(x, inte, betat, Ym) { ## backtransform parameters to
 #'[tor_classify()] returns the raw data with the related
 #'predicted state values (between 1 and 2), which leads to the state
 #'classification (torpor or euthermy). Additionally, it also provides the
-#'predicted MR at the given Ta.
+#'predicted metabolic rate (MR) at the given ambient temperature (Ta).
 #'
 #'@name tor_classify
 #'@aliases tor_classify
 #'@family predict
-#'@param mod a fitted model from tor_fit
-#'@return a data.frame with classification and predicted MR
+#'@param mod a fitted model from [tor_fit()]
+#'@return a data.frame
 #'@export
 #'@examples
 #'data(test_data2)

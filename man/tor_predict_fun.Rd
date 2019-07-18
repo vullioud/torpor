@@ -22,7 +22,7 @@ tor_predict_fun(x, Tt, intr, intc, betat, betac, Ym)
 \item{Ym}{mean of Y to back-transform}
 }
 \value{
-a metabolic value
+a numerical value
 }
 \description{
 Function to fit the model in torpor

@@ -4,7 +4,7 @@
 \name{torpor}
 \alias{torpor}
 \alias{torpor-package}
-\title{toRpoR: Binary mixture model aimed at distinguishing torpid and
+\title{torpor: Binary mixture model aimed at distinguishing torpid and
 euthermic metabolic rates}
 \description{
 This package enables an objective and standardized distinction between torpid
@@ -15,8 +15,8 @@ is aimed to support any physiologist working in thermal energetics. More informa
 can be found on the compagnon article Fasel et al. (in prep) and in the vignettes.
 }
 \details{
-This R package is center around the \code{\link[=tor_fit]{tor_fit()}} functions which
-allow to fit binary mixture model on metabolic rates data using Bayesian inference.
+This package is center around the \code{\link[=tor_fit]{tor_fit()}} function which
+allows to fit binary mixture model on metabolic rates data using Bayesian inference.
 #'
 }
 \section{tor_fit}{

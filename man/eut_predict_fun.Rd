@@ -16,7 +16,7 @@ eut_predict_fun(x, inte, betat, Ym)
 \item{Ym}{mean of Y to back transform}
 }
 \value{
-a metabolic value
+a numerical value
 }
 \description{
 function to fit the model in euthermy

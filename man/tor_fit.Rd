@@ -2,7 +2,7 @@
 % Please edit documentation in R/tor_fit.R
 \name{tor_fit}
 \alias{tor_fit}
-\title{tor_fit}
+\title{Fitting a model}
 \usage{
 tor_fit(MR, Ta, BMR, TLC, model = NULL, fitting_options = list(ni =
   5e+05, nt = 10, nb = 3e+05, nc = 3))
@@ -12,9 +12,9 @@ tor_fit(MR, Ta, BMR, TLC, model = NULL, fitting_options = list(ni =
 
 \item{Ta}{a vector of ambient Temperatures (same length as MR)}
 
-\item{BMR}{BMR value for the focal specie}
+\item{BMR}{BMR Basal Metabolic Rate for the focal specie}
 
-\item{TLC}{TLC value for the focal specie}
+\item{TLC}{lower critical temperature for the focal specie}
 
 \item{model}{path to model_file.txt if a different model is used}
 
@@ -31,16 +31,17 @@ fitted model. A list of class "JagsUI".
 }
 \description{
 \code{\link[=tor_fit]{tor_fit()}} fits a binomial mixture model using Bayesian
-inference. It uses Rjags in the background and enables users to specify
-some - but not all - sampling parameters. The structure of the model can also
-be changed. Users who want more flexibility are encouraged to use Rjags
-directly. The function considers the assumed relation between metabolic rate (MR) and ambient temperature (Ta)
+inference.  The function considers the assumed relation between metabolic rate (MR) and ambient temperature (Ta)
 (Speakman & Thomas 2003). In the hypothermic state (torpor) and above some
 threshold Ta (Tmin), MR follows an exponential curve reflecting the Arrhenius
 rate enhancing effect of temperature on chemical reactions, whereas below
-Tmin, it increases linearly with decreasing Ta to maintain a minimal Tb in
+Tmin, it increases linearly with decreasing Ta to maintain a minimal body temperature (Tb) in
 torpor. In the euthermic state, MR solely increases linearly with decreasing Ta.
-More information about the model can be found in the vignette \code{vignette("model description", package = "torpor")}.
+The function uses Rjags in the background and enables users to specify
+some - but not all - sampling parameters. The structure of the model can also
+be changed. Users who want more flexibility are encouraged to use Rjags
+directly.
+More information about the model can be found in the vignette \code{vignette("model_description", package = "torpor")}.
 }
 \details{
 This model should be applied with sufficient sample size and if
