@@ -2,23 +2,22 @@
 % Please edit documentation in R/tor_summarise.R
 \name{tor_overlap}
 \alias{tor_overlap}
-\title{tor_overlap}
+\title{Check priors/posteriors overlap}
 \usage{
 tor_overlap(mod)
 }
 \arguments{
-\item{mod}{a fitted model with \code{\link[=tor_fit]{tor_fit()}}}
+\item{mod}{a fitted model from \code{\link[=tor_fit]{tor_fit()}}}
 }
 \value{
-a list of 3. With overlapping values for tlc, Tt and Betat
+a data.frame
 }
 \description{
-\code{\link[=tor_overlap]{tor_overlap()}} generates prior/posterior overlap values for Tm,
-Tt and Betat.
-Note: Values larger than 0.3 should lead to the conclusion that conforming
+\code{\link[=tor_overlap]{tor_overlap()}} generates prior/posterior overlap values for Tlc,
+Tt and Betat. Values larger than 0.3 should lead to the conclusion that conforming
 torpor, regulated torpor or thermoregulation respectively could not be modeled
-with the data provided (Fasel et al. (in prep)). Can be used independently but is also used internally in
-tor_summarise()
+with the data provided (Fasel et al. (in prep)). \code{\link[=tor_overlap]{tor_overlap()}} can be used independently but is also used internally in
+\code{\link[=tor_summarise]{tor_summarise()}}.
 }
 \examples{
 data(test_data2)

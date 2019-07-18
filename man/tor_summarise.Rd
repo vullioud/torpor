@@ -2,23 +2,22 @@
 % Please edit documentation in R/tor_summarise.R
 \name{tor_summarise}
 \alias{tor_summarise}
-\title{tor_summarise}
+\title{Model summary}
 \usage{
 tor_summarise(mod)
 }
 \arguments{
-\item{mod}{a fitted model with \code{\link[=tor_fit]{tor_fit()}}}
+\item{mod}{a fitted model from \code{\link[=tor_fit]{tor_fit()}}}
 }
 \value{
-a list of 2. The first element is a tibble with the parameter estimates, the second is the overlap values
+a list of two data.frame. The first element returns the parameter estimates, the second reports the overlap values.
 }
 \description{
 \code{\link[=tor_summarise]{tor_summarise()}} provides a comprehensive summary of the output
 returned by \code{\link[=tor_fit]{tor_fit()}}. Values of mean, 95CI bounds, median and
 Brooks–Gelman–Rubin criterion (i.e. chain convergence check) of parameters
 posterior distributions are provided. Additionally, prior posterior overlap
-values for different parameters are generated. Finally, the mean MR value used
-to standardize the MR variable is reported.
+values for parameters tlc, Tt and Betat are generated.
 }
 \examples{
 data(test_data)

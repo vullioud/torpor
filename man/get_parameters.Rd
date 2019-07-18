@@ -2,19 +2,29 @@
 % Please edit documentation in R/tor_summarise.R
 \name{get_parameters}
 \alias{get_parameters}
-\title{get_parameters // internal}
+\title{Fetch parameters from model output}
 \usage{
 get_parameters(mod)
 }
 \arguments{
-\item{mod}{a fitted model with \code{\link[=tor_fit]{tor_fit()}}}
+\item{mod}{a fitted model from \code{\link[=tor_fit]{tor_fit()}}}
 }
 \value{
 a data.frame
 }
 \description{
-Retrieves the parameters estimates from the model output
-it creates a dataframe used in the \code{\link[=tor_summarise]{tor_summarise()}} function
+\code{\link[=get_parameters]{get_parameters()}} Retrieves the parameters estimates from the model output
+and creates a dataframe used in the \code{\link[=tor_summarise]{tor_summarise()}} function
+}
+\examples{
+data(test_data2)
+test <- tor_fit(MR = test_data2[,2],
+Ta = test_data2[, 1],
+BMR = 1.49,
+TLC = 28.8,
+model = NULL,
+fitting_options = list(nc = 1, ni = 5000, nb = 3000))
+get_parameters(mod = test)
 }
 \seealso{
 Other summary: \code{\link{get_overlap}},

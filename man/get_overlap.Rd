@@ -7,7 +7,7 @@
 get_overlap(mod, params, priors)
 }
 \arguments{
-\item{mod}{a fitted model with \code{\link[=tor_fit]{tor_fit()}}}
+\item{mod}{a fitted model from \code{\link[=tor_fit]{tor_fit()}}}
 
 \item{params}{a parameter of the model}
 

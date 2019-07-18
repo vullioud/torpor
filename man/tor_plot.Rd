@@ -2,7 +2,7 @@
 % Please edit documentation in R/tor_plot.R
 \name{tor_plot}
 \alias{tor_plot}
-\title{plot raw data and model prediction}
+\title{Plot raw data and predicted values}
 \usage{
 tor_plot(mod = NULL, plot_type = "ggplot",
   col_torp = "cornflowerblue", col_eut = "coral3", ylab = "M",
@@ -13,9 +13,9 @@ tor_plot(mod = NULL, plot_type = "ggplot",
 
 \item{plot_type}{A character string specifying the type of plot desired. Either "base" or "ggplot"}
 
-\item{col_torp}{color for torpor model fit and points}
+\item{col_torp}{color for torpor model prediction and points}
 
-\item{col_eut}{color for euthermy model fit and points}
+\item{col_eut}{color for euthermy model prediction and points}
 
 \item{ylab}{y label}
 
@@ -23,15 +23,15 @@ tor_plot(mod = NULL, plot_type = "ggplot",
 
 \item{pdf}{logical if a .pdf copy of the plot should be saved}
 
-\item{...}{arguments to fit the model in \code{\link[=tor_fit]{tor_fit()}} if no model is provided}
+\item{...}{arguments to fit a model with \code{\link[=tor_fit]{tor_fit()}} if no model is provided}
 }
 \value{
 a base-R plot or a ggplot object
 }
 \description{
-The function provides a plot of the MR values over the respective Ta.
-Raw data and modeled values are presented in different colors depending of the metabolic state.
-For more flexibility the users are advied to use \code{\link[=tor_fit]{tor_fit()}} and \code{\link[=tor_predict]{tor_predict()}} directly.
+\code{\link[=Tor_plot]{Tor_plot()}} provides a plot of the metabolic rate (MR) values over the respective ambient temperature (Ta).
+Raw data and predicted values are presented in different colors depending of the metabolic state.
+For more flexibility the users can use \code{\link[=tor_fit]{tor_fit()}} and \code{\link[=tor_predict]{tor_predict()}} directly.
 }
 \examples{
 data(test_data3)

@@ -30,7 +30,7 @@ tor_fit(MR, Ta, BMR, TLC, model = NULL, fitting_options = list(ni =
 fitted model. A list of class "JagsUI".
 }
 \description{
-tor_fit() fits a binomial mixture model using Bayesian
+\code{\link[=tor_fit]{tor_fit()}} fits a binomial mixture model using Bayesian
 inference. It uses Rjags in the background and enables users to specify
 some - but not all - sampling parameters. The structure of the model can also
 be changed. Users who want more flexibility are encouraged to use Rjags

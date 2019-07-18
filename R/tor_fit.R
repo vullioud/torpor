@@ -1,6 +1,6 @@
 #' tor_fit
 #'
-#'tor_fit() fits a binomial mixture model using Bayesian
+#'[tor_fit()] fits a binomial mixture model using Bayesian
 #'inference. It uses Rjags in the background and enables users to specify
 #'some - but not all - sampling parameters. The structure of the model can also
 #'be changed. Users who want more flexibility are encouraged to use Rjags
