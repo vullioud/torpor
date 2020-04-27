@@ -2,6 +2,11 @@
 
 export("%>%")
 export(get_parameters)
+export(step_1)
+export(step_1_and_2)
+export(step_3)
+export(step_3_bis)
+export(step_4)
 export(tor_classify)
 export(tor_fit)
 export(tor_overlap)
