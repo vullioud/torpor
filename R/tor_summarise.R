@@ -59,26 +59,39 @@ return(out)
 
 tor_overlap <- function(mod){
 
-  prior_tlc <- truncnorm::rtruncnorm(20000,a= mod$mean$TLC,mean=0,sd=100)
-  prior_Tt <- truncnorm::rtruncnorm(20000,b=mod$mean$TLC,mean=0,sd=100)
-  prior_betat <- truncnorm::rtruncnorm(20000,b=0,mean=0,sd=100)
+tlc <- mod$mean$tlc
+bmr <- mod$data$BMR
+Ym  <- mod$data$Ym
 
-  tlc_overlap <- get_overlap(mod, "tlc", prior_tlc)
-  Tt_overlap <- get_overlap(mod, "Tt", prior_Tt)
-  betat_overlap <- get_overlap(mod, "betat", prior_betat)
+PRTintc <- truncnorm::rtruncnorm(20000,a = 0, b = bmr/Ym, mean = 0, sd = sqrt(1000))
+PRTt <- truncnorm::rtruncnorm(20000, b = tlc, mean = 0, sd = sqrt(1000))
+PRbeta <- truncnorm::rtruncnorm(20000, b = 0, mean = 0, sd = sqrt(100))
 
-  if(tlc_overlap >= 0.3){
-    warning("Parameters tlc, betac, and intc not identifiable")
+intc_overlap <- get_overlap(mod, params = "intc", priors = PRTintc)
+Tt_overlap <- get_overlap(mod, params = "Tt", priors = PRTt)
+betat_overlap <- get_overlap(mod, params = "betat", priors = PRbeta)
+
+#
+#   prior_tlc <- truncnorm::rtruncnorm(20000,a = mod$mean$TLC,mean=0,sd=100)
+#   prior_Tt <- truncnorm::rtruncnorm(20000,b = mod$mean$TLC,mean=0,sd=100)
+#   prior_betat <- truncnorm::rtruncnorm(20000,b = 0,mean=0,sd=100)
+#
+#   tlc_overlap <- get_overlap(mod, "tlc", prior_tlc)
+#   Tt_overlap <- get_overlap(mod, "Tt", prior_Tt)
+#   betat_overlap <- get_overlap(mod, "betat", prior_betat)
+
+  if (intc_overlap >= 0.3) {
+    warning("Parameters intc, betac, and intc not identifiable")
   }
-  if(Tt_overlap >= 0.3){
+  if (Tt_overlap >= 0.3) {
     warning("Parameters Tt and intr not identifiable")
   }
-  if(betat_overlap >= 0.3){
+  if (betat_overlap >= 0.3) {
     warning("Parameters tlc, betac, and intc not identifiable")
   }
 
-  out <- data.frame(parameter = c("tlc", "Tt", "Betat"),
-                    overlap = c(tlc_overlap, Tt_overlap, betat_overlap))
+  out <- data.frame(parameter = c("intc", "Tt", "Betat"),
+                    overlap = c(intc_overlap, Tt_overlap, betat_overlap))
 
   return(out)
 }
@@ -106,6 +119,7 @@ tor_overlap <- function(mod){
 
 
 get_parameters <- function(mod) {
+
 
   params <- c("tauy", "inte", "intc", "intr", "betat", "betac", "Tt", "tlc") ## params of interest
 
