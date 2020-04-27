@@ -1,4 +1,4 @@
-#' Fitting a model
+#' tor_fit
 #'
 #'[tor_fit()] fits a binomial mixture model using Bayesian
 #'inference.  The function considers the assumed relation between metabolic rate (MR) and ambient temperature (Ta)
@@ -11,7 +11,7 @@
 #'some - but not all - sampling parameters. The structure of the model can also
 #'be changed. Users who want more flexibility are encouraged to use Rjags
 #'directly.
-#'More information about the model can be found in the vignette \code{vignette("model_description", package = "torpor")}.
+#'More information about the model can be found in the \code{vignette("model_description", package = "torpor")}.
 #'
 #'This model should be applied with sufficient sample size and if
 #'evidence suggest that individuals under study will conform to the previously
@@ -44,15 +44,15 @@
 #'fitting_options = list(ni = 5000, nb = 3000, nc = 2))
 
 tor_fit <- function(MR,
-                       Ta,
-                       BMR,
-                       TLC,
-                       model = NULL,
-                       fitting_options = list(ni = 500000,
-                                              nt = 10,
-                                              nb = 300000,
-                                              nc = 3)) {
-  complete_args(tor_fit)
+                    Ta,
+                    BMR,
+                    TLC,
+                    model = NULL,
+                    fitting_options = list(ni = 500000,
+                                           nt = 10,
+                                           nb = 300000,
+                                           nc = 3)) {
+  .complete_args(tor_fit)
 
   ## check input
   if (length(MR) != length(Ta)) {
@@ -93,8 +93,8 @@ tor_fit <- function(MR,
 
   # create data list
   win.data <- list(Y = Y/Ym,
-                   NbObservations=length(Y),
-                   Ta=Ta,
+                   NbObservations = length(Y),
+                   Ta = Ta,
                    TLC = TLC,
                    BMR = BMR/Ym,
                    Ym = Ym) ## included to be able to back-transform BMR and Y for predictions.
@@ -102,15 +102,14 @@ tor_fit <- function(MR,
 
   # create initial values
   inits <- list(
-      tau=runif(1,0.1,1),
-      p=runif(2),
-      betat=runif(1,-0.1,0),
-      tlc =runif(1,TLC,TLC+1),
-      Tt=runif(1),
-      TMR=runif(1,0,0.1),
-      diff=runif(1,1,2))
+      tau = runif(1,0.1,1),
+      p = runif(2),
+      betat = runif(1,-0.1,0),
+      tlc = runif(1,TLC,TLC + 1),
+      Tt = runif(1),
+      TMR = runif(1,0,0.1),
+      diff = runif(1,1,2))
 
-  # create initial values
   inits_hetero_list <- rep(list(inits), fitting_options[["nc"]])
 
 
@@ -130,6 +129,7 @@ tor_fit <- function(MR,
 
   return(out)
 }
+
 ##############################################################################
 
 #'complete_args // internal
@@ -139,10 +139,9 @@ tor_fit <- function(MR,
 #'
 #'@name complete_args
 #'@aliases complete_args
-#'@family fit
 #'@param fn a function
 
-complete_args <- function(fn) {
+.complete_args <- function(fn) {
   ## This function should not be called by the user.
   ## It keeps the default list elements when
   ## a new list with fewer elements is provided.
@@ -167,4 +166,54 @@ complete_args <- function(fn) {
     }
   }
   return(NULL)
+}
+
+
+##############################################################################
+
+#'step_1
+#'
+#' This function estimate the lowest TLC and
+#'
+#'@name complete_args
+#'@aliases complete_args
+#'@param Y A vector of methabolic measure.
+#'@param Ta A vector of ambient temperature.
+#'@examples
+#'step_1(test_data$VO2, test_data$Ta)
+
+step_1 <- function(MR,Ta){
+
+  SEQX <- seq(from = max(Ta,na.rm = TRUE), to = min(Ta,na.rm = TRUE), length.out = 100)
+  Nb <- rep(NA, 100)
+  whitetest <- rep(NA, 100)
+  p <- rep(NA, 100)
+
+  #Define heterosc and slope
+  for (j in 1:100) {
+
+      Nb[j] <- length(MR[Ta > SEQX[j]])
+    if (Nb[j] < 11) {
+      whitetest[j] <- NA
+    p[j] <- NA
+    } else {
+      whitetest[j] <- lmtest::bptest(lm(MR[Ta > SEQX[j]] ~ Ta[Ta > SEQX[j]]))$p.value
+
+      mod <- lm(MR[Ta> SEQX[j]]~Ta[Ta> SEQX[j]])
+      p[j] <- ifelse(coefficients(mod)[2] > 0,NA,summary(mod)$coefficients[2,4])}
+  }
+
+  #Define "low TLC" and first BMR
+
+  test_1 <- ifelse(length(na.omit(SEQX[whitetest > 0.05])) >= 1, min(SEQX[whitetest > 0.05], na.rm = TRUE), NA)
+  test_2 <- ifelse(length(na.omit(SEQX[p < 0.01])) >= 1, SEQX[match(max(SEQX[p < 0.01],na.rm = TRUE) ,SEQX) - 1], NA)
+
+  heterosc <- ifelse(length(na.omit(c(test_1, test_2))) < 1, NA, max(test_1, test_2, na.rm = T))
+
+  if (is.na(heterosc)) stop("TLC and BMR not estimable, please provide them by hand")
+
+  bmr <- mean(MR[Ta > heterosc], na.rm = TRUE)
+out <- c(bmr,heterosc)
+names(out) <- c("bmr", "low_tlc")
+return(out)
 }
