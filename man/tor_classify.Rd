@@ -28,7 +28,9 @@ fitting_options = list(nc = 1, ni = 5000, nb = 3000))
 tor_classify(mod = test_mod)
 }
 \seealso{
-Other predict: \code{\link{eut_predict_fun}},
-  \code{\link{tor_predict_fun}}, \code{\link{tor_predict}}
+Other predict: 
+\code{\link{eut_predict_fun}()},
+\code{\link{tor_predict_fun}()},
+\code{\link{tor_predict}()}
 }
 \concept{predict}

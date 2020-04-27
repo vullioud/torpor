@@ -27,7 +27,9 @@ fitting_options = list(nc = 1, ni = 5000, nb = 3000))
 get_parameters(mod = test)
 }
 \seealso{
-Other summary: \code{\link{get_overlap}},
-  \code{\link{tor_overlap}}, \code{\link{tor_summarise}}
+Other summary: 
+\code{\link{get_overlap}()},
+\code{\link{tor_overlap}()},
+\code{\link{tor_summarise}()}
 }
 \concept{summary}

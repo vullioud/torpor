@@ -2,10 +2,16 @@
 % Please edit documentation in R/tor_fit.R
 \name{tor_fit}
 \alias{tor_fit}
-\title{Fitting a model}
+\title{tor_fit}
 \usage{
-tor_fit(MR, Ta, BMR, TLC, model = NULL, fitting_options = list(ni =
-  5e+05, nt = 10, nb = 3e+05, nc = 3))
+tor_fit(
+  MR,
+  Ta,
+  BMR,
+  TLC,
+  model = NULL,
+  fitting_options = list(ni = 5e+05, nt = 10, nb = 3e+05, nc = 3)
+)
 }
 \arguments{
 \item{MR}{a vector of Metabolic rates}
@@ -41,7 +47,7 @@ The function uses Rjags in the background and enables users to specify
 some - but not all - sampling parameters. The structure of the model can also
 be changed. Users who want more flexibility are encouraged to use Rjags
 directly.
-More information about the model can be found in the vignette \code{vignette("model_description", package = "torpor")}.
+More information about the model can be found in the \code{vignette("model_description", package = "torpor")}.
 }
 \details{
 This model should be applied with sufficient sample size and if
@@ -57,8 +63,5 @@ BMR = 1.005,
 TLC = 29,
 model = NULL,
 fitting_options = list(ni = 5000, nb = 3000, nc = 2))
-}
-\seealso{
-Other fit: \code{\link{complete_args}}
 }
 \concept{fit}

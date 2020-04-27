@@ -28,7 +28,9 @@ a numerical value
 Function to fit the model in torpor
 }
 \seealso{
-Other predict: \code{\link{eut_predict_fun}},
-  \code{\link{tor_classify}}, \code{\link{tor_predict}}
+Other predict: 
+\code{\link{eut_predict_fun}()},
+\code{\link{tor_classify}()},
+\code{\link{tor_predict}()}
 }
 \concept{predict}

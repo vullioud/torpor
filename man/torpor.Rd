@@ -3,7 +3,6 @@
 \docType{package}
 \name{torpor}
 \alias{torpor}
-\alias{torpor-package}
 \title{torpor: Binary mixture model aimed at distinguishing torpid and
 euthermic metabolic rates}
 \description{
@@ -35,7 +34,7 @@ The function \code{\link[=tor_plot]{tor_plot()}} is a wrapper function arround t
 It uses [tor_fit()] to fit a binomial mixture model using
 Bayesian inference and plot the predicted value as well as the raw data.
 Measures are presented in different colors depending of the metabolic state.
-Predicted values as well as 95% credibility interval (segmented lines)
+Predicted values as well as 95\% credibility interval (segmented lines)
 are also presented. This function enable the user to replicates the analysis done in
 Fasel et al. (in prep).
 
@@ -46,7 +45,7 @@ Fasel et al. (in prep).
 
 \section{tor_predict}{
 
-The function provides the predicted MR and 95% credible interval boundaries
+The function provides the predicted MR and 95\% credible interval boundaries
 at a defined Ta given a certain model, in normothermic and/or torpid stage.
 }
 

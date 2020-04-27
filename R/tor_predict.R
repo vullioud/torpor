@@ -25,12 +25,12 @@ tor_predict <- function(mod, Ta){
 
   # retrieved the posterior of interest
   betat <- mod$sims.list$betat
-  betac <-mod$sims.list$betac
-  inte <-mod$sims.list$inte
-  intc <-mod$sims.list$intc
-  intr <-mod$sims.list$intr
-  Tt <-mod$sims.list$Tt
-  tlc <-mod$sims.list$tlc
+  betac <- mod$sims.list$betac
+  inte <- mod$sims.list$inte
+  intc <- mod$sims.list$intc
+  intr <- mod$sims.list$intr
+  Tt <- mod$sims.list$Tt
+  tlc <- mod$sims.list$tlc
   Ym <- mod$data$Ym
 
 
@@ -43,7 +43,7 @@ tor_predict <- function(mod, Ta){
   Y975n <- rep(NA, X)
   Y025n <- rep(NA, X)
 
-  for(i in 1:X) {
+  for (i in 1:X) {
     Ymeant[i] <- stats::median(tor_predict_fun(Ta[i], Tt, intr, intc, betat, betac, Ym))
     Y975t[i] <- stats::quantile(tor_predict_fun(Ta[i],Tt, intr, intc, betat, betac, Ym),0.975)
     Y025t[i] <- stats::quantile(tor_predict_fun(Ta[i],Tt, intr, intc, betat, betac, Ym),0.025)
@@ -69,9 +69,9 @@ tor_predict <- function(mod, Ta){
 
 
 
-  if(length(mod$mean$G[mod$mean$G>1.5]) == 0){ ## no torpor
+  if(length(mod$mean$G[mod$mean$G > 1.5]) == 0){ ## no torpor
     out <- out_eut
-  } else if (length(mod$mean$G[mod$mean$G <n]) == 0){ ## no euthermy
+  } else if (length(mod$mean$G[mod$mean$G < 1.5]) == 0){ ## no euthermy
     out <- out_tor
   } else { ## both torpor and euthermy
     out <- rbind(out_tor, out_eut)
@@ -148,12 +148,12 @@ x <- data.frame(measured_MR = (mod$data$Y)*mod$data$Ym[1],
                 predicted_state = mod$mean$G)
 
 betat <- mod$sims.list$betat
-betac <-mod$sims.list$betac
-inte <-mod$sims.list$inte
-intc <-mod$sims.list$intc
-intr <-mod$sims.list$intr
-Tt <-mod$sims.list$Tt
-tlc <-mod$sims.list$tlc
+betac <- mod$sims.list$betac
+inte <- mod$sims.list$inte
+intc <- mod$sims.list$intc
+intr <- mod$sims.list$intr
+Tt <- mod$sims.list$Tt
+tlc <- mod$sims.list$tlc
 Ym <- mod$data$Ym
 
 

@@ -22,7 +22,9 @@ a numerical value
 function to fit the model in euthermy
 }
 \seealso{
-Other predict: \code{\link{tor_classify}},
-  \code{\link{tor_predict_fun}}, \code{\link{tor_predict}}
+Other predict: 
+\code{\link{tor_classify}()},
+\code{\link{tor_predict_fun}()},
+\code{\link{tor_predict}()}
 }
 \concept{predict}

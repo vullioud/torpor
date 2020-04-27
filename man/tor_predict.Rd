@@ -19,6 +19,7 @@ a data.frame
 a given ambient temperature (Ta), in euthermic and/or torpid state.
 }
 \examples{
+\dontrun{
 data(test_data2)
 test_mod <- tor_fit(MR = test_data2[,2],
 Ta = test_data2[, 1],
@@ -27,8 +28,11 @@ TLC = 28.88,
 fitting_options = list(nc = 2, nb = 3000, ni = 5000))
 tor_predict(mod = test_mod, Ta = 1:20)
 }
+}
 \seealso{
-Other predict: \code{\link{eut_predict_fun}},
-  \code{\link{tor_classify}}, \code{\link{tor_predict_fun}}
+Other predict: 
+\code{\link{eut_predict_fun}()},
+\code{\link{tor_classify}()},
+\code{\link{tor_predict_fun}()}
 }
 \concept{predict}

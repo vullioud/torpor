@@ -71,7 +71,7 @@ tor_plot <- function(mod = NULL,
 
     G <- lwr_95 <- upr_95 <- NULL ## check
 
-    plot <- ggplot2::ggplot(da, ggplot2::aes(x = Ta, y = MR, col = G > 1.5))+
+    plot <- ggplot2::ggplot(da, ggplot2::aes(x = Ta, y = MR, col = G < 1.5)) +
       ggplot2::geom_point() +
       ggplot2::xlim(c(min(da$Ta), max(da$Ta))) +
       ggplot2::geom_line(data = pred[pred$group == "Euthermy", ],
@@ -124,9 +124,9 @@ tor_plot <- function(mod = NULL,
     if(pdf == TRUE){
       pdf("plot.pdf")
     }
-    graphics::plot(Y~Ta,type="n",frame=FALSE, xlim=c(Tlimlo, Tlimup),ylim=c(MRlo, MRup),ylab=ylab, xlab = xlab)
-    graphics::points(Y[out$mean$G>=1.5]~Ta[out$mean$G>=1.5],col= col_torp,pch=19)
-    graphics::points(Y[out$mean$G<1.5]~Ta[out$mean$G<1.5],col= col_eut ,pch=19)
+    graphics::plot(Y~Ta,type="n",frame=FALSE, xlim=c(Tlimlo, Tlimup),ylim=c(MRlo, MRup),ylab= ylab, xlab = xlab)
+    graphics::points(Y[out$mean$G>=1.5] ~ Ta[out$mean$G>=1.5],col = col_torp, pch = 19)
+    graphics::points(Y[out$mean$G<1.5] ~ Ta[out$mean$G<1.5],col = col_eut , pch = 19)
 
 
     if(length(out$mean$G[out$mean$G>1.5])>0){

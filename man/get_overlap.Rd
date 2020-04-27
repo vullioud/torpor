@@ -20,7 +20,9 @@ a numeric value
 Compare the distribution overlap between a prior and a posterior // used internally only
 }
 \seealso{
-Other summary: \code{\link{get_parameters}},
-  \code{\link{tor_overlap}}, \code{\link{tor_summarise}}
+Other summary: 
+\code{\link{get_parameters}()},
+\code{\link{tor_overlap}()},
+\code{\link{tor_summarise}()}
 }
 \concept{summary}

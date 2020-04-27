@@ -4,7 +4,9 @@
 \name{test_data}
 \alias{test_data}
 \title{test_data}
-\format{A data frame with 28 obs. taken from Genoud EA 1997}
+\format{
+A data frame with 28 obs. taken from Genoud EA 1997
+}
 \usage{
 data(test_data)
 }
