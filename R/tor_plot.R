@@ -40,11 +40,11 @@ tor_plot <- function(mod = NULL,
   }
 
   ## retrieve values from the model
-  TLC <- out$sims.list$TLC[1]
-  BMR <- out$sims.list$BMR[1]*out$sims.list$Ym[1]
+  TLC <- out$sims.list$tlc[1]
+  BMR <- out$data$BMR*out$data$Ym
 
 
-  Y <- MR <- out$data$Y*out$sims.list$Ym[1]
+  Y <- MR <- out$data$Y*out$data$Ym
   Ta <- out$data$Ta
 
   # plotting limits
