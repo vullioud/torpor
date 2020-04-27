@@ -4,9 +4,16 @@
 \alias{tor_plot}
 \title{Plot raw data and predicted values}
 \usage{
-tor_plot(mod = NULL, plot_type = "ggplot",
-  col_torp = "cornflowerblue", col_eut = "coral3", ylab = "M",
-  xlab = "Ta", pdf = FALSE, ...)
+tor_plot(
+  mod = NULL,
+  plot_type = "ggplot",
+  col_torp = "cornflowerblue",
+  col_eut = "coral3",
+  ylab = "M",
+  xlab = "Ta",
+  pdf = FALSE,
+  ...
+)
 }
 \arguments{
 \item{mod}{a fitted model from \code{\link[=tor_fit]{tor_fit()}}}
