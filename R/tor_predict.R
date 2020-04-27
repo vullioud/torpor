@@ -11,6 +11,7 @@
 #'@return a data.frame
 #'@export
 #'@examples
+#'\dontrun{
 #'data(test_data2)
 #'test_mod <- tor_fit(MR = test_data2[,2],
 #'Ta = test_data2[, 1],
@@ -18,6 +19,7 @@
 #'TLC = 28.88,
 #'fitting_options = list(nc = 2, nb = 3000, ni = 5000))
 #'tor_predict(mod = test_mod, Ta = 1:20)
+#'}
 tor_predict <- function(mod, Ta){
 
 
@@ -29,7 +31,7 @@ tor_predict <- function(mod, Ta){
   intr <-mod$sims.list$intr
   Tt <-mod$sims.list$Tt
   tlc <-mod$sims.list$tlc
-  Ym <- mod$sims.list$Ym[1]
+  Ym <- mod$data$Ym
 
 
   X <- length(Ta)
@@ -69,7 +71,7 @@ tor_predict <- function(mod, Ta){
 
   if(length(mod$mean$G[mod$mean$G>1.5]) == 0){ ## no torpor
     out <- out_eut
-  } else if (length(mod$mean$G[mod$mean$G<1.5]) == 0){ ## no euthermy
+  } else if (length(mod$mean$G[mod$mean$G <n]) == 0){ ## no euthermy
     out <- out_tor
   } else { ## both torpor and euthermy
     out <- rbind(out_tor, out_eut)
@@ -152,7 +154,7 @@ intc <-mod$sims.list$intc
 intr <-mod$sims.list$intr
 Tt <-mod$sims.list$Tt
 tlc <-mod$sims.list$tlc
-Ym <- mod$sims.list$Ym[1]
+Ym <- mod$data$Ym
 
 
 X <- nrow(x)
