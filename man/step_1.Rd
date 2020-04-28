@@ -4,12 +4,12 @@
 \alias{step_1}
 \title{step_1}
 \usage{
-step_1(MR, Ta)
+step_1(Y, Ta)
 }
 \arguments{
-\item{Ta}{A vector of ambient temperature.}
-
 \item{Y}{A vector of methabolic measure.}
+
+\item{Ta}{A vector of ambient temperature.}
 }
 \description{
 This function estimate the lowest TLC and the bmr

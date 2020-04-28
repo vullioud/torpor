@@ -17,6 +17,10 @@ step_4(
 
 \item{Y}{A vector of methabolic measure.}
 
+\item{bmr}{bmr value if not estimated}
+
+\item{tlc}{tlc value if not estimated}
+
 \item{fitting_options}{a list specifying sampling parameters. The follwing parameters can be speficied:
 \itemize{
 \item ni = number of itterations: default ni = 500000
@@ -29,5 +33,7 @@ step_4(
 This function estimate the lowest TLC and the bmr
 }
 \examples{
+\dontrun{
 test_mod <- step_4(Ta = test_data3$Ta, Y = test_data3$VO2)
+}
 }

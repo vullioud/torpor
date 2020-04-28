@@ -17,6 +17,10 @@ step_3(
 
 \item{Ta}{A vector of ambient temperature.}
 
+\item{bmr}{bmr value if not estimated}
+
+\item{tlc}{tlc value if not estimated}
+
 \item{fitting_options}{a list specifying sampling parameters. The follwing parameters can be speficied:
 \itemize{
 \item ni = number of itterations: default ni = 500000
@@ -29,5 +33,7 @@ step_3(
 This function estimate the lowest TLC and the bmr
 }
 \examples{
+\dontrun{
 step_3(Ta = test_data$Ta, Y = test_data$VO2)
+}
 }
