@@ -31,7 +31,8 @@ Imports: jagsUI,
         magrittr,
         overlapping, 
         knitr,
-        rmarkdown
+        rmarkdown, 
+        lmtest
 VignetteBuilder: knitr
 Suggests: 
     testthat (>= 2.1.0),
