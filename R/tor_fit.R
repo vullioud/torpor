@@ -182,7 +182,7 @@ tor_fit <- function(MR,
 #'@examples
 #'step_1(test_data$VO2, test_data$Ta)
 
-step_1 <- function(MR,Ta){
+step_1 <- function(Y,Ta){
 
   SEQX <- seq(from = max(Ta,na.rm = TRUE), to = min(Ta,na.rm = TRUE), length.out = 100)
   Nb <- rep(NA, 100)
@@ -192,28 +192,28 @@ step_1 <- function(MR,Ta){
   #Define heterosc and slope
   for (j in 1:100) {
 
-      Nb[j] <- length(MR[Ta > SEQX[j]])
+      Nb[j] <- length(Y[Ta > SEQX[j]])
     if (Nb[j] < 11) {
       whitetest[j] <- NA
     p[j] <- NA
     } else {
-      whitetest[j] <- lmtest::bptest(lm(MR[Ta > SEQX[j]] ~ Ta[Ta > SEQX[j]]))$p.value
+      whitetest[j] <- lmtest::bptest(stats::lm(Y[Ta > SEQX[j]] ~ Ta[Ta > SEQX[j]]))$p.value
 
-      mod <- lm(MR[Ta> SEQX[j]]~Ta[Ta> SEQX[j]])
-      p[j] <- ifelse(coefficients(mod)[2] > 0,NA,summary(mod)$coefficients[2,4])}
+      mod <- stats::lm(Y[Ta> SEQX[j]]~Ta[Ta> SEQX[j]])
+      p[j] <- ifelse(stats::coefficients(mod)[2] > 0,NA, summary(mod)$coefficients[2,4])}
   }
 
   #Define "low TLC" and first BMR
 
-  test_1 <- ifelse(length(na.omit(SEQX[whitetest > 0.05])) >= 1, min(SEQX[whitetest > 0.05], na.rm = TRUE), NA)
-  test_2 <- ifelse(length(na.omit(SEQX[p < 0.01])) >= 1, SEQX[match(max(SEQX[p < 0.01],na.rm = TRUE) ,SEQX) - 1], NA)
+  test_1 <- ifelse(length(stats::na.omit(SEQX[whitetest > 0.05])) >= 1, min(SEQX[whitetest > 0.05], na.rm = TRUE), NA)
+  test_2 <- ifelse(length(stats::na.omit(SEQX[p < 0.01])) >= 1, SEQX[match(max(SEQX[p < 0.01],na.rm = TRUE) ,SEQX) - 1], NA)
 
-  heterosc <- ifelse(length(na.omit(c(test_1, test_2))) < 1, NA, max(test_1, test_2, na.rm = TRUE))
+  heterosc <- ifelse(length(stats::na.omit(c(test_1, test_2))) < 1, NA, max(test_1, test_2, na.rm = TRUE))
 
   if (is.na(heterosc)) stop("TLC and BMR not estimable, please provide them by hand")
 
-  bmr <- mean(MR[Ta > heterosc], na.rm = TRUE)
-out <- c(bmr,heterosc)
+  bmr <- mean(Y[Ta > heterosc], na.rm = TRUE)
+  out <- c(bmr,heterosc)
 names(out) <- c("bmr", "low_tlc")
 return(out)
 }
@@ -289,11 +289,13 @@ return(out)
 #'
 #'@name step_3
 #'@export
-#'@param Y A vector of methabolic measure.
-#'@param Ta A vector of ambient temperature.
-#'@inheritParams tor_fit
+#'@param bmr bmr value if not estimated
+#'@param tlc tlc value if not estimated
+#'@inheritParams step_1_and_2
 #'@examples
+#'\dontrun{
 #'step_3(Ta = test_data$Ta, Y = test_data$VO2)
+#'}
 step_3 <- function(Y, Ta, bmr = NULL, tlc = NULL, fitting_options = list(ni = 500000,
                                                                          nt = 10,
                                                                          nb = 300000,
@@ -399,7 +401,7 @@ step_3_bis <- function(mod){
   G[sqrt((G - round(G))^2) > 0.496] <- 0
   G <- round(G)
 
-  if (length(G[G == 1]) !=0 ) {
+  if (length(G[G == 1]) != 0 ) {
 
     for (i in 1:length(Y <= tlc)) {
 
@@ -420,7 +422,9 @@ step_3_bis <- function(mod){
 #'@inheritParams step_3
 #'@export
 #'@examples
+#'\dontrun{
 #'test_mod <- step_4(Ta = test_data3$Ta, Y = test_data3$VO2)
+#'}
 step_4 <- function(Ta, Y,  bmr = NULL, tlc = NULL, fitting_options = list(ni = 500000,
                                                                           nt = 10,
                                                                           nb = 300000,
@@ -454,7 +458,7 @@ step_4 <- function(Ta, Y,  bmr = NULL, tlc = NULL, fitting_options = list(ni = 5
 
   path_to_model_3 <- system.file("extdata", "hetero_3.txt",  package = "torpor")
 
-  inits_3<- list(
+  inits_3 <- list(
     tauy = runif(1,0.05,1),
     coef = runif(1,1,1.1),
     p = runif(3),
