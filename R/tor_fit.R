@@ -304,9 +304,7 @@ step_3 <- function(Y, Ta, bmr = NULL, tlc = NULL, fitting_options = list(ni = 50
   .complete_args(step_3)
 
   ## check input
-  if (length(Y) != length(Ta)) {
-    stop("Ta and MR have not the same length")
-  }
+  if (length(Y) != length(Ta)) stop("Ta and MR have not the same length")
 
   data <- cbind(Y, Ta)[!is.na(Y) & !is.na(Ta), ] ## remove Nas
 
@@ -383,21 +381,10 @@ step_3 <- function(Y, Ta, bmr = NULL, tlc = NULL, fitting_options = list(ni = 50
 #'@param mod A fitted model
 #'@export
 step_3_bis <- function(mod){
-
-  betat <- mod$sims.list$betat
-  betac <- mod$sims.list$betac
-  inte <- mod$sims.list$inte
-  intc <- mod$sims.list$intc
-  intr <- mod$sims.list$intr
-  Tt <- mod$sims.list$Tt
-
-  Ym <- mod$data$Ym
   Ta <- mod$data$Ta
   Y <- mod$data$Y
-  tlc <- mod$data$tlc
 
   G <- mod$mean$G
-
   G[sqrt((G - round(G))^2) > 0.496] <- 0
   G <- round(G)
 
@@ -406,8 +393,17 @@ step_3_bis <- function(mod){
     for (i in 1:length(Y <= tlc)) {
 
       #Only proceed to this step if there are at least one torpid (G==1) value.
-      G[i] <- ifelse(Y[i] <= stats::median(tor_predict_fun(Ta[i], Tt, intr, intc, betat, betac, Ym)) & G[i] != 3, 1, G[i])
-      G[i] <- ifelse(Y[i] >=  stats::median(eut_predict_fun(Ta[i], inte, betat, Ym)) & G[i] != 3, 2 ,G[i])
+      G[i] <- ifelse(Y[i] <= stats::median(tor_predict_fun(x = Ta[i],
+                                                           Tt = mod$sims.list$Tt,
+                                                           intr = mod$sims.list$intr,
+                                                           intc = mod$sims.list$intc,
+                                                           betat = mod$sims.list$betat,
+                                                           betac = mod$sims.list$betac,
+                                                           Ym = mod$data$Ym)) & G[i] != 3, 1, G[i])
+      G[i] <- ifelse(Y[i] >=  stats::median(eut_predict_fun(x = Ta[i],
+                                                            inte = mod$sims.list$inte,
+                                                            betat = mod$sims.list$betat,
+                                                            Ym = mod$data$Ym)) & G[i] != 3, 2 ,G[i])
     }
 
   }
@@ -428,24 +424,23 @@ step_3_bis <- function(mod){
 step_4 <- function(Ta, Y,  bmr = NULL, tlc = NULL, fitting_options = list(ni = 500000,
                                                                           nt = 10,
                                                                           nb = 300000,
-                                                                          nc = 3)) {
+                                                                          nc = 3), .debug = FALSE) {
 
 
+  if (length(Ta) != length(Y)) stop("Y, Ta don´t have the same length")
   ## run step 1-3
   out_2 <- step_3(Ta = Ta, Y = Y,  bmr = bmr, tlc = tlc, fitting_options = fitting_options)
 
+
   ## manual
-  tt <- step_3_bis(out_2)
+  G <- step_3_bis(out_2)
+  if (.debug) return(list(out_2, G))
 
   Y <- out_2$data$Y
   Ta <- out_2$data$Ta
   Ym <- out_2$data$Ym
   tlc <- out_2$data$tlc
   bmr <- out_2$data$BMR
-
-  G <- tt
-
-  if (length(Ta) != length(Y) | length(Y) != length(G)) stop("Y, Ta and G don´t have the same length")
 
   win.data_3 <- list(Y = Y[G != 0 & G != 3] / Ym,
                      NbObservations = length(Y[G != 0 & G != 3]),
