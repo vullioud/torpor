@@ -1,5 +1,4 @@
 devtools::load_all()
-
 data(test_data)
 
   library(rjags)
@@ -10,9 +9,11 @@ data(test_data)
   library(truncnorm)
 
 
-  ######################################################################
+
+  #####################################################################
   #Model
   #####################################################################
+
 
   #####Enter Data
   #########################
@@ -21,11 +22,12 @@ data(test_data)
   setwd("/Users/nicolas/Dropbox/Projects/UNIL/Torpor/DATA_TechNote")
 
   DATA <- read.table("/Users/nicolas/Dropbox/Projects/UNIL/Torpor/DATAExtracted_withoutElephantus.txt", sep = "", header = T)
-  liste <- list.files(pattern="*.csv")
+  liste <- list.files(pattern = "*.csv")
 
 
   DATA <- test_data
-  results <-   matrix(NA,ncol=9,nrow=length(liste))
+  results <-   matrix(NA, ncol = 9,nrow = length(liste))
+
   colnames(results) <- c("tlc",
                          "bmr",
                          "Tt",
@@ -36,26 +38,26 @@ data(test_data)
                          "intr",
                          "MRinhibit")
 
-  level=c("TOR","EUT","TNZ")
+  level = c("TOR","EUT","TNZ")
 
   ###########start of the loop
 data <- DATA
   data$y <- data$VO2
 
-  for(t in  1:length(liste)){
+  for (t in  1:length(liste)) {
 
-  data <- read.csv(liste[t],header=T)
+  data <- read.csv(liste[t],header = T)
   ylab <- names(data)[3]
 
   names(data)[c(2,3,5)] <- c("Ta","Y","state")
 
-  data <- data[!data$state=="UP",]
+  data <- data[!data$state == "UP",]
 
-  data$state <- gsub("TORREG","TOR",data$state)
-  data$state <- gsub("TORTNZ","TNZ",data$state)
-  data$state <- gsub("TOR","TOR",data$state)
-  data$state <- gsub("HYP","TOR",data$state)
-  data$state <- gsub("TOR2","TOR",data$state)
+  data$state <- gsub("TORREG","TOR", data$state)
+  data$state <- gsub("TORTNZ","TNZ", data$state)
+  data$state <- gsub("TOR","TOR", data$state)
+  data$state <- gsub("HYP","TOR", data$state)
+  data$state <- gsub("TOR2","TOR", data$state)
 
   data <- data[!is.na(data$Y)&!is.na(data$Ta),]
   set.seed(666)
@@ -197,7 +199,7 @@ data <- DATA
   G <- out2$mean$G
 
   #Define uncertain values (G==0)
-  G[sqrt((G-round(G))^2)>0.496] <- 0
+  G[sqrt((G-round(G))^2)>0.496] <- 0   ### adapt to
   G <- round(G)
 
   #Any Y value higher than Ymeann should be considered as Euthermic and Y value lower than Ymeant should be considered as torpid
@@ -250,8 +252,8 @@ data <- DATA
   intc <-out3$sims.list$intc
   intr <-out3$sims.list$intr
   Tt <-out3$sims.list$Tt
-  MRinhibit <- median(funtorp(tlc),na.rm=T)/median(funnorm(tlc),na.rm=T)
-  Tm <- (log(bmr)-log(intc))*Tt/(log(funtorp(mean(Tt)))-log(intc))
+  MRinhibit <- median(funtorp(tlc),na.rm=T)/median(funnorm(tlc),na.rm=T)  ##to keep
+  Tm <- (log(bmr)-log(intc))*Tt/(log(funtorp(mean(Tt)))-log(intc)) ## not used anymore
 
   for(i in 1:100){
     Ymeant[i] <- median(funtorp(X[i]),na.rm=T)
