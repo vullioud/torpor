@@ -20,14 +20,6 @@ step_3(
 \item{bmr}{bmr value if not estimated}
 
 \item{tlc}{tlc value if not estimated}
-
-\item{fitting_options}{a list specifying sampling parameters. The follwing parameters can be speficied:
-\itemize{
-\item ni = number of itterations: default ni = 500000
-\item nt = thin rate: default nt = 10
-\item nb = number of burns: default nb = 300000
-\item nc = number of chains: default nc = 3
-}}
 }
 \description{
 This function estimate the lowest TLC and the bmr

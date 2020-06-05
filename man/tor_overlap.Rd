@@ -26,7 +26,7 @@ Ta = test_data2[, 1],
 BMR = 1.49,
 TLC = 28.8,
 model = NULL,
-fitting_options = list(nc = 1, ni = 5000, nb = 3000))
+fitting_options = list(nc = 1, ni = 8000, nb = 3000))
 tor_overlap(mod = test)
 }
 \seealso{

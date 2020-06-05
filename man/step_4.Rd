@@ -9,7 +9,8 @@ step_4(
   Y,
   bmr = NULL,
   tlc = NULL,
-  fitting_options = list(ni = 5e+05, nt = 10, nb = 3e+05, nc = 3)
+  fitting_options = list(ni = 5e+05, nt = 10, nb = 3e+05, nc = 3),
+  .debug = FALSE
 )
 }
 \arguments{
@@ -20,17 +21,25 @@ step_4(
 \item{bmr}{bmr value if not estimated}
 
 \item{tlc}{tlc value if not estimated}
-
-\item{fitting_options}{a list specifying sampling parameters. The follwing parameters can be speficied:
-\itemize{
-\item ni = number of itterations: default ni = 500000
-\item nt = thin rate: default nt = 10
-\item nb = number of burns: default nb = 300000
-\item nc = number of chains: default nc = 3
-}}
 }
 \description{
-This function estimate the lowest TLC and the bmr
+\code{\link[=step_4]{step_4()}} fits a binomial mixture model using Bayesian
+inference.  The function considers the assumed relation between metabolic rate (MR) and ambient temperature (Ta)
+(Speakman & Thomas 2003). In the hypothermic state (torpor) and above some
+threshold Ta (Tmin), MR follows an exponential curve reflecting the Arrhenius
+rate enhancing effect of temperature on chemical reactions, whereas below
+Tmin, it increases linearly with decreasing Ta to maintain a minimal body temperature (Tb) in
+torpor. In the euthermic state, MR solely increases linearly with decreasing Ta.
+The function uses Rjags in the background and enables users to specify
+some - but not all - sampling parameters. The structure of the model can also
+be changed. Users who want more flexibility are encouraged to use Rjags
+directly.
+More information about the model can be found in the \code{vignette("model_description", package = "torpor")}.
+}
+\details{
+This model should be applied with sufficient sample size and if
+evidence suggest that individuals under study will conform to the previously
+described pattern while in torpor.
 }
 \examples{
 \dontrun{
