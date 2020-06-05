@@ -54,18 +54,19 @@ return(out)
 #'BMR = 1.49,
 #'TLC = 28.8,
 #'model = NULL,
-#'fitting_options = list(nc = 1, ni = 5000, nb = 3000))
+#'fitting_options = list(nc = 1, ni = 8000, nb = 3000))
 #'tor_overlap(mod = test)
 
 tor_overlap <- function(mod){
+size <- nrow(mod$samples[[1]])
 
 tlc <- mod$mean$tlc
 bmr <- mod$data$BMR
 Ym  <- mod$data$Ym
 
-PRTintc <- truncnorm::rtruncnorm(20000,a = 0, b = bmr/Ym, mean = 0, sd = sqrt(1000))
-PRTt <- truncnorm::rtruncnorm(20000, b = tlc, mean = 0, sd = sqrt(1000))
-PRbeta <- truncnorm::rtruncnorm(20000, b = 0, mean = 0, sd = sqrt(100))
+PRTintc <- truncnorm::rtruncnorm(size,a = 0, b = bmr/Ym, mean = 0, sd = sqrt(1000))  ## variable based on model flexible
+PRTt <- truncnorm::rtruncnorm(size, b = tlc, mean = 0, sd = sqrt(1000))
+PRbeta <- truncnorm::rtruncnorm(size, b = 0, mean = 0, sd = sqrt(100))
 
 intc_overlap <- get_overlap(mod, params = "intc", priors = PRTintc)
 Tt_overlap <- get_overlap(mod, params = "Tt", priors = PRTt)

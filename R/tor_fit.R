@@ -1,135 +1,3 @@
-#' tor_fit
-#'
-#'[tor_fit()] fits a binomial mixture model using Bayesian
-#'inference.  The function considers the assumed relation between metabolic rate (MR) and ambient temperature (Ta)
-#'(Speakman & Thomas 2003). In the hypothermic state (torpor) and above some
-#'threshold Ta (Tmin), MR follows an exponential curve reflecting the Arrhenius
-#'rate enhancing effect of temperature on chemical reactions, whereas below
-#'Tmin, it increases linearly with decreasing Ta to maintain a minimal body temperature (Tb) in
-#'torpor. In the euthermic state, MR solely increases linearly with decreasing Ta.
-#'The function uses Rjags in the background and enables users to specify
-#'some - but not all - sampling parameters. The structure of the model can also
-#'be changed. Users who want more flexibility are encouraged to use Rjags
-#'directly.
-#'More information about the model can be found in the \code{vignette("model_description", package = "torpor")}.
-#'
-#'This model should be applied with sufficient sample size and if
-#'evidence suggest that individuals under study will conform to the previously
-#'described pattern while in torpor.
-#'
-#'@name tor_fit
-#'@aliases tor_fit
-#'@family fit
-#'@param MR a vector of Metabolic rates
-#'@param Ta a vector of ambient Temperatures (same length as MR)
-#'@param BMR BMR Basal Metabolic Rate for the focal specie
-#'@param TLC lower critical temperature for the focal specie
-#'@param model path to model_file.txt if a different model is used
-#'@param fitting_options a list specifying sampling parameters. The follwing parameters can be speficied:
-#' * ni = number of itterations: default ni = 500000
-#' * nt = thin rate: default nt = 10
-#' * nb = number of burns: default nb = 300000
-#' * nc = number of chains: default nc = 3
-#'@return fitted model. A list of class "JagsUI".
-#'@export
-#'@importFrom stats runif
-#'@examples
-#'rm(list = ls())
-#'data(test_data3)
-#'test2 <- tor_fit(MR = test_data3[,2],
-#'Ta = test_data3[, 1],
-#'BMR = 1.005,
-#'TLC = 29,
-#'model = NULL,
-#'fitting_options = list(ni = 5000, nb = 3000, nc = 2))
-
-tor_fit <- function(MR,
-                    Ta,
-                    BMR,
-                    TLC,
-                    model = NULL,
-                    fitting_options = list(ni = 500000,
-                                           nt = 10,
-                                           nb = 300000,
-                                           nc = 3)) {
-  .complete_args(tor_fit)
-
-  ## check input
-  if (length(MR) != length(Ta)) {
-    stop("Ta and MR have not the same length")
-  }
-
-  ## find the model if not given by the user
-  if (is.null(model)) {
-    path_to_model <- system.file("extdata", "hetero.txt",  package = "torpor")
-  } else {
-    path_to_model <- paste(model)
-  }
-
-  ## Returned values
-  params_hetero <- c("tauy",
-                     "G",
-                     "p",
-                     "inte",
-                     "intc",
-                     "intr",
-                     "betat",
-                     "betac",
-                     "Tt",
-                     "TMR",
-                     "tlc",
-                     "diff",
-                     "TLC",
-                     "BMR",
-                     "Ym")
-
-  ## get the values for the models /reorder the data and remove NA
-  da <- cbind(MR, Ta)[!is.na(MR) & !is.na(Ta) & Ta < (TLC), ]
-  Y <- da[, "MR"]
-  Ta <- da[, "Ta"]
-
-  ## get the mean to standardised Y and BMR
-  Ym <- mean(Y, na.rm = TRUE)
-
-  # create data list
-  win.data <- list(Y = Y/Ym,
-                   NbObservations = length(Y),
-                   Ta = Ta,
-                   TLC = TLC,
-                   BMR = BMR/Ym,
-                   Ym = Ym) ## included to be able to back-transform BMR and Y for predictions.
-
-
-  # create initial values
-  inits <- list(
-      tau = runif(1,0.1,1),
-      p = runif(2),
-      betat = runif(1,-0.1,0),
-      tlc = runif(1,TLC,TLC + 1),
-      Tt = runif(1),
-      TMR = runif(1,0,0.1),
-      diff = runif(1,1,2))
-
-  inits_hetero_list <- rep(list(inits), fitting_options[["nc"]])
-
-
-  out <- jagsUI::jags(
-    data = win.data,
-    inits = inits_hetero_list,
-    parameters.to.save = params_hetero,
-    model.file = path_to_model,
-    n.chains = fitting_options[["nc"]],
-    n.thin = fitting_options[["nt"]],
-    n.iter = fitting_options[["ni"]],
-    n.burnin = fitting_options[["nb"]],
-    parallel = TRUE,
-    verbose = FALSE,
-    store.data = TRUE
-  )
-
-  return(out)
-}
-
 ##############################################################################
 
 #'complete_args // internal
@@ -184,6 +52,7 @@ tor_fit <- function(MR,
 
 step_1 <- function(Y,Ta){
 
+
   SEQX <- seq(from = max(Ta,na.rm = TRUE), to = min(Ta,na.rm = TRUE), length.out = 100)
   Nb <- rep(NA, 100)
   whitetest <- rep(NA, 100)
@@ -204,6 +73,8 @@ step_1 <- function(Y,Ta){
   }
 
   #Define "low TLC" and first BMR
+  #if (length(SEQX[p < 0.01 & !is.na(p)]) == 0) stop("Error: not possible to estimate MTNZ or TLC")
+
 
   test_1 <- ifelse(length(stats::na.omit(SEQX[whitetest > 0.05])) >= 1, min(SEQX[whitetest > 0.05], na.rm = TRUE), NA)
   test_2 <- ifelse(length(stats::na.omit(SEQX[p < 0.01])) >= 1, SEQX[match(max(SEQX[p < 0.01],na.rm = TRUE) ,SEQX) - 1], NA)
@@ -212,8 +83,12 @@ step_1 <- function(Y,Ta){
 
   if (is.na(heterosc)) stop("TLC and BMR not estimable, please provide them by hand")
 
+  if (length(Y[Ta > heterosc]) < 10) warning("MTNZ computed on less than 10 points")
   bmr <- mean(Y[Ta > heterosc], na.rm = TRUE)
+
   out <- c(bmr,heterosc)
+
+
 names(out) <- c("bmr", "low_tlc")
 return(out)
 }
@@ -242,14 +117,14 @@ step_1_and_2 <- function(Y, Ta, fitting_options = list(ni = 500000,
   Y2 <- Y[Ta < heterosc]
 
   inits <- list(
-    tauy = runif(1,0.05,1),
-    coef = runif(1,1,1.1),
-    p = runif(2),
-    betat = runif(1,-0.1,0),
-    tlc = runif(1,heterosc,max(Ta)),
-    Tt = runif(1),
-    TMR = runif(1,0,bmr*0.8/Ym),
-    intc1 = runif(1,0,bmr*0.8/Ym))
+      tauy = runif(1,0.1,1),
+      coef = runif(1,1,1.1),
+      p = runif(2),
+      Tbe = runif(1,heterosc,50),
+      tlc = runif(1,heterosc,max(Ta)),
+      Tt = runif(1),
+      TMR = runif(1,0,bmr*0.8/Ym),
+      intc1 = runif(1,0,bmr*0.8/Ym))
 
   inits_hetero_list <- rep(list(inits), fitting_options[["nc"]])
 
@@ -317,21 +192,22 @@ step_3 <- function(Y, Ta, bmr = NULL, tlc = NULL, fitting_options = list(ni = 50
     message("BMR and TLC are being
             estimated from the data")
     out_2 <- step_1_and_2(Ta = Ta, Y = Y)
-    bmr <- mean(Y[Ta > out_2$mean$tlc])
-    tlc <- out_2$mean$tlc
+    bmr <- mean(Y[Ta > out_2$mean$tlc])*out_2$data$Ym
+    tlc <- out_2$mean$tlc*out_2$data$Ym
   }
 
   Ym <- mean(Y, na.rm = T)
-
+  heterosc <- out_2$data$heterosc
   ## initial values
   inits_2 <- list(
-    tauy = runif(1,0.05,1),
+    tauy = runif(1,0.1,1),
     coef = runif(1,1,1.1),
-    p = runif(3),
-    betat = runif(1,-0.1,0),
-    intc1 = runif(1,0, bmr*0.8/Ym),
+    p = runif(2),
+    Tbe = runif(1,heterosc,50),
+    tlc = runif(1,heterosc,max(Ta)),
     Tt = runif(1),
-    TMR = runif(1,0, bmr*0.8/Ym))
+    TMR = runif(1,0,bmr*0.8/Ym),
+    intc1 = runif(1,0,bmr*0.8/Ym))
 
   inits_hetero_list_2 <- rep(list(inits_2), fitting_options[["nc"]])
 
@@ -385,7 +261,8 @@ step_3_bis <- function(mod){
   Y <- mod$data$Y
 
   G <- mod$mean$G
-  G[sqrt((G - round(G))^2) > 0.496] <- 0
+  limit <- .get_limit_value(nrow(mod$samples[[1]]))
+  G[sqrt((G - round(G))^2) > limit] <- 0
   G <- round(G)
 
   if (length(G[G == 1]) != 0 ) {
@@ -410,9 +287,24 @@ step_3_bis <- function(mod){
   return(G)
 }
 
-#'step_4
+#' step_4
 #'
-#' This function estimate the lowest TLC and the bmr
+#'[step_4()] fits a binomial mixture model using Bayesian
+#'inference.  The function considers the assumed relation between metabolic rate (MR) and ambient temperature (Ta)
+#'(Speakman & Thomas 2003). In the hypothermic state (torpor) and above some
+#'threshold Ta (Tmin), MR follows an exponential curve reflecting the Arrhenius
+#'rate enhancing effect of temperature on chemical reactions, whereas below
+#'Tmin, it increases linearly with decreasing Ta to maintain a minimal body temperature (Tb) in
+#'torpor. In the euthermic state, MR solely increases linearly with decreasing Ta.
+#'The function uses Rjags in the background and enables users to specify
+#'some - but not all - sampling parameters. The structure of the model can also
+#'be changed. Users who want more flexibility are encouraged to use Rjags
+#'directly.
+#'More information about the model can be found in the \code{vignette("model_description", package = "torpor")}.
+#'
+#'This model should be applied with sufficient sample size and if
+#'evidence suggest that individuals under study will conform to the previously
+#'described pattern while in torpor.
 #'
 #'@name step_4
 #'@inheritParams step_3
@@ -421,9 +313,9 @@ step_3_bis <- function(mod){
 #'\dontrun{
 #'test_mod <- step_4(Ta = test_data3$Ta, Y = test_data3$VO2)
 #'}
-step_4 <- function(Ta, Y,  bmr = NULL, tlc = NULL, fitting_options = list(ni = 500000,
+step_4 <- function(Ta, Y,  bmr = NULL, tlc = NULL, fitting_options = list(ni = 5000,
                                                                           nt = 10,
-                                                                          nb = 300000,
+                                                                          nb = 3000,
                                                                           nc = 3), .debug = FALSE) {
 
 
@@ -436,12 +328,11 @@ step_4 <- function(Ta, Y,  bmr = NULL, tlc = NULL, fitting_options = list(ni = 5
   G <- step_3_bis(out_2)
   if (.debug) return(list(out_2, G))
 
-  Y <- out_2$data$Y
+  Y <- out_2$data$Y*out_2$data$Ym
   Ta <- out_2$data$Ta
+  tlc <- out_2$data$tlc*out_2$data$Ym
+  bmr <- out_2$data$BMR*out_2$data$Ym
   Ym <- out_2$data$Ym
-  tlc <- out_2$data$tlc
-  bmr <- out_2$data$BMR
-
   win.data_3 <- list(Y = Y[G != 0 & G != 3] / Ym,
                      NbObservations = length(Y[G != 0 & G != 3]),
                      Ta = Ta[G != 0 & G != 3],
@@ -454,13 +345,13 @@ step_4 <- function(Ta, Y,  bmr = NULL, tlc = NULL, fitting_options = list(ni = 5
   path_to_model_3 <- system.file("extdata", "hetero_3.txt",  package = "torpor")
 
   inits_3 <- list(
-    tauy = runif(1,0.05,1),
+    tauy = runif(1,0.1,1),
     coef = runif(1,1,1.1),
     p = runif(3),
-    betat = runif(1,-0.1,0),
-    intc1 = runif(1,0, bmr*0.8/Ym),
+    Tbe = runif(1,tlc,50),
+    intc1 = runif(1,0,bmr*0.8/Ym),
     Tt = runif(1),
-    TMR = runif(1,0, bmr*0.8/Ym))
+    TMR = runif(1,0,bmr*0.8/Ym))
 
   inits_hetero_list_3 <- rep(list(inits_3), fitting_options[["nc"]])
 
@@ -478,4 +369,27 @@ step_4 <- function(Ta, Y,  bmr = NULL, tlc = NULL, fitting_options = list(ni = 5
 
 
   return(out3)
+}
+
+
+#'.get_limit_value
+#'
+#' find the limit value
+#'
+#'@name .get_limit_value
+#'@param nb_samples size of the samples
+.get_limit_value <- function(nb_samples){
+
+  Seq <- round(nb_samples*0.9/2):round(nb_samples/2)
+
+  Pvalues <- rep(NA,length(Seq))
+
+
+
+  for(i in 1:length(Seq)){
+
+    Pvalues[i] <- binom.test(Seq[i],nb_samples)$p.value}
+
+
+  max(Seq[Pvalues<0.05])/nb_samples
 }

@@ -19,8 +19,8 @@
 #'@return a base-R plot or a ggplot object
 #'@importFrom grDevices dev.off
 #'@examples
-#'data(test_data3)
-#'tor_plot(MR = test_data3[,2], Ta = test_data3[,1], BMR = 1.055, TLC = 29,
+#'data(test_data2)
+#'tor_plot(Y = test_data2[,2], Ta = test_data2[,1],
 #'fitting_options = list(nc =1, ni = 5000, nb = 3000), plot_type = "ggplot")
 
 tor_plot <- function(mod = NULL,
@@ -34,7 +34,7 @@ tor_plot <- function(mod = NULL,
 
   ## fit a model if necessary
   if(is.null(mod)) {
-    out <- tor_fit(...)
+    out <- step_4(...)
   } else {
     out <- mod
   }
