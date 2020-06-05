@@ -30,6 +30,7 @@ model{
     tau[1:2] <- c(tauy,tauy*coef)
 
     #Assumptions
+    betat <- BMR/(tlc-Tbe)
     inte <- BMR-betat*tlc
     intr <- TMR-betat*Tt
     log(intc) <- ifelse(
@@ -37,8 +38,6 @@ model{
 (tlc*log(TMR)-Tt*log(BMR))/(tlc-Tt),log(intc1))
     betac <- log(TMR/intc)/Tt
 
-#Unused argument to be passed to the results to back-transform Y and BMR
-ym <- Ym
 
 #Priors
 
@@ -48,6 +47,5 @@ ym <- Ym
     intc1~dnorm(0,1e-3)T(0,BMR*0.8)
     TMR ~ dnorm(0,1e-3)T(0,BMR*0.8)
     Tt ~ dnorm(0,1e-3)T(,tlc-3)
-    betat~dnorm(0,1e-3)T(,0)
-
+    Tbe ~ dnorm(0,1e-3)T(tlc,50)
     }

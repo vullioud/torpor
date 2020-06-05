@@ -1,10 +1,10 @@
 
-model{	
+model{
 #Model
     for (i in 1:NbObservations) {
        Y[i] ~ dnorm(mu[i], sigma[i])
        G[i] ~ dcat(p[1:2])
-mu[i] <- 
+mu[i] <-
 	ifelse(G[i]==2,
 		inte+betat*Ta[i],
 		ifelse(Ta[i]>Tt,
@@ -12,7 +12,7 @@ mu[i] <-
 			intr+betat*Ta[i]))
 
 
-sigma[i] <- 
+sigma[i] <-
 ifelse(G[i]==1,
 ifelse(Ta[i]>Tt,
 sigmay[1],
@@ -27,6 +27,7 @@ tau[1:2] <- c(tauy,tauy*coef)
 
 
 #Assumptions
+betat <- BMR/ (tlc-Tbe)
 inte <- BMR-betat*tlc
 intr <- TMR-betat*Tt
     log(intc) <- ifelse(
@@ -34,15 +35,15 @@ intr <- TMR-betat*Tt
 (tlc*log(TMR)-Tt*log(BMR))/(tlc-Tt),log(intc1))
 betac <- log(TMR/intc)/Tt
 
-#Priors     
-  tauy~ dunif(0.05,3)
-  coef~dnorm(0,1e-3)T(1,) 
-  p[1:2] ~ ddirch(rep(1,2))  
-  tlc ~dunif(heterosc,Max)
-  betat~dnorm(0,1e-3)T(,0)
+#Priors
+  Tbe ~ dnorm(0,1e-3)T(heterosc,50)
+  tauy ~ dunif(0.05,3)
+  coef ~ dnorm(0,1e-3)T(1,)
+  p[1:2] ~ ddirch(rep(1,2))
+  tlc ~ dunif(heterosc,Max)
   TMR ~ dnorm(0,1e-3)T(0,BMR*0.8)
   Tt ~ dnorm(0,1e-3)T(,heterosc)
-    intc1~dnorm(0,1e-3)T(0,BMR*0.8)
+  intc1 ~ dnorm(0,1e-3)T(0,BMR*0.8)
 
 
 
