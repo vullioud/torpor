@@ -27,25 +27,24 @@ model{
 
  for(i in 1:2){
     sigmay[i] <- 1/pow(tau[i],2)}
-    tau[1:2] <- c(tauy,tauy*coef)
+    tau[1:2] <- c(tauy*coef,tauy)
 
     #Assumptions
-    betat <- BMR/(tlc-Tbe)
     inte <- BMR-betat*tlc
-    intr <- TMR-betat*Tt
-    log(intc) <- ifelse(
-(log(BMR)-log(intc1))*Tt/(log(TMR)-log(intc1))<tlc,
-(tlc*log(TMR)-Tt*log(BMR))/(tlc-Tt),log(intc1))
-    betac <- log(TMR/intc)/Tt
-
+    intr <- -Tbt*betat
+    intc <- MRr/exp(betac*tlc)
+    betac <-max(0,min(0.5,(log(MRr)-log(TMR))/(tlc-Tt)))
+    betat <- BMR/(tlc-Tbe)
+    Tt <- (TMR-intr)/betat
 
 #Priors
 
-    tauy~ dunif(0.05,3)
-    coef~dnorm(0,1e-3)T(1,)
+    Tbt ~ dunif(-10,tlc)
+    tauy~ dunif(0,3)
+    coef~dunif(0.2,1)
     p[1:3] ~ ddirch(rep(1,3))
-    intc1~dnorm(0,1e-3)T(0,BMR*0.8)
-    TMR ~ dnorm(0,1e-3)T(0,BMR*0.8)
-    Tt ~ dnorm(0,1e-3)T(,tlc-3)
-    Tbe ~ dnorm(0,1e-3)T(tlc,50)
+    TMR~dunif(0,BMR*0.8)
+    MRr~dunif(0,BMR)
+    Tbe~dunif(tlc,50)
+
     }

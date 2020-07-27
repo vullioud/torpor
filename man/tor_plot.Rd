@@ -42,6 +42,6 @@ For more flexibility the users can use \code{\link[=tor_fit]{tor_fit()}} and \co
 }
 \examples{
 data(test_data2)
-tor_plot(MR = test_data2[,2], Ta = test_data2[,1], BMR = 1.055, TLC = 29,
-fitting_options = list(nc =1, ni = 500, nb = 300), plot_type = "ggplot")
+tor_plot(Y = test_data2[,2], Ta = test_data2[,1],
+fitting_options = list(nc =1, ni = 5000, nb = 3000), plot_type = "ggplot")
 }

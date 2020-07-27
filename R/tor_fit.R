@@ -39,92 +39,113 @@
 
 ##############################################################################
 
-#'step_1
+#'find_low_tlc_bmr
 #'
 #' This function estimate the lowest TLC and the bmr
 #'
-#'@name step_1
+#'@name find_low_tlc_bmr
 #'@param Y A vector of methabolic measure.
 #'@param Ta A vector of ambient temperature.
+#'@return A named vector with bmr and low_tlc.
 #'@export
 #'@examples
-#'step_1(test_data$VO2, test_data$Ta)
+#'t_1 <- find_low_tlc_bmr(Y = test_data2$VO2ms, Ta = test_data2$Ta)
+find_low_tlc_bmr <- function(Y,Ta){
+  ### clean arguments function
+  x <- na.omit(cbind(Ta, Y))
 
-step_1 <- function(Y,Ta){
+  Y <- x[,2]
+  Ta <- x[,1]
 
+  SEQX <- seq(from = max(Ta, na.rm = TRUE), to = min(Ta, na.rm = TRUE), length.out = 100)
 
-  SEQX <- seq(from = max(Ta,na.rm = TRUE), to = min(Ta,na.rm = TRUE), length.out = 100)
   Nb <- rep(NA, 100)
   whitetest <- rep(NA, 100)
   p <- rep(NA, 100)
-
-  #Define heterosc and slope
+  p2 <- rep(NA, 100)
+  #Define low_tlc and slope
   for (j in 1:100) {
 
       Nb[j] <- length(Y[Ta > SEQX[j]])
+
     if (Nb[j] < 11) {
-      whitetest[j] <- NA
+
+    whitetest[j] <- NA
     p[j] <- NA
+    p2[j] <- NA
+
     } else {
       whitetest[j] <- lmtest::bptest(stats::lm(Y[Ta > SEQX[j]] ~ Ta[Ta > SEQX[j]]))$p.value
 
-      mod <- stats::lm(Y[Ta> SEQX[j]]~Ta[Ta> SEQX[j]])
-      p[j] <- ifelse(stats::coefficients(mod)[2] > 0,NA, summary(mod)$coefficients[2,4])}
+      mod <- stats::lm(Y[Ta > SEQX[j]] ~ Ta[Ta> SEQX[j]])
+      p[j] <- ifelse(stats::coefficients(mod)[2] > 0, NA, summary(mod)$coefficients[2,4])
+      p2[j] <- ifelse(stats::coefficients(mod)[2] < 0, NA, summary(mod)$coefficients[2,4])
+
+
+      }
   }
 
-  #Define "low TLC" and first BMR
-  #if (length(SEQX[p < 0.01 & !is.na(p)]) == 0) stop("Error: not possible to estimate MTNZ or TLC")
+  if (length(SEQX[p2 < 0.01 & !is.na(p2)]) > 0 &
+      length(SEQX[p < 0.01 & !is.na(p)]) == 0 &
+      length(SEQX[whitetest < 0.01]) == 0) {
 
+    stop("TLC and BMR can not be estimated: provide values")
+
+  } else {
 
   test_1 <- ifelse(length(stats::na.omit(SEQX[whitetest > 0.05])) >= 1, min(SEQX[whitetest > 0.05], na.rm = TRUE), NA)
+
   test_2 <- ifelse(length(stats::na.omit(SEQX[p < 0.01])) >= 1, SEQX[match(max(SEQX[p < 0.01],na.rm = TRUE) ,SEQX) - 1], NA)
 
-  heterosc <- ifelse(length(stats::na.omit(c(test_1, test_2))) < 1, NA, max(test_1, test_2, na.rm = TRUE))
+  low_tlc <- ifelse(length(stats::na.omit(c(test_1, test_2))) == 0, NA, max(test_1, test_2, na.rm = TRUE)) ### check if ifelse necessary
 
-  if (is.na(heterosc)) stop("TLC and BMR not estimable, please provide them by hand")
+  }
+  if (is.na(low_tlc)) stop("TLC and BMR can not be estimated: provide values")
+  if (length(Y[Ta > low_tlc]) < 10) warning("MTNZ computed on less than 10 points")
 
-  if (length(Y[Ta > heterosc]) < 10) warning("MTNZ computed on less than 10 points")
-  bmr <- mean(Y[Ta > heterosc], na.rm = TRUE)
-
-  out <- c(bmr,heterosc)
-
-
-names(out) <- c("bmr", "low_tlc")
-return(out)
+  bmr <- mean(Y[Ta > low_tlc], na.rm = TRUE)
+  out <- c(bmr,low_tlc)
+  names(out) <- c("bmr", "low_tlc")
+  out
 }
 
-#'step_1_and_2
+#'estimate_tlc_bmr
 #'
 #' This function estimate the lowest TLC and the bmr
 #'
-#'@name step_1_and_2
+#'@name estimate_tlc_bmr
 #'@param Y A vector of methabolic measure.
 #'@param Ta A vector of ambient temperature.
+#'@param out_1 output of step_1.
 #'@inheritParams tor_fit
 #'@export
-step_1_and_2 <- function(Y, Ta, fitting_options = list(ni = 500000,
-                                                       nt = 10,
-                                                       nb = 300000,
-                                                       nc = 3)) {
+#'@examples
+#'t <- estimate_tlc_bmr(test_data2$VO2ms, test_data2$Ta)
 
-  out_1 <- step_1(Y, Ta) ## run first step
+estimate_tlc_bmr <- function(Y, Ta, fitting_options = list(ni = 50000,
+                                                       nt = 10,
+                                                       nb = 20000,
+                                                       nc = 2)) {
+  .complete_args(estimate_tlc_bmr)
+
+  out_1 <- find_low_tlc_bmr(Y, Ta) ## run first step
 
   bmr <- out_1["bmr"] ## extract bmr
-  heterosc <- out_1["low_tlc"] ## extract low tlc
+  low_tlc <- out_1["low_tlc"] ## extract low tlc
 
   Ym <- mean(Y, na.rm = TRUE) ## keep the mean
-  Ta2 <- Ta[Ta < heterosc]
-  Y2 <- Y[Ta < heterosc]
+  Ta2 <- Ta[Ta < low_tlc]
+  Y2 <- Y[Ta < low_tlc]
 
   inits <- list(
-      tauy = runif(1,0.1,1),
-      coef = runif(1,1,1.1),
+      tauy = runif(1),
+      coef = runif(1, 0.2, 1),
       p = runif(2),
-      Tbe = runif(1,heterosc,50),
-      tlc = runif(1,heterosc,max(Ta)),
-      Tt = runif(1),
-      TMR = runif(1,0,bmr*0.8/Ym),
-      intc1 = runif(1,0,bmr*0.8/Ym))
+      Tbe = runif(1,low_tlc,50),
+      tlc = runif(1, low_tlc, max(Ta)),
+      Tbt = runif(1, 0, max(Ta2)),
+      TMR = runif(1,1e-5, bmr*0.8/Ym),
+      MRr = runif(1,1e-5, bmr*0.8/Ym))
 
   inits_hetero_list <- rep(list(inits), fitting_options[["nc"]])
 
@@ -133,17 +154,13 @@ step_1_and_2 <- function(Y, Ta, fitting_options = list(ni = 500000,
   win_data <- list(Y = Y2/Ym,
                    NbObservations = length(Y2),
                    Ta = Ta2,
-                   heterosc = heterosc,
                    BMR = bmr/Ym,
-                   Max = max(Ta),
-                   Ym = Ym)
+                   Max = max(Ta))
 
   # MCMC settings
+  path_to_model_1 <- system.file("extdata", "hetero1.txt",  package = "torpor")
 
-
-  path_to_model_1 <- system.file("extdata", "hetero_1.txt",  package = "torpor")
-
-  out <- jagsUI::jags(data = win_data,
+  mod <- jagsUI::jags(data = win_data,
                         inits = inits_hetero_list,
                         parameters.to.save = params_hetero,
                         model.file = path_to_model_1,
@@ -151,32 +168,45 @@ step_1_and_2 <- function(Y, Ta, fitting_options = list(ni = 500000,
                         n.thin = fitting_options[["nt"]],
                         n.iter = fitting_options[["ni"]],
                         n.burnin = fitting_options[["nb"]],
-                        parallel = TRUE,
+                        parallel = FALSE,
                         verbose = FALSE,
                         store.data = TRUE)
 
-return(out)
+  ## extract the important output
+  tlc_estimated <- median(mod$sims.list$tlc) ## estimated tlc
+  tlc_distribution <- mod$sims.list$tlc ## distribution of tlc
+  bmr_estimated <- mean(Y[Ta >= tlc_estimated], na.rm = TRUE) # estimated bmr (mean of the points)
+
+  if(length(na.omit(Y[Ta >= tlc_estimated])) < 10) warning("Mtnz computed on less than 10 points")
+
+return(list(model_1 = mod,
+            tlc_estimated = tlc_estimated,
+            tlc_distribution = tlc_distribution,
+            bmr_estimated = bmr_estimated,
+            bmr_points = na.omit(Y[Ta >= tlc_estimated])))
 }
 
-#'step_1_and_2
+#'estimate_assignation
 #'
 #' This function estimate the lowest TLC and the bmr
 #'
-#'@name step_3
+#'@name estimate_assignation
 #'@export
 #'@param bmr bmr value if not estimated
 #'@param tlc tlc value if not estimated
-#'@inheritParams step_1_and_2
+#'@param fitting_options option to be passed to rjags.
 #'@examples
 #'\dontrun{
-#'step_3(Ta = test_data$Ta, Y = test_data$VO2)
+#'t2_no_input <- estimate_assignation(Ta = test_data2$Ta, Y = test_data2$VO2)
 #'}
-step_3 <- function(Y, Ta, bmr = NULL, tlc = NULL, fitting_options = list(ni = 500000,
-                                                                         nt = 10,
-                                                                         nb = 300000,
-                                                                         nc = 3)){
+estimate_assignation <- function(Y, Ta,
+                                 bmr = NULL, tlc = NULL,
+                                 fitting_options = list(ni = 50000,
+                                                        nt = 10,
+                                                        nb = 20000,
+                                                        nc = 2)){
 
-  .complete_args(step_3)
+  .complete_args(estimate_assignation)
 
   ## check input
   if (length(Y) != length(Ta)) stop("Ta and MR have not the same length")
@@ -185,54 +215,52 @@ step_3 <- function(Y, Ta, bmr = NULL, tlc = NULL, fitting_options = list(ni = 50
 
   Y <- data[, "Y"]
   Ta <- data[, "Ta"]
+  Ym <- mean(Y, na.rm = T)
 
   ## run step 1 and 2 to get bmr and tlc
 
-  if (is.null(bmr) | is.null(tlc)) {
+  if (is.null(bmr) | (is.null(tlc))) { ### need to change the filter it runs all the time
+
     message("BMR and TLC are being
             estimated from the data")
-    out_2 <- step_1_and_2(Ta = Ta, Y = Y)
-    bmr <- mean(Y[Ta > out_2$mean$tlc])*out_2$data$Ym
-    tlc <- out_2$mean$tlc*out_2$data$Ym
-  }
 
-  Ym <- mean(Y, na.rm = T)
-  heterosc <- out_2$data$heterosc
+  out_bmr_tlc <- estimate_tlc_bmr(Ta = Ta, Y = Y, fitting_options = fitting_options)
+
+  } else { ## keep the structure of output of estimate_tlc_bmr
+
+    out_bmr_tlc <- list(model_1 = NULL,
+         tlc_estimated = tlc,
+         tlc_distribution = tlc,
+         bmr_estimated = bmr,
+         bmr_points = na.omit(Y[Ta >= tlc]))
+  }
+  #### new code standard
+  tlc <- out_bmr_tlc$tlc_estimated
+  bmr <- out_bmr_tlc$bmr_estimated
+
   ## initial values
   inits_2 <- list(
-    tauy = runif(1,0.1,1),
-    coef = runif(1,1,1.1),
-    p = runif(2),
-    Tbe = runif(1,heterosc,50),
-    tlc = runif(1,heterosc,max(Ta)),
-    Tt = runif(1),
-    TMR = runif(1,0,bmr*0.8/Ym),
-    intc1 = runif(1,0,bmr*0.8/Ym))
+    tauy = runif(1),
+    coef = runif(1,0.2,1),
+    p = runif(3),
+    Tbe = runif(1,tlc, 50),
+    Tbt = runif(1, tlc - 1, tlc),
+    TMR = runif(1,1e-5,bmr*0.8/Ym),
+    MRr = runif(1,1e-5,bmr*0.8/Ym))
 
   inits_hetero_list_2 <- rep(list(inits_2), fitting_options[["nc"]])
 
-  params_hetero_2 <- c("tau",
-                       "G",
-                       "p",
-                       "inte",
-                       "intc",
-                       "intr",
-                       "betat",
-                       "betac",
-                       "Tt",
-                       "TMR",
-                       "tlc")
+  params_hetero_2 <- c("tau","G","p","inte","intc","intr","betat","betac","Tt","TMR","MRr","coef")
 
   win.data_2 <- list(Y = Y/Ym,
                      NbObservations = length(Y),
                      Ta = Ta,
                      BMR = bmr/Ym,
-                     tlc = tlc,
-                     Ym = Ym)
+                     tlc = tlc)
 
-  path_to_model_2 <- system.file("extdata", "hetero_2.txt",  package = "torpor")
+  path_to_model_2 <- system.file("extdata", "hetero2.txt",  package = "torpor")
 
-  out2 <- jagsUI::jags(data = win.data_2,
+  mod_assignation <- jagsUI::jags(data = win.data_2,
                        inits = inits_hetero_list_2,
                        parameters.to.save = params_hetero_2,
                        model.file = path_to_model_2,
@@ -244,8 +272,17 @@ step_3 <- function(Y, Ta, bmr = NULL, tlc = NULL, fitting_options = list(ni = 50
                        verbose = FALSE,
                        store.data = TRUE)
 
-  return(out2)
+  out_assignation <- list(
+       mod_assignation = mod_assignation,
+       out_bmr_tlc = out_bmr_tlc,
+       data = list(Y = Y,
+                   Ta = Ta,
+                   Ym = Ym))
 
+  out_assignation$assignation <- .step_3_bis(out_assignation = out_assignation,
+                             fitting_options = fitting_options)
+
+  out_assignation
 }
 
 
@@ -253,39 +290,82 @@ step_3 <- function(Y, Ta, bmr = NULL, tlc = NULL, fitting_options = list(ni = 50
 #'
 #' This function estimate the lowest TLC and the bmr
 #'
-#'@name step_3_bis
-#'@param mod A fitted model
-#'@export
-step_3_bis <- function(mod){
-  Ta <- mod$data$Ta
-  Y <- mod$data$Y
+#'@name .step_3_bis
+#'@param out_2 output of step_2
+#'@param out_3 output of step_3
+#'@param fitting_options fitting options
+.step_3_bis <- function(out_assignation, fitting_options){
+ ## comes from hetero2
 
-  G <- mod$mean$G
-  limit <- .get_limit_value(nrow(mod$samples[[1]]))
-  G[sqrt((G - round(G))^2) > limit] <- 0
-  G <- round(G)
+  Ta <- out_assignation$data$Ta
+  Y <- out_assignation$data$Y
 
-  if (length(G[G == 1]) != 0 ) {
+  nc <- fitting_options[["nc"]]
+  nt <- fitting_options[["nt"]]
+  ni <- fitting_options[["ni"]]
+  nb <- fitting_options[["nb"]]
+  ## extract model assignation
+  mod_assignation <- out_assignation$mod_assignation
 
-    for (i in 1:length(Y <= tlc)) {
+  G <- mod_assignation$mean$G ## extract the G
 
-      #Only proceed to this step if there are at least one torpid (G==1) value.
-      G[i] <- ifelse(Y[i] <= stats::median(tor_predict_fun(x = Ta[i],
-                                                           Tt = mod$sims.list$Tt,
-                                                           intr = mod$sims.list$intr,
-                                                           intc = mod$sims.list$intc,
-                                                           betat = mod$sims.list$betat,
-                                                           betac = mod$sims.list$betac,
-                                                           Ym = mod$data$Ym)) & G[i] != 3, 1, G[i])
-      G[i] <- ifelse(Y[i] >=  stats::median(eut_predict_fun(x = Ta[i],
-                                                            inte = mod$sims.list$inte,
-                                                            betat = mod$sims.list$betat,
-                                                            Ym = mod$data$Ym)) & G[i] != 3, 2 ,G[i])
-    }
+
+  nbsamples <- ((ni - nb)*nc)/nt ## look how to take them from mod2
+
+  ## inside small fun
+  expit <- function(x){1/(1 + exp(-x))} ##step not to be done if tlc and bmr and given
+  funabove <- function(x, mod){expit(coefficients(mod)[1] + coefficients(mod)[2]*x)} ##step not to be done if tlc and bmr and given
+  funbelow <- function(x, mod){-(funabove(x, mod)- 1)} ##step not to be done if tlc and bmr and given
+
+  ####
+  probStatus <- 1 - sqrt((G - round(G))^2)
+
+  length_tlc_dist <- length(out_assignation$out_brm_tlc$tlc_distribution)
+
+  if(length_tlc_dist > 1) {
+  mod_glm <- glm(pnorm(q = out_assignation$out_brm_tlc$tlc_distribution, ## changed for tlc distribution
+                       mean = out_assignation$out_brm_tlc$tlc_estimated,
+                       sd = ifelse(length_tlc_dist > 1, sd(out_assignation$out_brm_tlc$tlc_distribution), 0)) ~
+                   out_assignation$out_brm_tlc$tlc_distribution,
+                 family = "binomial") ##step not to be done if tlc and bmr and given
+
+
+  probStatus <- probStatus*ifelse(G == 3, funabove(Ta, mod_glm), funbelow(Ta, mod_glm))  ##step not to be done if tlc and bmr and given
+  }
+  pstatus <- rep(NA,length(Ta))
+
+  for(i in 1:length(Ta)) {
+
+    pstatus[i] <- as.numeric(binom.test(round(nbsamples*probStatus[i]),
+                                        nbsamples,
+                                        alternative = "greater",p = 0.5)$p.value)
 
   }
-  return(G)
+
+  G[pstatus>0.01] <- 0
+  G <- round(G)
+
+  if(length(G[G ==1])!=0){
+
+    #Only proceed to this step if there are at least one torpid (G==1) value.
+    G[i] <- ifelse(Y[i] <= stats::median(tor_predict_fun(x = Ta[i],
+                                                         Tt = mod_assignation$sims.list$Tt,
+                                                         intr = mod_assignation$sims.list$intr,
+                                                         intc = mod_assignation$sims.list$intc,
+                                                         betat = mod_assignation$sims.list$betat,
+                                                         betac = mod_assignation$sims.list$betac,
+                                                         Ym = out_assignation$data$Ym)) & G[i] != 3, 1, G[i])
+
+    G[i] <- ifelse(Y[i] >=  stats::median(eut_predict_fun(x = Ta[i],
+                                                          inte = mod_assignation$sims.list$inte,
+                                                          betat = mod_assignation$sims.list$betat,
+                                                          Ym = out_assignation$data$Ym)) & G[i] != 3, 2 ,G[i])
+  }
+  list(G = G,
+       pstatus = pstatus)
+
 }
+
 
 #' step_4
 #'
@@ -306,33 +386,37 @@ step_3_bis <- function(mod){
 #'evidence suggest that individuals under study will conform to the previously
 #'described pattern while in torpor.
 #'
-#'@name step_4
-#'@inheritParams step_3
+#'@name estimate_parameters
+#'@inheritParams estimate_assignation
 #'@export
 #'@examples
 #'\dontrun{
-#'test_mod <- step_4(Ta = test_data3$Ta, Y = test_data3$VO2)
+#'test_mod <- estimate_parameters(Ta = test_data3$Ta, Y = test_data3$VO2)
 #'}
-step_4 <- function(Ta, Y,  bmr = NULL, tlc = NULL, fitting_options = list(ni = 5000,
-                                                                          nt = 10,
-                                                                          nb = 3000,
-                                                                          nc = 3), .debug = FALSE) {
+estimate_parameters <- function(Ta, Y,
+                   bmr = NULL, tlc = NULL,
+                   fitting_options = list(ni = 50000,
+                                          nt = 10,
+                                          nb = 30000,
+                                          nc = 3)) {
 
 
   if (length(Ta) != length(Y)) stop("Y, Ta don´t have the same length")
   ## run step 1-3
-  out_2 <- step_3(Ta = Ta, Y = Y,  bmr = bmr, tlc = tlc, fitting_options = fitting_options)
 
+  out_assignation <- estimate_assignation(Y, Ta, bmr, tlc, fitting_options)
 
+  G <- out_assignation$assignation$G
   ## manual
-  G <- step_3_bis(out_2)
-  if (.debug) return(list(out_2, G))
 
-  Y <- out_2$data$Y*out_2$data$Ym
-  Ta <- out_2$data$Ta
-  tlc <- out_2$data$tlc*out_2$data$Ym
-  bmr <- out_2$data$BMR*out_2$data$Ym
-  Ym <- out_2$data$Ym
+ # if (.debug) return(list(out_2, G))
+
+  Y <- out_assignation$data$Y
+  Ta <- out_assignation$data$Ta
+  tlc <- out_assignation$out_bmr_tlc$tlc_estimated
+  bmr <- out_assignation$out_bmr_tlc$bmr_estimated
+  Ym <- out_assignation$data$Ym
+
   win.data_3 <- list(Y = Y[G != 0 & G != 3] / Ym,
                      NbObservations = length(Y[G != 0 & G != 3]),
                      Ta = Ta[G != 0 & G != 3],
@@ -341,23 +425,23 @@ step_4 <- function(Ta, Y,  bmr = NULL, tlc = NULL, fitting_options = list(ni = 5
                      G = G[G != 0 & G != 3],
                      Ym = Ym)
 
+  path_to_model_3 <- system.file("extdata", "hetero3.txt",  package = "torpor")
 
-  path_to_model_3 <- system.file("extdata", "hetero_3.txt",  package = "torpor")
-
-  inits_3 <- list(
-    tauy = runif(1,0.1,1),
-    coef = runif(1,1,1.1),
-    p = runif(3),
-    Tbe = runif(1,tlc,50),
-    intc1 = runif(1,0,bmr*0.8/Ym),
-    Tt = runif(1),
-    TMR = runif(1,0,bmr*0.8/Ym))
+  inits_3 <- list(tauy = runif(1),
+                  coef = runif(1,0.2,1),
+                  p = runif(3),
+                  Tbe = runif(1,tlc, 50),
+                  Tbt = runif(1, tlc - 1, tlc),
+                  TMR = runif(1,1e-5,bmr*0.8/Ym),
+                  MRr = runif(1,1e-5,bmr*0.8/Ym))
 
   inits_hetero_list_3 <- rep(list(inits_3), fitting_options[["nc"]])
+  params <- params_hetero_2 <- c("tau","inte","intc","intr","betat",
+                                 "betac","Tt","TMR","MRr","coef", "Tbt", "Tbe")
 
-  out3 <- jagsUI::jags(data = win.data_3,
+  out_4 <- jagsUI::jags(data = win.data_3,
                        inits =  inits_hetero_list_3,
-                       parameters.to.save = out_2$parameters,
+                       parameters.to.save = params,
                        model.file = path_to_model_3,
                        n.chains = fitting_options[["nc"]],
                        n.thin = fitting_options[["nt"]],
@@ -367,29 +451,14 @@ step_4 <- function(Ta, Y,  bmr = NULL, tlc = NULL, fitting_options = list(ni = 5
                        verbose = FALSE,
                        store.data = TRUE)
 
+  ### check convergence.... if Rhat > 1.1 warrning sur parameters.
+  for(i in seq_along(out_4$Rhat)){
+   if (any(out_4$Rhat[i][[1]] > 1.1)) warning(paste("Rhat > 1.1 on parameter:", names(out_4$Rhat[i])))
+  }
 
-  return(out3)
+  out_assignation$mod_parameter <- out_4
+  print(tor_summarise(out_assignation))
+  return(invisible(out_assignation))
+
 }
 
-
-#'.get_limit_value
-#'
-#' find the limit value
-#'
-#'@name .get_limit_value
-#'@param nb_samples size of the samples
-.get_limit_value <- function(nb_samples){
-
-  Seq <- round(nb_samples*0.9/2):round(nb_samples/2)
-
-  Pvalues <- rep(NA,length(Seq))
-
-
-
-  for(i in 1:length(Seq)){
-
-    Pvalues[i] <- binom.test(Seq[i],nb_samples)$p.value}
-
-
-  max(Seq[Pvalues<0.05])/nb_samples
-}

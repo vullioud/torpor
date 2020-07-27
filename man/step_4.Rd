@@ -9,18 +9,18 @@ step_4(
   Y,
   bmr = NULL,
   tlc = NULL,
-  fitting_options = list(ni = 5e+05, nt = 10, nb = 3e+05, nc = 3),
+  out_2 = NULL,
+  out_3 = NULL,
+  fitting_options = list(ni = 50000, nt = 10, nb = 30000, nc = 3),
   .debug = FALSE
 )
 }
 \arguments{
-\item{Ta}{A vector of ambient temperature.}
-
-\item{Y}{A vector of methabolic measure.}
-
 \item{bmr}{bmr value if not estimated}
 
 \item{tlc}{tlc value if not estimated}
+
+\item{out_2}{output of step_2}
 }
 \description{
 \code{\link[=step_4]{step_4()}} fits a binomial mixture model using Bayesian

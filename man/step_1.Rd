@@ -2,18 +2,22 @@
 % Please edit documentation in R/tor_fit.R
 \name{step_1}
 \alias{step_1}
+\alias{find_low_tlc_bmr}
 \title{step_1}
 \usage{
-step_1(Y, Ta)
+find_low_tlc_bmr(Y, Ta)
 }
 \arguments{
 \item{Y}{A vector of methabolic measure.}
 
 \item{Ta}{A vector of ambient temperature.}
 }
+\value{
+A named vector with bmr and low_tlc.
+}
 \description{
 This function estimate the lowest TLC and the bmr
 }
 \examples{
-step_1(test_data$VO2, test_data$Ta)
+t_1 <- step_1(Y = test_data2$VO2ms, Ta = test_data2$Ta)
 }

@@ -18,66 +18,99 @@
 #'BMR = 1.49,
 #'TLC = 28.88,
 #'fitting_options = list(nc = 2, nb = 3000, ni = 5000))
-#'tor_predict(mod = test_mod, Ta = 1:20)
+#'tor_predict(tor_obj, Ta = 10:35)
 #'}
-tor_predict <- function(mod, Ta){
+tor_predict <- function(tor_obj, Ta){   #### En dessus de TLC = BMR, warning en dehors de NTNZ si plus que TLC.
 
 
   # retrieved the posterior of interest
+  mod <- tor_obj$mod_parameter
+
   betat <- mod$sims.list$betat
   betac <- mod$sims.list$betac
   inte <- mod$sims.list$inte
   intc <- mod$sims.list$intc
   intr <- mod$sims.list$intr
   Tt <- mod$sims.list$Tt
-  tlc <- mod$sims.list$tlc
-  Ym <- mod$data$Ym
+
+  ##
+  tlc <- tor_obj$out_bmr_tlc$tlc_estimated
+  Ym <- tor_obj$data$Ym
 
 
   X <- length(Ta)
-  Ymeant <- rep(NA, X)
-  Y975t <- rep(NA, X)
-  Y025t <- rep(NA, X)
+  Ymean_t <- rep(NA, X)
+  Y975_t <- rep(NA, X)
+  Y025_t <- rep(NA, X)
 
-  Ymeann <- rep(NA, X)
-  Y975n <- rep(NA, X)
-  Y025n <- rep(NA, X)
+  Ymean_n <- rep(NA, X)
+  Y975_n <- rep(NA, X)
+  Y025_n <- rep(NA, X)
+
+  Ymean_b <- rep(NA, X)
+  Y975_b <- rep(NA, X)
+  Y025_b <- rep(NA, X)
 
   for (i in 1:X) {
-    Ymeant[i] <- stats::median(tor_predict_fun(Ta[i], Tt, intr, intc, betat, betac, Ym))
-    Y975t[i] <- stats::quantile(tor_predict_fun(Ta[i],Tt, intr, intc, betat, betac, Ym),0.975)
-    Y025t[i] <- stats::quantile(tor_predict_fun(Ta[i],Tt, intr, intc, betat, betac, Ym),0.025)
-    Ymeann[i] <- stats::median(eut_predict_fun(Ta[i], inte, betat, Ym))
-    Y975n[i] <- stats::quantile(eut_predict_fun(Ta[i], inte, betat, Ym),0.975)
-    Y025n[i] <- stats::quantile(eut_predict_fun(Ta[i], inte, betat, Ym),0.025)
+
+    if(Ta[i] < tor_obj$out_bmr_tlc$tlc_estimated) {
+
+
+    Ymean_t[i] <- stats::median(tor_predict_fun(Ta[i], Tt, intr, intc, betat, betac, Ym))
+    Y975_t[i] <- stats::quantile(tor_predict_fun(Ta[i],Tt, intr, intc, betat, betac, Ym),0.975)
+    Y025_t[i] <- stats::quantile(tor_predict_fun(Ta[i],Tt, intr, intc, betat, betac, Ym),0.025)
+
+    Ymean_n[i] <- stats::median(eut_predict_fun(Ta[i], inte, betat, Ym))
+    Y975_n[i] <- stats::quantile(eut_predict_fun(Ta[i], inte, betat, Ym),0.975)
+    Y025_n[i] <- stats::quantile(eut_predict_fun(Ta[i], inte, betat, Ym),0.025)
+    } else {
+
+       ## sortir de la loop
+      bmr <- tor_obj$out_bmr_tlc$bmr_points
+
+      Ymean_b[i] <-  mean <- mean(bmr, na.rm = TRUE)
+      Y975_b[i] <- mean(bmr)+1.96*sd(bmr)/sqrt(length(tor_obj$out_bmr_tlc$bmr_points))
+      Y025_b[i] <- mean(bmr)-1.96*sd(bmr)/sqrt(length(tor_obj$out_bmr_tlc$bmr_points))
+
+    }
   }
 
 
   #### values for torpor
   out_tor <- data.frame(Ta = Ta,
                      group = rep("Torpor", length(X)),
-                     pred =  Ymeant,
-                     upr_95 = Y975t,
-                     lwr_95 = Y025t)
+                     pred =  Ymean_t,
+                     upr_95 = Y975_t,
+                     lwr_95 = Y025_t)
 
   #### values for euthermy
   out_eut <- data.frame(Ta = Ta,
                      group = rep("Euthermy", length(X)),
-                     pred =  Ymeann,
-                     upr_95 = Y975n,
-                     lwr_95 = Y025n)
+                     pred =  Ymean_n,
+                     upr_95 = Y975_n,
+                     lwr_95 = Y025_n)
 
 
+  ### values for > Tlc.
+  out_ntmz <- data.frame(Ta = Ta,
+                        group = rep("Ntmz", length(X)),
+                        pred =  Ymean_b,
+                        upr_95 = Y975_b,
+                        lwr_95 = Y025_b)
 
-  if(length(mod$mean$G[mod$mean$G > 1.5]) == 0){ ## no torpor
-    out <- out_eut
-  } else if (length(mod$mean$G[mod$mean$G < 1.5]) == 0){ ## no euthermy
-    out <- out_tor
+
+  ###
+  if(any(Ta > tor_obj$out_bmr_tlc$tlc_estimated)) warning("Tuc is not considered: MTNZ is calculated independently of Ta above Tlc")
+
+  if(!any(tor_obj$assignation$G == 1)){ ## no torpor
+    out <- rbind(out_eut,out_ntmz)
+  } else if (!any(tor_obj$assignation$G == 2)){ ## no euthermy
+    out <- rbind(out_tor, out_ntmz)
   } else { ## both torpor and euthermy
-    out <- rbind(out_tor, out_eut)
+    out <- rbind(out_tor, out_eut, out_ntmz)
   }
 
-  return(out)
+  return(na.omit(out))
 
 }
 ################################################################################
@@ -140,12 +173,17 @@ eut_predict_fun <- function(x, inte, betat, Ym) { ## backtransform parameters to
 #'BMR = 1.49,
 #'TLC = 28.88,
 #'fitting_options = list(nc = 1, ni = 5000, nb = 3000))
-#'tor_classify(mod = test_mod)
+#'tor_classify(tor_obj)
 
-tor_classify <- function(mod){
-x <- data.frame(measured_MR = (mod$data$Y)*mod$data$Ym[1],
-                measured_Ta = mod$data$Ta,
-                predicted_state = mod$mean$G)
+tor_classify <- function(tor_obj){
+
+data <- data.frame(measured_MR = tor_obj$data$Y,
+                measured_Ta = tor_obj$data$Ta,
+                predicted_state = tor_obj$assignation$G)
+
+## sort tout MR et Ta et classification des data sur data step_4. 1 torpor,
+## 2 euth, 3 NTMZ, 0 not classify. + Probastatus. + valeur predict qui vient de step_4.
+mod <- tor_obj$mod_parameter
 
 betat <- mod$sims.list$betat
 betac <- mod$sims.list$betac
@@ -154,21 +192,29 @@ intc <- mod$sims.list$intc
 intr <- mod$sims.list$intr
 Tt <- mod$sims.list$Tt
 tlc <- mod$sims.list$tlc
-Ym <- mod$data$Ym
+Ym <- tor_obj$data$Ym
 
+X <- nrow(data)
+data$predicted_MR <- rep(NA, X)
+data$classification <- dplyr::case_when(data$predicted_state == 0 ~ "Undefined",
+                                     data$predicted_state == 1 ~ "Torpor",
+                                     data$predicted_state == 2 ~ "Euthermy",
+                                     data$predicted_state == 3 ~ "Ntmz")  ## Ntmz
 
-X <- nrow(x)
-x$predicted_MR <- rep(NA, X)
-x$classification <- ifelse(x$predicted_state > 1.5, "Torpor", "Euthermy")
-
-for(i in 1:nrow(x)) {
-  if (x$predicted_state[i] > 1.5) {
-  x$predicted_MR[i] <- stats::median(tor_predict_fun(x$measured_Ta[i], Tt, intr, intc, betat, betac, Ym))
+for(i in 1:nrow(data)) {
+  if (data$predicted_state[i] == 1) {
+  data$predicted_MR[i] <- stats::median(tor_predict_fun(data$measured_Ta[i], Tt, intr, intc, betat, betac, Ym))
+  } else if(data$predicted_state[i] == 2) {
+  data$predicted_MR[i] <- stats::median(eut_predict_fun(data$measured_Ta[i], inte, betat, Ym))
+  } else if(data$predicted_state[i] == 3) {
+    data$predicted_MR[i] <- tor_obj$out_bmr_tlc$bmr_estimated
   } else {
-  x$predicted_MR[i] <- stats::median(eut_predict_fun(x$measured_Ta[i], inte, betat, Ym))
+    data$predicted_MR[i] <- NA
   }
 }
-return(x)
+
+data <- data[,c(1,2,5,4)]
+return(data)
 }
 ################################################################################
 

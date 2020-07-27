@@ -14,21 +14,13 @@
 #'@export
 #'@examples
 #'data(test_data)
-#'test2 <- tor_fit(MR = test_data[,2],
-#'Ta = test_data[, 1],
-#'BMR = 29,
-#'TLC = 28.8,
-#'model = NULL,
-#'fitting_options = list(nc = 1, ni = 5000, nb = 3000))
-#'tor_summarise(mod = test2)
-
+#'test2 <- estimate_parameters(Y = test_data[,2],Ta = test_data[, 1], fitting_options = list(nc = 1, ni = 5000, nb = 3000))
+#'tor_summarise(tor_obj)
 tor_summarise <- function(mod){
 
-out <- list()
+#out <- list()
 ## parameters
-out$parameter_estimates <- get_parameters(mod)
-## overlap
-out$overlap <- tor_overlap(mod)
+get_parameters(mod)  ## round print to 3 digit.
 return(out)
 }
 ##############################################################################
@@ -58,19 +50,19 @@ return(out)
 #'tor_overlap(mod = test)
 
 tor_overlap <- function(mod){
-size <- nrow(mod$samples[[1]])
-
-tlc <- mod$mean$tlc
-bmr <- mod$data$BMR
-Ym  <- mod$data$Ym
-
-PRTintc <- truncnorm::rtruncnorm(size,a = 0, b = bmr/Ym, mean = 0, sd = sqrt(1000))  ## variable based on model flexible
-PRTt <- truncnorm::rtruncnorm(size, b = tlc, mean = 0, sd = sqrt(1000))
-PRbeta <- truncnorm::rtruncnorm(size, b = 0, mean = 0, sd = sqrt(100))
-
-intc_overlap <- get_overlap(mod, params = "intc", priors = PRTintc)
-Tt_overlap <- get_overlap(mod, params = "Tt", priors = PRTt)
-betat_overlap <- get_overlap(mod, params = "betat", priors = PRbeta)
+# size <- nrow(mod$samples[[1]])
+#
+# tlc <- mod$mean$tlc
+# bmr <- mod$data$BMR
+# Ym  <- mod$data$Ym
+#
+# PRTintc <- truncnorm::rtruncnorm(size,a = 0, b = bmr/Ym, mean = 0, sd = sqrt(1000))  ## variable based on model flexible
+# PRTt <- truncnorm::rtruncnorm(size, b = tlc, mean = 0, sd = sqrt(1000))
+# PRbeta <- truncnorm::rtruncnorm(size, b = 0, mean = 0, sd = sqrt(100))
+#
+# intc_overlap <- get_overlap(mod, params = "intc", priors = PRTintc)
+# Tt_overlap <- get_overlap(mod, params = "Tt", priors = PRTt)
+# betat_overlap <- get_overlap(mod, params = "betat", priors = PRbeta)
 
 #
 #   prior_tlc <- truncnorm::rtruncnorm(20000,a = mod$mean$TLC,mean=0,sd=100)
@@ -81,20 +73,20 @@ betat_overlap <- get_overlap(mod, params = "betat", priors = PRbeta)
 #   Tt_overlap <- get_overlap(mod, "Tt", prior_Tt)
 #   betat_overlap <- get_overlap(mod, "betat", prior_betat)
 
-  if (intc_overlap >= 0.3) {
-    warning("Parameters intc, betac, and intc not identifiable")
-  }
-  if (Tt_overlap >= 0.3) {
-    warning("Parameters Tt and intr not identifiable")
-  }
-  if (betat_overlap >= 0.3) {
-    warning("Parameters tlc, betac, and intc not identifiable")
-  }
-
-  out <- data.frame(parameter = c("intc", "Tt", "Betat"),
-                    overlap = c(intc_overlap, Tt_overlap, betat_overlap))
-
-  return(out)
+  # if (intc_overlap >= 0.3) {
+  #   warning("Parameters intc, betac, and intc not identifiable")
+  # }
+  # if (Tt_overlap >= 0.3) {
+  #   warning("Parameters Tt and intr not identifiable")
+  # }
+  # if (betat_overlap >= 0.3) {
+  #   warning("Parameters tlc, betac, and intc not identifiable")
+  # }
+  #
+  # out <- data.frame(parameter = c("intc", "Tt", "Betat"),
+  #                   overlap = c(intc_overlap, Tt_overlap, betat_overlap))
+  #
+  # return(out)
 }
 ##############################################################################
 
@@ -117,26 +109,68 @@ betat_overlap <- get_overlap(mod, params = "betat", priors = PRbeta)
 #'model = NULL,
 #'fitting_options = list(nc = 1, ni = 5000, nb = 3000))
 #'get_parameters(mod = test)
+get_parameters <- function(tor_obj) {  ## out4 et out2 pour tlc.
 
+  Ym <- tor_obj$data$Ym
 
-get_parameters <- function(mod) {
+  ### first param for step_4
+  mod_params <- tor_obj$mod_parameter
 
+  params_mod_parameter <- c("tau", "inte", "intc", "intr", "betat", "betac", "Tt", "TMR", "MRr", "coef") ## params of interest
 
-  params <- c("tauy", "inte", "intc", "intr", "betat", "betac", "Tt", "tlc") ## params of interest
-
-  mean <- unlist(mod$mean[params])
-  CI_97.5 <- unlist(mod$q97.5[params])
-  median <- unlist(mod$q50[params])
-  CI_2.5 <- unlist(mod$q2.5[params])
-  Rhat <- unlist(mod$Rhat[params])
+  mean <- unlist(mod_params$mean[params_mod_parameter])
+  CI_97.5 <- unlist(mod_params$q97.5[params_mod_parameter])
+  median <- unlist(mod_params$q50[params_mod_parameter])
+  CI_2.5 <- unlist(mod_params$q2.5[params_mod_parameter])
+  Rhat <- unlist(mod_params$Rhat[params_mod_parameter])
 
   ## frame the output in a df
   x <- as.data.frame(cbind(mean, CI_2.5, median, CI_97.5, Rhat))
   x$parameter <- rownames(x)
-  x$parameter[x$parameter == "tlc"] <- "Tm" ## unify names
   x <- x[,c(6,1,2,3,4, 5)] ## put name as first column
   rownames(x) <- NULL
-  return(x)
+  ##### add TLC and BMR
+  mod_tlc <- tor_obj$out_bmr_tlc$model_1
+
+  mean <- unlist(mod_tlc$mean["tlc"])
+  CI_97.5 <- unlist(mod_tlc$q97.5["tlc"])
+  median <- unlist(mod_tlc$q50["tlc"])
+  CI_2.5 <- unlist(mod_tlc$q2.5["tlc"])
+  Rhat <- unlist(mod_tlc$Rhat["tlc"])
+
+  x_tlc <- as.data.frame(cbind(mean, CI_2.5, median, CI_97.5, Rhat))
+  x_tlc$parameter <- "Tlc" ## unify names
+  x_tlc <- x_tlc[,c(6,1,2,3,4, 5)] ## put name as first column
+  rownames(x_tlc) <- NULL
+
+  out <- rbind(x, x_tlc)
+
+  ##### add bmr
+  bmr <- tor_obj$out_bmr_tlc$bmr_points
+  mean <- mean(bmr)
+  CI_97.5 <- mean(bmr)+1.96*sd(bmr)/sqrt(length(tor_obj$out_bmr_tlc$bmr_points))
+  median <- median(bmr)
+  CI_2.5 <- mean(bmr)-1.96*sd(bmr)/sqrt(length(tor_obj$out_bmr_tlc$bmr_points))
+  Rhat <- NA
+
+  x_bmr <- as.data.frame(cbind(mean, CI_2.5, median, CI_97.5, Rhat))
+  x_bmr$parameter <- "Bmr" ## unify names
+  x_bmr <- x_bmr[,c(6,1,2,3,4, 5)] ## put name as first column
+  rownames(x_bmr) <- NULL
+
+  out <- rbind(x, x_tlc, x_bmr)
+
+  params_to_multiply <- c("tau1", "tau2", "inte", "intc", "intr", "BMR", "MRr", "TMR", "betat")
+
+  out <- out %>%
+    dplyr::mutate(mean = ifelse(.data$parameter %in% params_to_multiply, .data$mean*Ym, .data$mean),
+                  CI_2.5 = ifelse(.data$parameter %in% params_to_multiply, .data$CI_2.5*Ym, .data$CI_2.5),
+                  median = ifelse(.data$parameter %in% params_to_multiply, .data$median*Ym, .data$median),
+                  CI_97.5 = ifelse(.data$parameter %in% params_to_multiply, .data$CI_97.5*Ym, .data$CI_97.5))
+
+
+  warning("Values for MTNZ are directly computed from data points")
+  return(out)
 }
 ##############################################################################
 
@@ -153,10 +187,10 @@ get_parameters <- function(mod) {
 #'@importFrom magrittr %>%
 #'@return a numeric value
 get_overlap <- function(mod, params, priors) {
-
-  chains <- purrr::map_dfr(mod$samples, ~ as.data.frame(.x) %>%
-                             dplyr::select(paste(params)))
-
-  as.numeric(round(overlapping::overlap(x = list(chains[,1], priors))$OV, digits = 3))
+#
+#   chains <- purrr::map_dfr(mod$samples, ~ as.data.frame(.x) %>%
+#                              dplyr::select(paste(params)))
+#
+#   as.numeric(round(overlapping::overlap(x = list(chains[,1], priors))$OV, digits = 3))
 }
 ##############################################################################

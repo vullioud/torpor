@@ -23,29 +23,30 @@
 #'tor_plot(Y = test_data2[,2], Ta = test_data2[,1],
 #'fitting_options = list(nc =1, ni = 5000, nb = 3000), plot_type = "ggplot")
 
-tor_plot <- function(mod = NULL,
+tor_plot <- function(tor_obj = NULL,
                      plot_type = "ggplot",
                      col_torp = "cornflowerblue",
                      col_eut = "coral3",
+                     col_n = "red",
                      ylab = "M",
                      xlab = "Ta",
                      pdf = FALSE,
                      ...) {
 
   ## fit a model if necessary
-  if(is.null(mod)) {
-    out <- step_4(...)
+  if(is.null(tor_obj)) {
+    tor_obj <- estimate_parameters(...)
   } else {
-    out <- mod
+    tor_obj <- tor_obj
   }
 
   ## retrieve values from the model
-  TLC <- out$sims.list$tlc[1]
-  BMR <- out$data$BMR*out$data$Ym
+  TLC <- tor_obj$out_bmr_tlc$tlc_estimated
+  BMR <- tor_obj$out_bmr_tlc$bmr_estimated
 
 
-  Y <- MR <- out$data$Y*out$data$Ym
-  Ta <- out$data$Ta
+  Y <- MR <- tor_obj$data$Y
+  Ta <- tor_obj$data$Ta
 
   # plotting limits
   Tlimup <- max(Ta,na.rm=TRUE)
@@ -55,15 +56,15 @@ tor_plot <- function(mod = NULL,
 
   ## data
   da <- as.data.frame(cbind(Ta, MR))
-  da$G <- as.numeric(out$mean$G)
-  da$hat <- out$Rhat$G
+  da$G <- tor_obj$assignation$G
+  #da$hat <- out$Rhat$G
 
 
   ## get the predictions
-  pred <- tor_predict(out, seq(Tlimlo,Tlimup,length=100))
+  pred <- tor_predict(tor_obj, seq(Tlimlo,Tlimup,length=100))
 
   ## check overlap ## warning if > 0.3
-  tor_overlap(out)
+  #tor_overlap(out)
 
 
   ## ggplot
@@ -71,8 +72,8 @@ tor_plot <- function(mod = NULL,
 
     G <- lwr_95 <- upr_95 <- NULL ## check
 
-    plot <- ggplot2::ggplot(da, ggplot2::aes(x = Ta, y = MR, col = G < 1.5)) +
-      ggplot2::geom_point() +
+    plot <- ggplot2::ggplot(da, ggplot2::aes(x = Ta, y = MR, col = G)) +
+      ggplot2::geom_point()+
       ggplot2::xlim(c(min(da$Ta), max(da$Ta))) +
       ggplot2::geom_line(data = pred[pred$group == "Euthermy", ],
                          ggplot2::aes(x = Ta, y = pred),
@@ -96,8 +97,19 @@ tor_plot <- function(mod = NULL,
                            alpha = 0.2,
                            fill = col_torp,
                            col = NA) +
+      ggplot2::geom_line(data = pred[pred$group == "Ntmz", ],
+                         ggplot2::aes(x = Ta, y = pred),
+                         inherit.aes = FALSE,
+                         col = col_n,
+                         linetype = 2) +
+      ggplot2::geom_ribbon(data = pred[pred$group == "Ntmz", ],
+                           ggplot2::aes(x = Ta, ymin = lwr_95, ymax = upr_95),
+                           inherit.aes = FALSE,
+                           alpha = 0.2,
+                           fill = col_n,
+                           col = NA) +
       ggplot2::scale_color_manual("",
-                                    labels = c("Euthermy", "Torpor"),
+                                    labels = c("Euthermy", "Torpor", "ntmz"),
                                     values =  c(col_eut, col_torp)) +
       ggplot2::ylab(paste(ylab)) +
       ggplot2::xlab(paste(xlab))

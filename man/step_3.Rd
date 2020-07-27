@@ -2,30 +2,28 @@
 % Please edit documentation in R/tor_fit.R
 \name{step_3}
 \alias{step_3}
-\title{step_1_and_2}
+\title{step_3}
 \usage{
 step_3(
   Y,
   Ta,
   bmr = NULL,
   tlc = NULL,
-  fitting_options = list(ni = 5e+05, nt = 10, nb = 3e+05, nc = 3)
+  fitting_options = list(ni = 5000, nt = 10, nb = 3000, nc = 2)
 )
 }
 \arguments{
-\item{Y}{A vector of methabolic measure.}
-
-\item{Ta}{A vector of ambient temperature.}
-
 \item{bmr}{bmr value if not estimated}
 
 \item{tlc}{tlc value if not estimated}
+
+\item{out_2}{output of step_2}
 }
 \description{
 This function estimate the lowest TLC and the bmr
 }
 \examples{
 \dontrun{
-step_3(Ta = test_data$Ta, Y = test_data$VO2)
+t_3 <- step_3(Ta = test_data2$Ta, Y = test_data2$VO2)
 }
 }
