@@ -4,14 +4,14 @@
 \alias{.step_3_bis}
 \title{step_3_bis}
 \usage{
-.step_3_bis(out_2, out_3, fitting_options)
+.step_3_bis(out_assignation, fitting_options)
 }
 \arguments{
+\item{fitting_options}{fitting options}
+
 \item{out_2}{output of step_2}
 
 \item{out_3}{output of step_3}
-
-\item{fitting_options}{fitting options}
 }
 \description{
 This function estimate the lowest TLC and the bmr

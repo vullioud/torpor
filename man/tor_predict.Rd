@@ -4,12 +4,12 @@
 \alias{tor_predict}
 \title{get predictions}
 \usage{
-tor_predict(mod, Ta)
+tor_predict(tor_obj, Ta)
 }
 \arguments{
-\item{mod}{a fitted model from \code{\link[=tor_fit]{tor_fit()}}}
-
 \item{Ta}{a vector of temperature}
+
+\item{mod}{a fitted model from \code{\link[=tor_fit]{tor_fit()}}}
 }
 \value{
 a data.frame
@@ -26,7 +26,7 @@ Ta = test_data2[, 1],
 BMR = 1.49,
 TLC = 28.88,
 fitting_options = list(nc = 2, nb = 3000, ni = 5000))
-tor_predict(mod = test_mod, Ta = 1:20)
+tor_predict(tor_obj, Ta = 10:35)
 }
 }
 \seealso{

@@ -4,7 +4,7 @@
 \alias{tor_classify}
 \title{tor_classify}
 \usage{
-tor_classify(mod)
+tor_classify(tor_obj)
 }
 \arguments{
 \item{mod}{a fitted model from \code{\link[=tor_fit]{tor_fit()}}}
@@ -25,7 +25,7 @@ Ta = test_data2[, 1],
 BMR = 1.49,
 TLC = 28.88,
 fitting_options = list(nc = 1, ni = 5000, nb = 3000))
-tor_classify(mod = test_mod)
+tor_classify(tor_obj)
 }
 \seealso{
 Other predict: 

@@ -21,13 +21,8 @@ values for parameters tlc, Tt and Betat are generated.
 }
 \examples{
 data(test_data)
-test2 <- tor_fit(MR = test_data[,2],
-Ta = test_data[, 1],
-BMR = 29,
-TLC = 28.8,
-model = NULL,
-fitting_options = list(nc = 1, ni = 5000, nb = 3000))
-tor_summarise(mod = test2)
+test2 <- estimate_parameters(Y = test_data[,2],Ta = test_data[, 1], fitting_options = list(nc = 1, ni = 5000, nb = 3000))
+tor_summarise(tor_obj)
 }
 \seealso{
 Other summary: 

@@ -72,7 +72,7 @@ tor_plot <- function(tor_obj = NULL,
 
     G <- lwr_95 <- upr_95 <- NULL ## check
 
-    plot <- ggplot2::ggplot(da, ggplot2::aes(x = Ta, y = MR, col = G)) +
+    plot <- ggplot2::ggplot(da, ggplot2::aes(x = Ta, y = MR)) +
       ggplot2::geom_point()+
       ggplot2::xlim(c(min(da$Ta), max(da$Ta))) +
       ggplot2::geom_line(data = pred[pred$group == "Euthermy", ],
@@ -102,15 +102,9 @@ tor_plot <- function(tor_obj = NULL,
                          inherit.aes = FALSE,
                          col = col_n,
                          linetype = 2) +
-      ggplot2::geom_ribbon(data = pred[pred$group == "Ntmz", ],
-                           ggplot2::aes(x = Ta, ymin = lwr_95, ymax = upr_95),
-                           inherit.aes = FALSE,
-                           alpha = 0.2,
-                           fill = col_n,
-                           col = NA) +
       ggplot2::scale_color_manual("",
                                     labels = c("Euthermy", "Torpor", "ntmz"),
-                                    values =  c(col_eut, col_torp)) +
+                                    values =  c(col_eut, col_torp, col_n)) +
       ggplot2::ylab(paste(ylab)) +
       ggplot2::xlab(paste(xlab))
 

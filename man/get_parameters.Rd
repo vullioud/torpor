@@ -4,7 +4,7 @@
 \alias{get_parameters}
 \title{Fetch parameters from model output}
 \usage{
-get_parameters(mod)
+get_parameters(tor_obj)
 }
 \arguments{
 \item{mod}{a fitted model from \code{\link[=tor_fit]{tor_fit()}}}
