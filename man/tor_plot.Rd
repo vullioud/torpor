@@ -5,10 +5,11 @@
 \title{Plot raw data and predicted values}
 \usage{
 tor_plot(
-  mod = NULL,
+  tor_obj = NULL,
   plot_type = "ggplot",
   col_torp = "cornflowerblue",
   col_eut = "coral3",
+  col_n = "red",
   ylab = "M",
   xlab = "Ta",
   pdf = FALSE,
@@ -16,8 +17,6 @@ tor_plot(
 )
 }
 \arguments{
-\item{mod}{a fitted model from \code{\link[=tor_fit]{tor_fit()}}}
-
 \item{plot_type}{A character string specifying the type of plot desired. Either "base" or "ggplot"}
 
 \item{col_torp}{color for torpor model prediction and points}
@@ -31,6 +30,8 @@ tor_plot(
 \item{pdf}{logical if a .pdf copy of the plot should be saved}
 
 \item{...}{arguments to fit a model with \code{\link[=tor_fit]{tor_fit()}} if no model is provided}
+
+\item{mod}{a fitted model from \code{\link[=tor_fit]{tor_fit()}}}
 }
 \value{
 a base-R plot or a ggplot object

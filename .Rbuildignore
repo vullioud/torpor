@@ -9,3 +9,4 @@
 ^codecov\.yml$
 ^test\_new\_func\.R$
 ^metabolism\_det\_full\_script\.R$
+^vignettes$

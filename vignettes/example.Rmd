@@ -21,9 +21,9 @@ The first step in any analysis is to get data. In order to fit a model using the
 The data are accessible with the following command. 
 
 ```{r, data}
-library(torpor)
-data(test_data2) 
-str(test_data2)
+# library(torpor)
+# data(test_data2) 
+# str(test_data2)
 ``` 
 
 The lower critical temperature (i.e., lower limit of the thermoneutral zone, $T_{lc}$ and the basal metabolic rate $BMR$ are also needed in order to fit the model with the `tor_fit()` function. These two values can be found in the documentation of the dataset (?test_data2) for the present example and should be provided by the researcher when using her/his own data. 
@@ -32,12 +32,12 @@ The lower critical temperature (i.e., lower limit of the thermoneutral zone, $T_
 The model is fitted with the following call: 
 
 ```{r, fit model}
-model <- tor_fit(MR = test_data2[, "VO2ms"], Ta = test_data2[, "Ta"],
-                    BMR = 1.49, TLC = 28.8,
-                    fitting_options = list(ni = 5000,
-                                           nt = 10,
-                                           nb = 3000,
-                                           nc = 2))
+# model <- tor_fit(MR = test_data2[, "VO2ms"], Ta = test_data2[, "Ta"],
+#                     BMR = 1.49, TLC = 28.8,
+#                     fitting_options = list(ni = 5000,
+#                                            nt = 10,
+#                                            nb = 3000,
+#                                            nc = 2))
 ```
 Note that for the purpose of this vignette we only run 5000 iterations with 3000 
 burned-in. The results are thus not trusthworthy.
@@ -49,13 +49,13 @@ The output of the `tor_fit()` function is a list of class `jagsUI`. This can be 
 Once the model is fitted, it is recommended to have an overlook at the results. This can be achieved via the function `tor_summarise()`. The latter will return a list with the essentials: A data.frame with the mean and median of parameter estimates, the 95% credible interval and the $\hat{R}$ value (i.e. chain convergence estimation). It also reports the parameters’ identifiability. 
 
 ```{r, tor summarise}
-summary <- tor_summarise(model)
+#summary <- tor_summarise(model)
 ```
 
 The parameter estimates are accessible with: 
 
 ```{r, parameter estimates}
-summary$parameter_estimates
+#summary$parameter_estimates
 ```
 
 ### Checking the convergence
@@ -64,7 +64,7 @@ It is also possible to look graphicaly at the convergence using the `jagsUI` fun
 
 
 ```{r, traceplot betat}
-jagsUI::traceplot(model, c("betat", "betac"))
+#jagsUI::traceplot(model, c("betat", "betac"))
 ```
 
 ### checking the parameters identifiability 
@@ -72,7 +72,7 @@ In addition to check of the convergence it is advised to control the identifiabi
 The ovelap is also given by the `tor_summarise()` function. Let's continue with our analysis of *Cercartetus lepidus*: 
 
 ```{r message=TRUE, warning=TRUE, paged.print=FALSE}
-summary$overlap
+#summary$overlap
 ``` 
 
 ### Making sens of the model 
@@ -85,9 +85,9 @@ Once the basic checks have been done, we can go on with the evaluation of the ou
 To look at the classification of the data the corresponding predicted values we use the function `tor_classify()`, which will assign the measured metabolic values to either torpor or euthermy and returns a dataframe with the measured $MR$, the measured $T_a$, the predicted $MR$ and the classification (predicted_state).
 
 ```{r, tor_classify}
-classification <- tor_classify(model)
-
-head(classification)
+# classification <- tor_classify(model)
+# 
+# head(classification)
 ```
 
 
@@ -96,9 +96,9 @@ head(classification)
 The `tor_predict()` function is slightly different as it takes a vector of $T_a$ as input and return the predicted $MR$ both in torpor and in euthermy and the 95% credible interval. For example, let's see what are the predicted $MR$ at Ta 22°C. 
 
 ```{r, tor_predict}
-prediction <- tor_predict(model, 22)
-
-head(prediction)
+# prediction <- tor_predict(model, 22)
+# 
+# head(prediction)
 ```
 
 ### plotting the data and predicted values 
@@ -106,18 +106,18 @@ head(prediction)
 Finally a built-in function allows plot the results. The user can modulate (labels with `xlab` and `ylab`, colors with `col_torp` and `col_eut`) and can save the plot using the arguments `pdf = TRUE`. The `plot_type` argument also allows to choose between `ggplot` and `base-R`
 
 ```{r, plot}
-plot <- tor_plot(mod = model, plot_type = "ggplot", ylab = "MR")
-plot 
-
-plot2 <- tor_plot(MR = test_data2[, "VO2ms"], Ta = test_data2[, "Ta"],
-                    BMR = 1.49, TLC = 28.8,
-                    fitting_options = list(ni = 5e+03,
-                                           nt = 10,
-                                           nb = 3e+03,
-                                           nc = 2), 
-                    plot_type = "base", 
-                    ylab = "MR")
-plot2
+# plot <- tor_plot(mod = model, plot_type = "ggplot", ylab = "MR")
+# plot 
+# 
+# plot2 <- tor_plot(MR = test_data2[, "VO2ms"], Ta = test_data2[, "Ta"],
+#                     BMR = 1.49, TLC = 28.8,
+#                     fitting_options = list(ni = 5e+03,
+#                                            nt = 10,
+#                                            nb = 3e+03,
+#                                            nc = 2), 
+#                     plot_type = "base", 
+#                     ylab = "MR")
+# plot2
 
 ```
 
@@ -126,10 +126,10 @@ The plot can be changed further using either `ggplot2` or `graphic`.
 
 
 ```{r, plot custom}
-plot + ggplot2::ggtitle("Cercartetus lepidus") +
-  ggplot2::ylab("Test") +
-  ggplot2::theme_minimal() +
-  ggplot2::theme(legend.position="bottom")
+# plot + ggplot2::ggtitle("Cercartetus lepidus") +
+#   ggplot2::ylab("Test") +
+#   ggplot2::theme_minimal() +
+#   ggplot2::theme(legend.position="bottom")
 ```
 
 
