@@ -17,7 +17,8 @@
 #'test2 <- estimate_parameters(Y = test_data[,2],Ta = test_data[, 1], fitting_options = list(nc = 1, ni = 5000, nb = 3000))
 #'tor_summarise(tor_obj)
 tor_summarise <- function(tor_obj){
-get_parameters(tor_obj)  ## round print to 3 digit.
+list(params = get_parameters(tor_obj),
+     overlap = tor_overlap(tor_obj))## round print to 3 digit.
 }
 ##############################################################################
 
@@ -36,44 +37,70 @@ get_parameters(tor_obj)  ## round print to 3 digit.
 #'@return a data.frame
 #'@export
 
-tor_overlap <- function(mod){
-# size <- nrow(mod$samples[[1]])
-#
-# tlc <- mod$mean$tlc
-# bmr <- mod$data$BMR
-# Ym  <- mod$data$Ym
-#
-# PRTintc <- truncnorm::rtruncnorm(size,a = 0, b = bmr/Ym, mean = 0, sd = sqrt(1000))  ## variable based on model flexible
-# PRTt <- truncnorm::rtruncnorm(size, b = tlc, mean = 0, sd = sqrt(1000))
-# PRbeta <- truncnorm::rtruncnorm(size, b = 0, mean = 0, sd = sqrt(100))
-#
-# intc_overlap <- get_overlap(mod, params = "intc", priors = PRTintc)
-# Tt_overlap <- get_overlap(mod, params = "Tt", priors = PRTt)
-# betat_overlap <- get_overlap(mod, params = "betat", priors = PRbeta)
+tor_overlap <- function(tor_obj){
 
-#
-#   prior_tlc <- truncnorm::rtruncnorm(20000,a = mod$mean$TLC,mean=0,sd=100)
-#   prior_Tt <- truncnorm::rtruncnorm(20000,b = mod$mean$TLC,mean=0,sd=100)
-#   prior_betat <- truncnorm::rtruncnorm(20000,b = 0,mean=0,sd=100)
-#
-#   tlc_overlap <- get_overlap(mod, "tlc", prior_tlc)
-#   Tt_overlap <- get_overlap(mod, "Tt", prior_Tt)
-#   betat_overlap <- get_overlap(mod, "betat", prior_betat)
+  ### TLC
+  mod_tlc <- tor_obj$out_bmr_tlc$model_1
 
-  # if (intc_overlap >= 0.3) {
-  #   warning("Parameters intc, betac, and intc not identifiable")
-  # }
-  # if (Tt_overlap >= 0.3) {
-  #   warning("Parameters Tt and intr not identifiable")
-  # }
-  # if (betat_overlap >= 0.3) {
-  #   warning("Parameters tlc, betac, and intc not identifiable")
-  # }
-  #
-  # out <- data.frame(parameter = c("intc", "Tt", "Betat"),
-  #                   overlap = c(intc_overlap, Tt_overlap, betat_overlap))
-  #
-  # return(out)
+  nbsamples <- nrow(mod_tlc$samples[[1]])*length(mod_tlc$samples)
+
+  MIN<-max(tor_obj$out_bmr_tlc$Ta2)
+  MAX<-max(tor_obj$data$Ta)
+  PR<- runif(nbsamples,MIN,MAX)
+  tlc_chain <- tor_obj$out_bmr_tlc$tlc_distribution
+  overlapTlc <- as.numeric(round(overlapping::overlap(x = list(tlc_chain, PR))$OV, digits = 3))
+  out_tlc <- cbind(name = "Tlc", overlap = overlapTlc)
+
+  ## MRr
+  MIN <- 0
+  MAX <- tor_obj$out_bmr_tlc$bmr_estimated
+  PR<- runif(nbsamples,MIN,MAX)
+  MRr_chain <- tor_obj$mod_parameter$sims.list$MRr
+  overlapMRr <- as.numeric(round(overlapping::overlap(x = list(MRr_chain, PR))$OV, digits = 3))
+  out_MRr <- cbind(name = "MRr", overlap = overlapMRr)
+
+  ## Tbe
+  MIN <- tor_obj$out_bmr_tlc$tlc_estimated
+  MAX <- 100
+  PR <- runif(nbsamples,MIN,MAX)
+  Tbe_chain <- tor_obj$mod_parameter$sims.list$Tbe
+  overlapTbe <- as.numeric(round(overlapping::overlap(x = list(Tbe_chain, PR))$OV, digits = 3))
+
+  out_Tbe <- cbind(name = "Tbe", overlap = overlapTbe)
+
+  ## TMR
+  MIN <- 0
+  for(i in 1:nbsamples){
+
+    PR[i] <- runif(1,MIN,tor_obj$mod_parameter$sims.list$MRr[i])}
+
+  TMR_chain <- tor_obj$mod_parameter$sims.list$TMR
+  overlapTMR <- as.numeric(round(overlapping::overlap(x = list(TMR_chain, PR))$OV, digits = 3))
+  out_TMR <- cbind(name = "TMR", overlap = overlapTMR)
+
+  ## tbt
+  MIN<- -10
+  MAX<- tor_obj$out_bmr_tlc$tlc_estimated
+  PR<-runif(nbsamples,MIN,MAX)
+  Tbt_chain <- tor_obj$mod_parameter$sims.list$Tbt
+  overlapTbt <- as.numeric(round(overlapping::overlap(x = list(Tbt_chain, PR))$OV, digits = 3))
+  out_Tbt <- cbind(name = "Tbt", overlap = overlapTbt)
+
+  out <- rbind(out_tlc,
+               out_MRr,
+               out_Tbe,
+               out_TMR,
+               out_Tbt)
+
+ ### add loop on out to flag overlap > 90 and 60 %.
+ # purrr::map(out, ~ attr(.x,which = names))
+ #   #         if(.x > 0.9) {
+ #   #warning("is not identifiable: PPO>90%")
+ #   #})
+ #
+ #   If (overlapXXX>60&overlapXX<=90){warning XXX is poorly identifiable: 90% >=PPO> 60%)
+out
+
 }
 ##############################################################################
 
@@ -150,25 +177,4 @@ get_parameters <- function(tor_obj) {  ## out4 et out2 pour tlc.
   warning("Values for MTNZ are directly computed from data points")
   return(out)
 }
-##############################################################################
 
-#' get_overlap // internal
-#'
-#' Compare the distribution overlap between a prior and a posterior // used internally only
-#'
-#'@name get_overlap
-#'@aliases get_overlap
-#'@family summary
-#'@param mod a fitted model from [estimate_parameters()]
-#'@param params a parameter of the model
-#'@param priors a posterior distribution (as. numerical vector)
-#'@importFrom magrittr %>%
-#'@return a numeric value
-get_overlap <- function(mod, params, priors) {
-#
-#   chains <- purrr::map_dfr(mod$samples, ~ as.data.frame(.x) %>%
-#                              dplyr::select(paste(params)))
-#
-#   as.numeric(round(overlapping::overlap(x = list(chains[,1], priors))$OV, digits = 3))
-}
-##############################################################################
