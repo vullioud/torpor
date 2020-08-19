@@ -267,7 +267,7 @@ estimate_assignation <- function(Y, Ta,
                        n.thin = fitting_options[["nt"]],
                        n.iter = fitting_options[["ni"]],
                        n.burnin = fitting_options[["nb"]],
-                       parallel = TRUE,
+                       parallel = FALSE,
                        verbose = FALSE,
                        store.data = TRUE)
 
@@ -445,7 +445,7 @@ estimate_parameters <- function(Ta, Y,
                        n.thin = fitting_options[["nt"]],
                        n.iter = fitting_options[["ni"]],
                        n.burnin = fitting_options[["nb"]],
-                       parallel = TRUE,
+                       parallel = FALSE,
                        verbose = FALSE,
                        store.data = TRUE)
 

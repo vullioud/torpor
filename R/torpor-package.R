@@ -8,7 +8,7 @@
 #'is aimed to support any physiologist working in thermal energetics. More information
 #'can be found on the compagnon article Fasel et al. (in prep) and in the vignettes.
 #'
-#'This package is center around the [tor_fit()] function which
+#'This package is center around the [estimate_parameters()] function which
 #'allows to fit binary mixture model on metabolic rates data using Bayesian inference.
 #'#'
 #'@docType package
