@@ -26,7 +26,6 @@ tor_summarise(tor_obj)
 }
 \seealso{
 Other summary: 
-\code{\link{get_overlap}()},
 \code{\link{get_parameters}()},
 \code{\link{tor_overlap}()}
 }

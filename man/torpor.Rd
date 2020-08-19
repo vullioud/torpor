@@ -14,7 +14,7 @@ is aimed to support any physiologist working in thermal energetics. More informa
 can be found on the compagnon article Fasel et al. (in prep) and in the vignettes.
 }
 \details{
-This package is center around the \code{\link[=tor_fit]{tor_fit()}} function which
+This package is center around the \code{\link[=estimate_parameters]{estimate_parameters()}} function which
 allows to fit binary mixture model on metabolic rates data using Bayesian inference.
 #'
 }

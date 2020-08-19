@@ -18,7 +18,6 @@ and creates a dataframe used in the \code{\link[=tor_summarise]{tor_summarise()}
 }
 \seealso{
 Other summary: 
-\code{\link{get_overlap}()},
 \code{\link{tor_overlap}()},
 \code{\link{tor_summarise}()}
 }

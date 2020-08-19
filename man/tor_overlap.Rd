@@ -4,7 +4,7 @@
 \alias{tor_overlap}
 \title{Check priors/posteriors overlap}
 \usage{
-tor_overlap(mod)
+tor_overlap(tor_obj)
 }
 \arguments{
 \item{mod}{a fitted model from \code{\link[=estimate_parameters]{estimate_parameters()}}}
@@ -21,7 +21,6 @@ with the data provided (Fasel et al. (in prep)). \code{\link[=tor_overlap]{tor_o
 }
 \seealso{
 Other summary: 
-\code{\link{get_overlap}()},
 \code{\link{get_parameters}()},
 \code{\link{tor_summarise}()}
 }

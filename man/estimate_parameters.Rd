@@ -44,6 +44,6 @@ described pattern while in torpor.
 }
 \examples{
 \dontrun{
-test_mod <- estimate_parameters(Ta = test_data3$Ta, Y = test_data3$VO2)
+test_mod <- estimate_parameters(Ta = test_data2$Ta, Y = test_data2$VO2)
 }
 }
