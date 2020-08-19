@@ -43,7 +43,3 @@ a base-R plot or a ggplot object
 Raw data and predicted values are presented in different colors depending of the metabolic state.
 For more flexibility the users can use \code{\link[=estimate_parameters]{estimate_parameters()}} and \code{\link[=tor_predict]{tor_predict()}} directly.
 }
-\examples{
-data(test_data2)
-tor_plot(Y = test_data2[,2], Ta = test_data2[,1], plot_type = "ggplot")
-}

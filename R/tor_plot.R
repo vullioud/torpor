@@ -19,9 +19,6 @@
 #'@export
 #'@return a base-R plot or a ggplot object
 #'@importFrom grDevices dev.off
-#'@examples
-#'data(test_data2)
-#'tor_plot(Y = test_data2[,2], Ta = test_data2[,1], plot_type = "ggplot")
 
 tor_plot <- function(tor_obj = NULL,
                      plot_type = "ggplot",
