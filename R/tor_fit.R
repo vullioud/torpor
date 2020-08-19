@@ -124,7 +124,7 @@ find_low_tlc_bmr <- function(Y,Ta){
 estimate_tlc_bmr <- function(Y, Ta, fitting_options = list(ni = 50000,
                                                        nt = 10,
                                                        nb = 20000,
-                                                       nc = 2)) {
+                                                       nc = 2)) { ## add parallel to fitting options
   .complete_args(estimate_tlc_bmr)
 
   out_1 <- find_low_tlc_bmr(Y, Ta) ## run first step
@@ -167,7 +167,7 @@ estimate_tlc_bmr <- function(Y, Ta, fitting_options = list(ni = 50000,
                         n.thin = fitting_options[["nt"]],
                         n.iter = fitting_options[["ni"]],
                         n.burnin = fitting_options[["nb"]],
-                        parallel = FALSE,
+                        parallel = TRUE,
                         verbose = FALSE,
                         store.data = TRUE)
 
@@ -182,7 +182,8 @@ return(list(model_1 = mod,
             tlc_estimated = tlc_estimated,
             tlc_distribution = tlc_distribution,
             bmr_estimated = bmr_estimated,
-            bmr_points = na.omit(Y[Ta >= tlc_estimated])))
+            bmr_points = na.omit(Y[Ta >= tlc_estimated]),
+            Ta2 = Ta2))
 }
 
 #'estimate_assignation
@@ -267,7 +268,7 @@ estimate_assignation <- function(Y, Ta,
                        n.thin = fitting_options[["nt"]],
                        n.iter = fitting_options[["ni"]],
                        n.burnin = fitting_options[["nb"]],
-                       parallel = FALSE,
+                       parallel = TRUE,
                        verbose = FALSE,
                        store.data = TRUE)
 
@@ -389,14 +390,14 @@ estimate_assignation <- function(Y, Ta,
 #'@export
 #'@examples
 #'\dontrun{
-#'test_mod <- estimate_parameters(Ta = test_data3$Ta, Y = test_data3$VO2)
+#'test_mod <- estimate_parameters(Ta = test_data2$Ta, Y = test_data2$VO2)
 #'}
 estimate_parameters <- function(Ta, Y,
                    bmr = NULL, tlc = NULL,
                    fitting_options = list(ni = 50000,
                                           nt = 10,
                                           nb = 30000,
-                                          nc = 3)) {
+                                          nc = 3)) {  ## add parallel
 
 
   if (length(Ta) != length(Y)) stop("Y, Ta don´t have the same length")
@@ -445,7 +446,7 @@ estimate_parameters <- function(Ta, Y,
                        n.thin = fitting_options[["nt"]],
                        n.iter = fitting_options[["ni"]],
                        n.burnin = fitting_options[["nb"]],
-                       parallel = FALSE,
+                       parallel = TRUE,
                        verbose = FALSE,
                        store.data = TRUE)
 
