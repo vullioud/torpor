@@ -4,17 +4,17 @@
 \alias{tor_summarise}
 \title{Model summary}
 \usage{
-tor_summarise(mod)
+tor_summarise(tor_obj)
 }
 \arguments{
-\item{mod}{a fitted model from \code{\link[=tor_fit]{tor_fit()}}}
+\item{tor_obj}{a fitted model from \code{\link[=estimate_parameters]{estimate_parameters()}}}
 }
 \value{
 a list of two data.frame. The first element returns the parameter estimates, the second reports the overlap values.
 }
 \description{
 \code{\link[=tor_summarise]{tor_summarise()}} provides a comprehensive summary of the output
-returned by \code{\link[=tor_fit]{tor_fit()}}. Values of mean, 95CI bounds, median and
+returned by \code{\link[=estimate_parameters]{estimate_parameters()}}. Values of mean, 95CI bounds, median and
 Brooks–Gelman–Rubin criterion (i.e. chain convergence check) of parameters
 posterior distributions are provided. Additionally, prior posterior overlap
 values for parameters tlc, Tt and Betat are generated.

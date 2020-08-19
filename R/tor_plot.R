@@ -4,30 +4,30 @@
 #'Raw data and predicted values are presented in different colors depending of the metabolic state.
 #`Predicted values are represented by continuous and stripped lines for the estimates’ median and 95CI bounds
 #`of the posterior distribution, respectively.
-#'For more flexibility the users can use [tor_fit()] and [tor_predict()] directly.
+#'For more flexibility the users can use [estimate_parameters()] and [tor_predict()] directly.
 #'
 #'@name tor_plot
-#'@param mod a fitted model from [tor_fit()]
+#'@param tor_obj a fitted model from [estimate_parameters()]
 #'@param plot_type A character string specifying the type of plot desired. Either "base" or "ggplot"
 #'@param col_torp color for torpor model prediction and points
 #'@param col_eut color for euthermy model prediction and points
+#'@param col_n color of NTMZ
 #'@param ylab y label
 #'@param xlab x label
 #'@param pdf logical if a .pdf copy of the plot should be saved
-#'@param ... arguments to fit a model with [tor_fit()] if no model is provided
+#'@param ... arguments to fit a model with [estimate_parameters()] if no model is provided
 #'@export
 #'@return a base-R plot or a ggplot object
 #'@importFrom grDevices dev.off
 #'@examples
 #'data(test_data2)
-#'tor_plot(Y = test_data2[,2], Ta = test_data2[,1],
-#'fitting_options = list(nc =1, ni = 5000, nb = 3000), plot_type = "ggplot")
+#'tor_plot(Y = test_data2[,2], Ta = test_data2[,1], plot_type = "ggplot")
 
 tor_plot <- function(tor_obj = NULL,
                      plot_type = "ggplot",
                      col_torp = "cornflowerblue",
                      col_eut = "coral3",
-                     col_n = "red",
+                     col_n = "green",
                      ylab = "M",
                      xlab = "Ta",
                      pdf = FALSE,
@@ -57,6 +57,7 @@ tor_plot <- function(tor_obj = NULL,
   ## data
   da <- as.data.frame(cbind(Ta, MR))
   da$G <- tor_obj$assignation$G
+  da$G <- relevel(as.factor(da$G), ref = 2)
   #da$hat <- out$Rhat$G
 
 
@@ -73,7 +74,7 @@ tor_plot <- function(tor_obj = NULL,
     G <- lwr_95 <- upr_95 <- NULL ## check
 
     plot <- ggplot2::ggplot(da, ggplot2::aes(x = Ta, y = MR)) +
-      ggplot2::geom_point()+
+      ggplot2::geom_point(ggplot2::aes(col = as.factor(G)))+
       ggplot2::xlim(c(min(da$Ta), max(da$Ta))) +
       ggplot2::geom_line(data = pred[pred$group == "Euthermy", ],
                          ggplot2::aes(x = Ta, y = pred),

@@ -1,7 +1,7 @@
 #' Model summary
 #'
 #'[tor_summarise()] provides a comprehensive summary of the output
-#'returned by [tor_fit()]. Values of mean, 95CI bounds, median and
+#'returned by [estimate_parameters()]. Values of mean, 95CI bounds, median and
 #'Brooks–Gelman–Rubin criterion (i.e. chain convergence check) of parameters
 #'posterior distributions are provided. Additionally, prior posterior overlap
 #'values for parameters tlc, Tt and Betat are generated.
@@ -9,19 +9,15 @@
 #'@name tor_summarise
 #'@aliases tor_summarise
 #'@family summary
-#'@param mod a fitted model from [tor_fit()]
+#'@param tor_obj a fitted model from [estimate_parameters()]
 #'@return a list of two data.frame. The first element returns the parameter estimates, the second reports the overlap values.
 #'@export
 #'@examples
 #'data(test_data)
 #'test2 <- estimate_parameters(Y = test_data[,2],Ta = test_data[, 1], fitting_options = list(nc = 1, ni = 5000, nb = 3000))
 #'tor_summarise(tor_obj)
-tor_summarise <- function(mod){
-
-#out <- list()
-## parameters
-get_parameters(mod)  ## round print to 3 digit.
-return(out)
+tor_summarise <- function(tor_obj){
+get_parameters(tor_obj)  ## round print to 3 digit.
 }
 ##############################################################################
 
@@ -36,18 +32,9 @@ return(out)
 #'@name tor_overlap
 #'@aliases tor_overlap
 #'@family summary
-#'@param mod a fitted model from [tor_fit()]
+#'@param mod a fitted model from [estimate_parameters()]
 #'@return a data.frame
 #'@export
-#'@examples
-#'data(test_data2)
-#'test <- tor_fit(MR = test_data2[,2],
-#'Ta = test_data2[, 1],
-#'BMR = 1.49,
-#'TLC = 28.8,
-#'model = NULL,
-#'fitting_options = list(nc = 1, ni = 8000, nb = 3000))
-#'tor_overlap(mod = test)
 
 tor_overlap <- function(mod){
 # size <- nrow(mod$samples[[1]])
@@ -97,18 +84,9 @@ tor_overlap <- function(mod){
 #'
 #'@aliases get_parameters
 #'@family summary
-#'@param mod a fitted model from [tor_fit()]
+#'@param tor_obj a fitted model from [estimate_parameters()]
 #'@return a data.frame
 #'@export
-#'@examples
-#'data(test_data2)
-#'test <- tor_fit(MR = test_data2[,2],
-#'Ta = test_data2[, 1],
-#'BMR = 1.49,
-#'TLC = 28.8,
-#'model = NULL,
-#'fitting_options = list(nc = 1, ni = 5000, nb = 3000))
-#'get_parameters(mod = test)
 get_parameters <- function(tor_obj) {  ## out4 et out2 pour tlc.
 
   Ym <- tor_obj$data$Ym
@@ -181,7 +159,7 @@ get_parameters <- function(tor_obj) {  ## out4 et out2 pour tlc.
 #'@name get_overlap
 #'@aliases get_overlap
 #'@family summary
-#'@param mod a fitted model from [tor_fit()]
+#'@param mod a fitted model from [estimate_parameters()]
 #'@param params a parameter of the model
 #'@param priors a posterior distribution (as. numerical vector)
 #'@importFrom magrittr %>%

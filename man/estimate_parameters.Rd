@@ -2,7 +2,7 @@
 % Please edit documentation in R/tor_fit.R
 \name{estimate_parameters}
 \alias{estimate_parameters}
-\title{step_4}
+\title{estimate_parameters}
 \usage{
 estimate_parameters(
   Ta,
@@ -13,14 +13,18 @@ estimate_parameters(
 )
 }
 \arguments{
+\item{Ta}{A vector of ambient temperature.}
+
+\item{Y}{A vector of methabolic measure.}
+
 \item{bmr}{bmr value if not estimated}
 
 \item{tlc}{tlc value if not estimated}
 
-\item{fitting_options}{option to be passed to rjags.}
+\item{fitting_options}{a list of fitting option to pass to jags.}
 }
 \description{
-\code{\link[=step_4]{step_4()}} fits a binomial mixture model using Bayesian
+\code{\link[=estimate_parameters]{estimate_parameters()}} fits a binomial mixture model using Bayesian
 inference.  The function considers the assumed relation between metabolic rate (MR) and ambient temperature (Ta)
 (Speakman & Thomas 2003). In the hypothermic state (torpor) and above some
 threshold Ta (Tmin), MR follows an exponential curve reflecting the Arrhenius

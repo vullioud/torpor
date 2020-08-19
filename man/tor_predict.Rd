@@ -7,9 +7,9 @@
 tor_predict(tor_obj, Ta)
 }
 \arguments{
-\item{Ta}{a vector of temperature}
+\item{tor_obj}{a fitted model from \code{\link[=estimate_parameters]{estimate_parameters()}}}
 
-\item{mod}{a fitted model from \code{\link[=tor_fit]{tor_fit()}}}
+\item{Ta}{a vector of temperature}
 }
 \value{
 a data.frame
@@ -21,7 +21,7 @@ a given ambient temperature (Ta), in euthermic and/or torpid state.
 \examples{
 \dontrun{
 data(test_data2)
-test_mod <- tor_fit(MR = test_data2[,2],
+test_mod <- estimate_parameters(MR = test_data2[,2],
 Ta = test_data2[, 1],
 BMR = 1.49,
 TLC = 28.88,

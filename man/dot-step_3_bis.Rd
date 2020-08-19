@@ -7,11 +7,9 @@
 .step_3_bis(out_assignation, fitting_options)
 }
 \arguments{
+\item{out_assignation}{output of estimatate_assignation.}
+
 \item{fitting_options}{fitting options}
-
-\item{out_2}{output of step_2}
-
-\item{out_3}{output of step_3}
 }
 \description{
 This function estimate the lowest TLC and the bmr

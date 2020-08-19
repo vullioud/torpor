@@ -13,14 +13,18 @@ estimate_assignation(
 )
 }
 \arguments{
+\item{Y}{A vector of methabolic measure.}
+
+\item{Ta}{A vector of ambient temperature.}
+
 \item{bmr}{bmr value if not estimated}
 
 \item{tlc}{tlc value if not estimated}
 
-\item{fitting_options}{option to be passed to rjags.}
+\item{fitting_options}{a list of fitting option to pass to jags.}
 }
 \description{
-This function estimate the lowest TLC and the bmr
+This function estimate the assignation into torpor or euthermy.
 }
 \examples{
 \dontrun{

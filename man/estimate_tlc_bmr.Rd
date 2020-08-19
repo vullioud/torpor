@@ -15,7 +15,7 @@ estimate_tlc_bmr(
 
 \item{Ta}{A vector of ambient temperature.}
 
-\item{out_1}{output of step_1.}
+\item{fitting_options}{a list of fitting option to pass to jags.}
 }
 \description{
 This function estimate the lowest TLC and the bmr

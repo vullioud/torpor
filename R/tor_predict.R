@@ -6,14 +6,14 @@
 #'@name tor_predict
 #'@aliases tor_predict
 #'@family predict
-#'@param mod a fitted model from [tor_fit()]
+#'@param tor_obj a fitted model from [estimate_parameters()]
 #'@param Ta a vector of temperature
 #'@return a data.frame
 #'@export
 #'@examples
 #'\dontrun{
 #'data(test_data2)
-#'test_mod <- tor_fit(MR = test_data2[,2],
+#'test_mod <- estimate_parameters(MR = test_data2[,2],
 #'Ta = test_data2[, 1],
 #'BMR = 1.49,
 #'TLC = 28.88,
@@ -163,17 +163,9 @@ eut_predict_fun <- function(x, inte, betat, Ym) { ## backtransform parameters to
 #'@name tor_classify
 #'@aliases tor_classify
 #'@family predict
-#'@param mod a fitted model from [tor_fit()]
+#'@param tor_obj a fitted model from [estimate_parameters()]
 #'@return a data.frame
 #'@export
-#'@examples
-#'data(test_data2)
-#'test_mod <- tor_fit(MR = test_data2[,2],
-#'Ta = test_data2[, 1],
-#'BMR = 1.49,
-#'TLC = 28.88,
-#'fitting_options = list(nc = 1, ni = 5000, nb = 3000))
-#'tor_classify(tor_obj)
 
 tor_classify <- function(tor_obj){
 

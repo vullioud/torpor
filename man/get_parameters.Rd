@@ -7,7 +7,7 @@
 get_parameters(tor_obj)
 }
 \arguments{
-\item{mod}{a fitted model from \code{\link[=tor_fit]{tor_fit()}}}
+\item{tor_obj}{a fitted model from \code{\link[=estimate_parameters]{estimate_parameters()}}}
 }
 \value{
 a data.frame
@@ -15,16 +15,6 @@ a data.frame
 \description{
 \code{\link[=get_parameters]{get_parameters()}} Retrieves the parameters estimates from the model output
 and creates a dataframe used in the \code{\link[=tor_summarise]{tor_summarise()}} function
-}
-\examples{
-data(test_data2)
-test <- tor_fit(MR = test_data2[,2],
-Ta = test_data2[, 1],
-BMR = 1.49,
-TLC = 28.8,
-model = NULL,
-fitting_options = list(nc = 1, ni = 5000, nb = 3000))
-get_parameters(mod = test)
 }
 \seealso{
 Other summary: 

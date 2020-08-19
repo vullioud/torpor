@@ -116,8 +116,7 @@ find_low_tlc_bmr <- function(Y,Ta){
 #'@name estimate_tlc_bmr
 #'@param Y A vector of methabolic measure.
 #'@param Ta A vector of ambient temperature.
-#'@param out_1 output of step_1.
-#'@inheritParams tor_fit
+#'@param fitting_options a list of fitting option to pass to jags.
 #'@export
 #'@examples
 #'t <- estimate_tlc_bmr(test_data2$VO2ms, test_data2$Ta)
@@ -188,13 +187,13 @@ return(list(model_1 = mod,
 
 #'estimate_assignation
 #'
-#' This function estimate the lowest TLC and the bmr
+#' This function estimate the assignation into torpor or euthermy.
 #'
 #'@name estimate_assignation
 #'@export
+#'@inheritParams estimate_tlc_bmr
 #'@param bmr bmr value if not estimated
 #'@param tlc tlc value if not estimated
-#'@param fitting_options option to be passed to rjags.
 #'@examples
 #'\dontrun{
 #'t2_no_input <- estimate_assignation(Ta = test_data2$Ta, Y = test_data2$VO2)
@@ -291,8 +290,7 @@ estimate_assignation <- function(Y, Ta,
 #' This function estimate the lowest TLC and the bmr
 #'
 #'@name .step_3_bis
-#'@param out_2 output of step_2
-#'@param out_3 output of step_3
+#'@param out_assignation output of estimatate_assignation.
 #'@param fitting_options fitting options
 .step_3_bis <- function(out_assignation, fitting_options){
  ## comes from hetero2
@@ -367,9 +365,9 @@ estimate_assignation <- function(Y, Ta,
 }
 
 
-#' step_4
+#' estimate_parameters
 #'
-#'[step_4()] fits a binomial mixture model using Bayesian
+#'[estimate_parameters()] fits a binomial mixture model using Bayesian
 #'inference.  The function considers the assumed relation between metabolic rate (MR) and ambient temperature (Ta)
 #'(Speakman & Thomas 2003). In the hypothermic state (torpor) and above some
 #'threshold Ta (Tmin), MR follows an exponential curve reflecting the Arrhenius
@@ -457,6 +455,7 @@ estimate_parameters <- function(Ta, Y,
   }
 
   out_assignation$mod_parameter <- out_4
+
   print(tor_summarise(out_assignation))
   return(invisible(out_assignation))
 

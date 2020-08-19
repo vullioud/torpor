@@ -7,7 +7,7 @@
 tor_overlap(mod)
 }
 \arguments{
-\item{mod}{a fitted model from \code{\link[=tor_fit]{tor_fit()}}}
+\item{mod}{a fitted model from \code{\link[=estimate_parameters]{estimate_parameters()}}}
 }
 \value{
 a data.frame
@@ -18,16 +18,6 @@ Tt and Betat. Values larger than 0.3 should lead to the conclusion that conformi
 torpor, regulated torpor or thermoregulation respectively could not be modeled
 with the data provided (Fasel et al. (in prep)). \code{\link[=tor_overlap]{tor_overlap()}} can be used independently but is also used internally in
 \code{\link[=tor_summarise]{tor_summarise()}}.
-}
-\examples{
-data(test_data2)
-test <- tor_fit(MR = test_data2[,2],
-Ta = test_data2[, 1],
-BMR = 1.49,
-TLC = 28.8,
-model = NULL,
-fitting_options = list(nc = 1, ni = 8000, nb = 3000))
-tor_overlap(mod = test)
 }
 \seealso{
 Other summary: 
