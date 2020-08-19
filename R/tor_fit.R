@@ -221,8 +221,7 @@ estimate_assignation <- function(Y, Ta,
 
   if (is.null(bmr) | (is.null(tlc))) { ### need to change the filter it runs all the time
 
-    message("BMR and TLC are being
-            estimated from the data")
+    message("BMR and TLC are being estimated from the data")
 
   out_bmr_tlc <- estimate_tlc_bmr(Ta = Ta, Y = Y, fitting_options = fitting_options)
 
