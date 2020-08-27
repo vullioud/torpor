@@ -7,9 +7,9 @@
 estimate_assignation(
   Y,
   Ta,
-  bmr = NULL,
+  MTNZ = NULL,
   tlc = NULL,
-  fitting_options = list(ni = 50000, nt = 10, nb = 20000, nc = 2)
+  fitting_options = list(ni = 50000, nt = 10, nb = 20000, nc = 2, parallel = TRUE)
 )
 }
 \arguments{
@@ -17,11 +17,11 @@ estimate_assignation(
 
 \item{Ta}{A vector of ambient temperature.}
 
-\item{bmr}{bmr value if not estimated}
-
 \item{tlc}{tlc value if not estimated}
 
 \item{fitting_options}{a list of fitting option to pass to jags.}
+
+\item{mtnz}{mtnz value if not estimated}
 }
 \description{
 This function estimate the assignation into torpor or euthermy.

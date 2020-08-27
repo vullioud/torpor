@@ -7,7 +7,7 @@
 get_parameters(tor_obj)
 }
 \arguments{
-\item{tor_obj}{a fitted model from \code{\link[=estimate_parameters]{estimate_parameters()}}}
+\item{tor_obj}{a fitted model from \code{\link[=tor_fit]{tor_fit()}}}
 }
 \value{
 a data.frame

@@ -10,14 +10,13 @@ tor_plot(
   col_torp = "cornflowerblue",
   col_eut = "coral3",
   col_n = "green",
-  ylab = "M",
+  ylab = "MR",
   xlab = "Ta",
-  pdf = FALSE,
-  ...
+  pdf = FALSE
 )
 }
 \arguments{
-\item{tor_obj}{a fitted model from \code{\link[=estimate_parameters]{estimate_parameters()}}}
+\item{tor_obj}{a fitted model from \code{\link[=tor_fit]{tor_fit()}}}
 
 \item{plot_type}{A character string specifying the type of plot desired. Either "base" or "ggplot"}
 
@@ -32,8 +31,6 @@ tor_plot(
 \item{xlab}{x label}
 
 \item{pdf}{logical if a .pdf copy of the plot should be saved}
-
-\item{...}{arguments to fit a model with \code{\link[=estimate_parameters]{estimate_parameters()}} if no model is provided}
 }
 \value{
 a base-R plot or a ggplot object
@@ -41,5 +38,5 @@ a base-R plot or a ggplot object
 \description{
 \code{\link[=tor_plot]{tor_plot()}} provides a plot of the metabolic rate (MR) values over the respective ambient temperature (Ta).
 Raw data and predicted values are presented in different colors depending of the metabolic state.
-For more flexibility the users can use \code{\link[=estimate_parameters]{estimate_parameters()}} and \code{\link[=tor_predict]{tor_predict()}} directly.
+For more flexibility the users can use \code{\link[=tor_fit]{tor_fit()}} and \code{\link[=tor_predict]{tor_predict()}} directly.
 }
