@@ -6,21 +6,21 @@
 #'@name tor_predict
 #'@aliases tor_predict
 #'@family predict
-#'@param tor_obj a fitted model from [estimate_parameters()]
+#'@param tor_obj a fitted model from [tor_fit()]
 #'@param Ta a vector of temperature
 #'@return a data.frame
 #'@export
 #'@examples
 #'\dontrun{
 #'data(test_data2)
-#'test_mod <- estimate_parameters(MR = test_data2[,2],
+#'test_mod <- tor_fit(MR = test_data2[,2],
 #'Ta = test_data2[, 1],
-#'BMR = 1.49,
+#'MTNZ = 1.49,
 #'TLC = 28.88,
 #'fitting_options = list(nc = 2, nb = 3000, ni = 5000))
 #'tor_predict(tor_obj, Ta = 10:35)
 #'}
-tor_predict <- function(tor_obj, Ta){   #### En dessus de TLC = BMR, warning en dehors de NTNZ si plus que TLC.
+tor_predict <- function(tor_obj, Ta){   #### En dessus de TLC = MTNZ, warning en dehors de MTNZ si plus que TLC.
 
 
   # retrieved the posterior of interest
@@ -34,7 +34,7 @@ tor_predict <- function(tor_obj, Ta){   #### En dessus de TLC = BMR, warning en 
   Tt <- mod$sims.list$Tt
 
   ##
-  tlc <- tor_obj$out_bmr_tlc$tlc_estimated
+  tlc <- tor_obj$out_mtnz_tlc$tlc_estimated
   Ym <- tor_obj$data$Ym
 
 
@@ -53,7 +53,7 @@ tor_predict <- function(tor_obj, Ta){   #### En dessus de TLC = BMR, warning en 
 
   for (i in 1:X) {
 
-    if(Ta[i] < tor_obj$out_bmr_tlc$tlc_estimated) {
+    if(Ta[i] < tor_obj$out_mtnz_tlc$tlc_estimated) {
 
 
     Ymean_t[i] <- stats::median(tor_predict_fun(Ta[i], Tt, intr, intc, betat, betac, Ym))
@@ -65,12 +65,11 @@ tor_predict <- function(tor_obj, Ta){   #### En dessus de TLC = BMR, warning en 
     Y025_n[i] <- stats::quantile(eut_predict_fun(Ta[i], inte, betat, Ym),0.025)
     } else {
 
-       ## sortir de la loop
-      bmr <- tor_obj$out_bmr_tlc$bmr_points
+      MTNZ <- tor_obj$out_mtnz_tlc$mtnz_points
 
-      Ymean_b[i] <-  mean <- mean(bmr, na.rm = TRUE)
-      Y975_b[i] <- mean(bmr)+1.96*sd(bmr)/sqrt(length(tor_obj$out_bmr_tlc$bmr_points))
-      Y025_b[i] <- mean(bmr)-1.96*sd(bmr)/sqrt(length(tor_obj$out_bmr_tlc$bmr_points))
+      Ymean_b[i] <-  mean <- mean(MTNZ, na.rm = TRUE)
+      Y975_b[i] <- mean(MTNZ)+1.96*sd(MTNZ)/sqrt(length(tor_obj$out_mtnz_tlc$mtnz_points))
+      Y025_b[i] <- mean(MTNZ)-1.96*sd(MTNZ)/sqrt(length(tor_obj$out_mtnz_tlc$mtnz_points))
 
     }
   }
@@ -100,7 +99,7 @@ tor_predict <- function(tor_obj, Ta){   #### En dessus de TLC = BMR, warning en 
 
 
   ###
-  if(any(Ta > tor_obj$out_bmr_tlc$tlc_estimated)) warning("Tuc is not considered: MTNZ is calculated independently of Ta above Tlc")
+  if(any(Ta > tor_obj$out_mtnz_tlc$tlc_estimated)) warning("Tuc is not considered: MTNZ is calculated independently of Ta above Tlc")
 
   if(!any(tor_obj$assignation$G == 1)){ ## no torpor
     out <- rbind(out_eut,out_ntmz)
@@ -163,7 +162,7 @@ eut_predict_fun <- function(x, inte, betat, Ym) { ## backtransform parameters to
 #'@name tor_classify
 #'@aliases tor_classify
 #'@family predict
-#'@param tor_obj a fitted model from [estimate_parameters()]
+#'@param tor_obj a fitted model from [tor_fit()]
 #'@return a data.frame
 #'@export
 
@@ -191,7 +190,7 @@ data$predicted_MR <- rep(NA, X)
 data$classification <- dplyr::case_when(data$predicted_state == 0 ~ "Undefined",
                                      data$predicted_state == 1 ~ "Torpor",
                                      data$predicted_state == 2 ~ "Euthermy",
-                                     data$predicted_state == 3 ~ "Ntmz")  ## Ntmz
+                                     data$predicted_state == 3 ~ "MTNZ")  ## Ntmz
 
 for(i in 1:nrow(data)) {
   if (data$predicted_state[i] == 1) {
@@ -199,7 +198,7 @@ for(i in 1:nrow(data)) {
   } else if(data$predicted_state[i] == 2) {
   data$predicted_MR[i] <- stats::median(eut_predict_fun(data$measured_Ta[i], inte, betat, Ym))
   } else if(data$predicted_state[i] == 3) {
-    data$predicted_MR[i] <- tor_obj$out_bmr_tlc$bmr_estimated
+    data$predicted_MR[i] <- tor_obj$out_mtnz_tlc$mtnz_estimated
   } else {
     data$predicted_MR[i] <- NA
   }
