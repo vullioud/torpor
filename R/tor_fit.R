@@ -39,18 +39,18 @@
 
 ##############################################################################
 
-#'find_low_tlc_bmr
+#'find_low_tlc_mtnz
 #'
-#' This function estimate the lowest TLC and the bmr
+#' This function estimate the lowest TLC and the mtnz
 #'
-#'@name find_low_tlc_bmr
+#'@name find_low_tlc_mtnz
 #'@param Y A vector of methabolic measure.
 #'@param Ta A vector of ambient temperature.
-#'@return A named vector with bmr and low_tlc.
+#'@return A named vector with mtmz and low_tlc.
 #'@export
 #'@examples
-#'t_1 <- find_low_tlc_bmr(Y = test_data2$VO2ms, Ta = test_data2$Ta)
-find_low_tlc_bmr <- function(Y,Ta){
+#'t_1 <- find_low_tlc_mtnz(Y = test_data2$VO2ms, Ta = test_data2$Ta)
+find_low_tlc_mtnz <- function(Y,Ta){
   ### clean arguments function
   x <- na.omit(cbind(Ta, Y))
 
@@ -89,7 +89,7 @@ find_low_tlc_bmr <- function(Y,Ta){
       length(SEQX[p < 0.01 & !is.na(p)]) == 0 &
       length(SEQX[whitetest < 0.01]) == 0) {
 
-    stop("TLC and BMR can not be estimated: provide values")
+    stop("TLC and MTNZ can not be estimated: provide values")
 
   } else {
 
@@ -100,36 +100,37 @@ find_low_tlc_bmr <- function(Y,Ta){
   low_tlc <- ifelse(length(stats::na.omit(c(test_1, test_2))) == 0, NA, max(test_1, test_2, na.rm = TRUE)) ### check if ifelse necessary
 
   }
-  if (is.na(low_tlc)) stop("TLC and BMR can not be estimated: provide values")
+  if (is.na(low_tlc)) stop("TLC and MTNZ can not be estimated: provide values")
   if (length(Y[Ta > low_tlc]) < 10) warning("MTNZ computed on less than 10 points")
 
-  bmr <- mean(Y[Ta > low_tlc], na.rm = TRUE)
-  out <- c(bmr,low_tlc)
-  names(out) <- c("bmr", "low_tlc")
+  MTNZ <- mean(Y[Ta > low_tlc], na.rm = TRUE)
+  out <- c(MTNZ,low_tlc)
+  names(out) <- c("MTNZ", "low_tlc")
   out
 }
 
-#'estimate_tlc_bmr
+#'estimate_tlc_mtnz
 #'
-#' This function estimate the lowest TLC and the bmr
+#' This function estimate the lowest TLC and the MTNZ
 #'
-#'@name estimate_tlc_bmr
+#'@name estimate_tlc_mtnz
 #'@param Y A vector of methabolic measure.
 #'@param Ta A vector of ambient temperature.
 #'@param fitting_options a list of fitting option to pass to jags.
 #'@export
 #'@examples
-#'t <- estimate_tlc_bmr(test_data2$VO2ms, test_data2$Ta)
+#'t <- estimate_tlc_mtnz(test_data2$VO2ms, test_data2$Ta)
 
-estimate_tlc_bmr <- function(Y, Ta, fitting_options = list(ni = 50000,
+estimate_tlc_mtnz <- function(Y, Ta, fitting_options = list(ni = 50000,
                                                        nt = 10,
                                                        nb = 20000,
-                                                       nc = 2)) { ## add parallel to fitting options
-  .complete_args(estimate_tlc_bmr)
+                                                       nc = 2,
+                                                       parallel = TRUE)) { ## add parallel to fitting options
+  .complete_args(estimate_tlc_mtnz)
 
-  out_1 <- find_low_tlc_bmr(Y, Ta) ## run first step
+  out_1 <- find_low_tlc_mtnz(Y, Ta) ## run first step
 
-  bmr <- out_1["bmr"] ## extract bmr
+  MTNZ <- out_1["MTNZ"] ## extract MTNZ
   low_tlc <- out_1["low_tlc"] ## extract low tlc
 
   Ym <- mean(Y, na.rm = TRUE) ## keep the mean
@@ -143,8 +144,8 @@ estimate_tlc_bmr <- function(Y, Ta, fitting_options = list(ni = 50000,
       Tbe = runif(1,low_tlc,50),
       tlc = runif(1, low_tlc, max(Ta)),
       Tbt = runif(1, 0, max(Ta2)),
-      TMR = runif(1,1e-5, bmr*0.8/Ym),
-      MRr = runif(1,1e-5, bmr*0.8/Ym))
+      TMR = runif(1,1e-5, MTNZ*0.8/Ym),
+      MRr = runif(1,1e-5, MTNZ*0.8/Ym))
 
   inits_hetero_list <- rep(list(inits), fitting_options[["nc"]])
 
@@ -153,7 +154,7 @@ estimate_tlc_bmr <- function(Y, Ta, fitting_options = list(ni = 50000,
   win_data <- list(Y = Y2/Ym,
                    NbObservations = length(Y2),
                    Ta = Ta2,
-                   BMR = bmr/Ym,
+                   BMR = MTNZ/Ym,
                    Max = max(Ta))
 
   # MCMC settings
@@ -167,22 +168,22 @@ estimate_tlc_bmr <- function(Y, Ta, fitting_options = list(ni = 50000,
                         n.thin = fitting_options[["nt"]],
                         n.iter = fitting_options[["ni"]],
                         n.burnin = fitting_options[["nb"]],
-                        parallel = TRUE,
+                        parallel = fitting_options[["parallel"]],
                         verbose = FALSE,
                         store.data = TRUE)
 
   ## extract the important output
   tlc_estimated <- median(mod$sims.list$tlc) ## estimated tlc
   tlc_distribution <- mod$sims.list$tlc ## distribution of tlc
-  bmr_estimated <- mean(Y[Ta >= tlc_estimated], na.rm = TRUE) # estimated bmr (mean of the points)
+  mtnz_estimated <- mean(Y[Ta >= tlc_estimated], na.rm = TRUE) # estimated MTNZ (mean of the points)
 
   if(length(na.omit(Y[Ta >= tlc_estimated])) < 10) warning("Mtnz computed on less than 10 points")
 
 return(list(model_1 = mod,
             tlc_estimated = tlc_estimated,
             tlc_distribution = tlc_distribution,
-            bmr_estimated = bmr_estimated,
-            bmr_points = na.omit(Y[Ta >= tlc_estimated]),
+            mtnz_estimated = mtnz_estimated,
+            mtnz_points = na.omit(Y[Ta >= tlc_estimated]),
             Ta2 = Ta2))
 }
 
@@ -192,19 +193,20 @@ return(list(model_1 = mod,
 #'
 #'@name estimate_assignation
 #'@export
-#'@inheritParams estimate_tlc_bmr
-#'@param bmr bmr value if not estimated
+#'@inheritParams estimate_tlc_mtnz
+#'@param mtnz mtnz value if not estimated
 #'@param tlc tlc value if not estimated
 #'@examples
 #'\dontrun{
 #'t2_no_input <- estimate_assignation(Ta = test_data2$Ta, Y = test_data2$VO2)
 #'}
 estimate_assignation <- function(Y, Ta,
-                                 bmr = NULL, tlc = NULL,
+                                 MTNZ = NULL, tlc = NULL,
                                  fitting_options = list(ni = 50000,
                                                         nt = 10,
                                                         nb = 20000,
-                                                        nc = 2)){
+                                                        nc = 2,
+                                                        parallel = TRUE)){
 
   .complete_args(estimate_assignation)
 
@@ -217,25 +219,25 @@ estimate_assignation <- function(Y, Ta,
   Ta <- data[, "Ta"]
   Ym <- mean(Y, na.rm = T)
 
-  ## run step 1 and 2 to get bmr and tlc
+  ## run step 1 and 2 to get mtnz and tlc
 
-  if (is.null(bmr) | (is.null(tlc))) { ### need to change the filter it runs all the time
+  if (is.null(MTNZ) | (is.null(tlc))) { ### need to change the filter it runs all the time
 
-    message("BMR and TLC are being estimated from the data")
+    message("MTNZ and TLC are being estimated from the data")
 
-  out_bmr_tlc <- estimate_tlc_bmr(Ta = Ta, Y = Y, fitting_options = fitting_options)
+  out_mtnz_tlc <- estimate_tlc_mtnz(Ta = Ta, Y = Y, fitting_options = fitting_options)
 
-  } else { ## keep the structure of output of estimate_tlc_bmr
+  } else { ## keep the structure of output of estimate_tlc_mtnz
 
-    out_bmr_tlc <- list(model_1 = NULL,
+    out_mtnz_tlc <- list(model_1 = NULL,
          tlc_estimated = tlc,
          tlc_distribution = tlc,
-         bmr_estimated = bmr,
-         bmr_points = na.omit(Y[Ta >= tlc]))
+         mtnz_estimated = MTNZ,
+         mtnz_points = na.omit(Y[Ta >= tlc]))
   }
   #### new code standard
-  tlc <- out_bmr_tlc$tlc_estimated
-  bmr <- out_bmr_tlc$bmr_estimated
+  tlc <- out_mtnz_tlc$tlc_estimated
+  MTNZ <- out_mtnz_tlc$mtnz_estimated
 
   ## initial values
   inits_2 <- list(
@@ -244,8 +246,8 @@ estimate_assignation <- function(Y, Ta,
     p = runif(3),
     Tbe = runif(1,tlc, 50),
     Tbt = runif(1, tlc - 1, tlc),
-    TMR = runif(1,1e-5,bmr*0.8/Ym),
-    MRr = runif(1,1e-5,bmr*0.8/Ym))
+    TMR = runif(1,1e-5,MTNZ*0.8/Ym),
+    MRr = runif(1,1e-5,MTNZ*0.8/Ym))
 
   inits_hetero_list_2 <- rep(list(inits_2), fitting_options[["nc"]])
 
@@ -254,7 +256,7 @@ estimate_assignation <- function(Y, Ta,
   win.data_2 <- list(Y = Y/Ym,
                      NbObservations = length(Y),
                      Ta = Ta,
-                     BMR = bmr/Ym,
+                     BMR = MTNZ/Ym,
                      tlc = tlc)
 
   path_to_model_2 <- system.file("extdata", "hetero2.txt",  package = "torpor")
@@ -267,13 +269,13 @@ estimate_assignation <- function(Y, Ta,
                        n.thin = fitting_options[["nt"]],
                        n.iter = fitting_options[["ni"]],
                        n.burnin = fitting_options[["nb"]],
-                       parallel = TRUE,
+                       parallel = fitting_options[["parallel"]],
                        verbose = FALSE,
                        store.data = TRUE)
 
   out_assignation <- list(
        mod_assignation = mod_assignation,
-       out_bmr_tlc = out_bmr_tlc,
+       out_mtnz_tlc = out_mtnz_tlc,
        data = list(Y = Y,
                    Ta = Ta,
                    Ym = Ym))
@@ -287,7 +289,7 @@ estimate_assignation <- function(Y, Ta,
 
 #'step_3_bis
 #'
-#' This function estimate the lowest TLC and the bmr
+#' This function estimate the lowest TLC and the MTNZ
 #'
 #'@name .step_3_bis
 #'@param out_assignation output of estimatate_assignation.
@@ -311,9 +313,9 @@ estimate_assignation <- function(Y, Ta,
   nbsamples <- ((ni - nb)*nc)/nt ## look how to take them from mod2
 
   ## inside small fun
-  expit <- function(x){1/(1 + exp(-x))} ##step not to be done if tlc and bmr and given
-  funabove <- function(x, mod){expit(coefficients(mod)[1] + coefficients(mod)[2]*x)} ##step not to be done if tlc and bmr and given
-  funbelow <- function(x, mod){-(funabove(x, mod)- 1)} ##step not to be done if tlc and bmr and given
+  expit <- function(x){1/(1 + exp(-x))} ##step not to be done if tlc and MTNZ and given
+  funabove <- function(x, mod){expit(coefficients(mod)[1] + coefficients(mod)[2]*x)} ##step not to be done if tlc and MTNZ and given
+  funbelow <- function(x, mod){-(funabove(x, mod)- 1)} ##step not to be done if tlc and MTNZ and given
 
   ####
   probStatus <- 1 - sqrt((G - round(G))^2)
@@ -325,10 +327,10 @@ estimate_assignation <- function(Y, Ta,
                        mean = out_assignation$out_brm_tlc$tlc_estimated,
                        sd = ifelse(length_tlc_dist > 1, sd(out_assignation$out_brm_tlc$tlc_distribution), 0)) ~
                    out_assignation$out_brm_tlc$tlc_distribution,
-                 family = "binomial") ##step not to be done if tlc and bmr and given
+                 family = "binomial") ##step not to be done if tlc and MTNZ and given
 
 
-  probStatus <- probStatus*ifelse(G == 3, funabove(Ta, mod_glm), funbelow(Ta, mod_glm))  ##step not to be done if tlc and bmr and given
+  probStatus <- probStatus*ifelse(G == 3, funabove(Ta, mod_glm), funbelow(Ta, mod_glm))  ##step not to be done if tlc and MTNZ and given
   }
   pstatus <- rep(NA,length(Ta))
 
@@ -367,7 +369,7 @@ estimate_assignation <- function(Y, Ta,
 
 #' estimate_parameters
 #'
-#'[estimate_parameters()] fits a binomial mixture model using Bayesian
+#'[tor_fit()] fits a binomial mixture model using Bayesian
 #'inference.  The function considers the assumed relation between metabolic rate (MR) and ambient temperature (Ta)
 #'(Speakman & Thomas 2003). In the hypothermic state (torpor) and above some
 #'threshold Ta (Tmin), MR follows an exponential curve reflecting the Arrhenius
@@ -384,41 +386,41 @@ estimate_assignation <- function(Y, Ta,
 #'evidence suggest that individuals under study will conform to the previously
 #'described pattern while in torpor.
 #'
-#'@name estimate_parameters
+#'@name tor_fit
 #'@inheritParams estimate_assignation
 #'@export
 #'@examples
 #'\dontrun{
-#'test_mod <- estimate_parameters(Ta = test_data2$Ta, Y = test_data2$VO2)
+#'test_mod <- tor_fit(Ta = test_data2$Ta, Y = test_data2$VO2, fitting_options = list(parallel = TRUE))
 #'}
-estimate_parameters <- function(Ta, Y,
-                   bmr = NULL, tlc = NULL,
+tor_fit <- function(Ta, Y,
+                   MTNZ = NULL,
+                   tlc = NULL,
                    fitting_options = list(ni = 50000,
                                           nt = 10,
                                           nb = 30000,
-                                          nc = 3)) {  ## add parallel
+                                          nc = 3,
+                                          parallel = TRUE)) {
 
 
   if (length(Ta) != length(Y)) stop("Y, Ta don´t have the same length")
   ## run step 1-3
+  .complete_args(tor_fit)
 
-  out_assignation <- estimate_assignation(Y, Ta, bmr, tlc, fitting_options)
+
+  out_assignation <- estimate_assignation(Y, Ta, MTNZ, tlc, fitting_options)
 
   G <- out_assignation$assignation$G
-  ## manual
-
- # if (.debug) return(list(out_2, G))
-
   Y <- out_assignation$data$Y
   Ta <- out_assignation$data$Ta
-  tlc <- out_assignation$out_bmr_tlc$tlc_estimated
-  bmr <- out_assignation$out_bmr_tlc$bmr_estimated
+  tlc <- out_assignation$out_mtnz_tlc$tlc_estimated ## add option to include it manualy.
+  MTNZ <- out_assignation$out_mtnz_tlc$mtnz_estimated ## add option to include it manualy.
   Ym <- out_assignation$data$Ym
 
   win.data_3 <- list(Y = Y[G != 0 & G != 3] / Ym,
                      NbObservations = length(Y[G != 0 & G != 3]),
                      Ta = Ta[G != 0 & G != 3],
-                     BMR = bmr / Ym,
+                     BMR = MTNZ / Ym,
                      tlc = tlc,
                      G = G[G != 0 & G != 3],
                      Ym = Ym)
@@ -430,8 +432,8 @@ estimate_parameters <- function(Ta, Y,
                   p = runif(3),
                   Tbe = runif(1,tlc, 50),
                   Tbt = runif(1, tlc - 1, tlc),
-                  TMR = runif(1,1e-5,bmr*0.8/Ym),
-                  MRr = runif(1,1e-5,bmr*0.8/Ym))
+                  TMR = runif(1,1e-5,MTNZ*0.8/Ym),
+                  MRr = runif(1,1e-5,MTNZ*0.8/Ym))
 
   inits_hetero_list_3 <- rep(list(inits_3), fitting_options[["nc"]])
   params <- params_hetero_2 <- c("tau","inte","intc","intr","betat",
@@ -445,7 +447,7 @@ estimate_parameters <- function(Ta, Y,
                        n.thin = fitting_options[["nt"]],
                        n.iter = fitting_options[["ni"]],
                        n.burnin = fitting_options[["nb"]],
-                       parallel = TRUE,
+                       parallel = fitting_options[["parallel"]],
                        verbose = FALSE,
                        store.data = TRUE)
 
@@ -456,8 +458,15 @@ estimate_parameters <- function(Ta, Y,
 
   out_assignation$mod_parameter <- out_4
 
-  print(tor_summarise(out_assignation))
+  class(out_assignation) <- c("tor_obj", "list")
   return(invisible(out_assignation))
 
 }
 
+
+#' @export
+#' @method print tor_obj
+print.tor_obj <- function(x, ...) {
+  print(tor_summarise(x))
+  return(invisible(NULL))
+}
