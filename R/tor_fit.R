@@ -233,7 +233,7 @@ estimate_assignation <- function(Y, Ta,
          tlc_estimated = tlc,
          tlc_distribution = tlc,
          mtnz_estimated = MTNZ,
-         mtnz_points = na.omit(Y[Ta >= tlc]))
+         mtnz_points = MTNZ)
   }
   #### new code standard
   tlc <- out_mtnz_tlc$tlc_estimated
@@ -391,7 +391,9 @@ estimate_assignation <- function(Y, Ta,
 #'@export
 #'@examples
 #'\dontrun{
-#'test_mod <- tor_fit(Ta = test_data2$Ta, Y = test_data2$VO2, fitting_options = list(parallel = TRUE))
+#'test_mod <- tor_fit(Ta = test_data2$Ta,
+#'Y = test_data2$VO2,
+#' fitting_options = list(parallel = TRUE))
 #'}
 tor_fit <- function(Ta, Y,
                    MTNZ = NULL,
@@ -459,6 +461,7 @@ tor_fit <- function(Ta, Y,
   out_assignation$mod_parameter <- out_4
 
   class(out_assignation) <- c("tor_obj", "list")
+  print(out_assignation)
   return(invisible(out_assignation))
 
 }
@@ -468,5 +471,4 @@ tor_fit <- function(Ta, Y,
 #' @method print tor_obj
 print.tor_obj <- function(x, ...) {
   print(tor_summarise(x))
-  return(invisible(NULL))
 }

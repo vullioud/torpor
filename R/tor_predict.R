@@ -91,8 +91,8 @@ tor_predict <- function(tor_obj, Ta){   #### En dessus de TLC = MTNZ, warning en
 
 
   ### values for > Tlc.
-  out_ntmz <- data.frame(Ta = Ta,
-                        group = rep("Ntmz", length(X)),
+  out_mtnz <- data.frame(Ta = Ta,
+                        group = rep("MTNZ", length(X)),
                         pred =  Ymean_b,
                         upr_95 = Y975_b,
                         lwr_95 = Y025_b)
@@ -102,11 +102,11 @@ tor_predict <- function(tor_obj, Ta){   #### En dessus de TLC = MTNZ, warning en
   if(any(Ta > tor_obj$out_mtnz_tlc$tlc_estimated)) warning("Tuc is not considered: MTNZ is calculated independently of Ta above Tlc")
 
   if(!any(tor_obj$assignation$G == 1)){ ## no torpor
-    out <- rbind(out_eut,out_ntmz)
+    out <- rbind(out_eut,out_mtnz)
   } else if (!any(tor_obj$assignation$G == 2)){ ## no euthermy
-    out <- rbind(out_tor, out_ntmz)
+    out <- rbind(out_tor, out_mtnz)
   } else { ## both torpor and euthermy
-    out <- rbind(out_tor, out_eut, out_ntmz)
+    out <- rbind(out_tor, out_eut, out_mtnz)
   }
 
   return(na.omit(out))
@@ -190,7 +190,7 @@ data$predicted_MR <- rep(NA, X)
 data$classification <- dplyr::case_when(data$predicted_state == 0 ~ "Undefined",
                                      data$predicted_state == 1 ~ "Torpor",
                                      data$predicted_state == 2 ~ "Euthermy",
-                                     data$predicted_state == 3 ~ "MTNZ")  ## Ntmz
+                                     data$predicted_state == 3 ~ "MTNZ")
 
 for(i in 1:nrow(data)) {
   if (data$predicted_state[i] == 1) {

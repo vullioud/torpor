@@ -89,11 +89,9 @@ tor_overlap <- function(tor_obj){
 
   out <- dplyr::bind_rows(out_tlc, out_MRr, out_Tbe, out_TMR, out_Tbt)
 
- ### add loop on out to flag overlap > 90 and 60 %.
- # purrr::map(out, ~ attr(.x,which = names))
- #   #         if(.x > 0.9) {
- #   #warning("is not identifiable: PPO>90%")
- #   #})
+ ## add loop on out to flag overlap > 90 and 60 %.
+  # purrr::map(out, ~ attr(.x,which = names))
+  #         if(.x > 0.9) {warning("is not identifiable: PPO>90%")}
  #
  #   If (overlapXXX>60&overlapXX<=90){warning XXX is poorly identifiable: 90% >=PPO> 60%)
 out
