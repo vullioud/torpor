@@ -17,11 +17,11 @@ estimate_assignation(
 
 \item{Ta}{A vector of ambient temperature.}
 
+\item{MTNZ}{mtnz value if not estimated}
+
 \item{tlc}{tlc value if not estimated}
 
 \item{fitting_options}{a list of fitting option to pass to jags.}
-
-\item{mtnz}{mtnz value if not estimated}
 }
 \description{
 This function estimate the assignation into torpor or euthermy.

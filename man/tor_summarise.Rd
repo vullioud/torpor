@@ -21,12 +21,12 @@ values for parameters tlc, Tt and Betat are generated.
 }
 \examples{
 data(test_data)
-test2 <- estimate_parameters(Y = test_data[,2],Ta = test_data[, 1], fitting_options = list(nc = 1, ni = 5000, nb = 3000))
+test2 <- tor_fit(Y = test_data[,2],Ta = test_data[, 1], fitting_options = list(nc = 1, ni = 5000, nb = 3000))
 tor_summarise(tor_obj)
 }
 \seealso{
 Other summary: 
 \code{\link{get_parameters}()},
-\code{\link{tor_overlap}()}
+\code{\link{tor_overlap}}
 }
 \concept{summary}

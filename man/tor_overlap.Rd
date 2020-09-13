@@ -2,9 +2,10 @@
 % Please edit documentation in R/tor_summarise.R
 \name{tor_overlap}
 \alias{tor_overlap}
+\alias{tor_ppo}
 \title{Check priors/posteriors overlap}
 \usage{
-tor_overlap(tor_obj)
+tor_ppo(tor_obj)
 }
 \arguments{
 \item{tor_obj}{a fitted model from \code{\link[=tor_fit]{tor_fit()}}}

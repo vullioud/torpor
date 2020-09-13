@@ -17,6 +17,8 @@ tor_fit(
 
 \item{Y}{A vector of methabolic measure.}
 
+\item{MTNZ}{mtnz value if not estimated}
+
 \item{tlc}{tlc value if not estimated}
 
 \item{fitting_options}{a list of fitting option to pass to jags.}
@@ -42,6 +44,8 @@ described pattern while in torpor.
 }
 \examples{
 \dontrun{
-test_mod <- tor_fit(Ta = test_data2$Ta, Y = test_data2$VO2, fitting_options = list(parallel = TRUE))
+test_mod <- tor_fit(Ta = test_data2$Ta,
+Y = test_data2$VO2,
+fitting_options = list(parallel = TRUE))
 }
 }
