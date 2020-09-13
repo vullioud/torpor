@@ -49,7 +49,7 @@
 #'@return A named vector with mtmz and low_tlc.
 #'@export
 #'@examples
-#'t_1 <- find_low_tlc_mtnz(Y = test_data2$VO2ms, Ta = test_data2$Ta)
+#'t_1 <- find_low_tlc_mtnz(Y = test_data$VO2, Ta = test_data$Ta)
 find_low_tlc_mtnz <- function(Y,Ta){
   ### clean arguments function
   x <- na.omit(cbind(Ta, Y))
@@ -139,7 +139,8 @@ estimate_tlc_mtnz <- function(Y, Ta, fitting_options = list(ni = 50000,
 
   inits <- list(
       tauy = runif(1),
-      coef = runif(1, 0.2, 1),
+      tauy2=runif(1,0.05,0.1),
+      tauy1=runif(1,0.03,0.05),
       p = runif(2),
       Tbe = runif(1,low_tlc,50),
       tlc = runif(1, low_tlc, max(Ta)),
@@ -194,7 +195,7 @@ return(list(model_1 = mod,
 #'@name estimate_assignation
 #'@export
 #'@inheritParams estimate_tlc_mtnz
-#'@param mtnz mtnz value if not estimated
+#'@param MTNZ mtnz value if not estimated
 #'@param tlc tlc value if not estimated
 #'@examples
 #'\dontrun{
@@ -233,7 +234,8 @@ estimate_assignation <- function(Y, Ta,
          tlc_estimated = tlc,
          tlc_distribution = tlc,
          mtnz_estimated = MTNZ,
-         mtnz_points = MTNZ)
+         mtnz_points = MTNZ,
+         Ta2 = Ta[Ta < tlc_estimated])
   }
   #### new code standard
   tlc <- out_mtnz_tlc$tlc_estimated
@@ -242,7 +244,8 @@ estimate_assignation <- function(Y, Ta,
   ## initial values
   inits_2 <- list(
     tauy = runif(1),
-    coef = runif(1,0.2,1),
+    tauy2=runif(1,0.05,0.1),
+    tauy1=runif(1,0.03,0.05),
     p = runif(3),
     Tbe = runif(1,tlc, 50),
     Tbt = runif(1, tlc - 1, tlc),
@@ -251,7 +254,7 @@ estimate_assignation <- function(Y, Ta,
 
   inits_hetero_list_2 <- rep(list(inits_2), fitting_options[["nc"]])
 
-  params_hetero_2 <- c("tau","G","p","inte","intc","intr","betat","betac","Tt","TMR","MRr","coef")
+  params_hetero_2 <- c("tau","G","p","inte","intc","intr","betat","betac","Tt","TMR","MRr","tauy1", "tauy2")
 
   win.data_2 <- list(Y = Y/Ym,
                      NbObservations = length(Y),
@@ -296,7 +299,6 @@ estimate_assignation <- function(Y, Ta,
 #'@param fitting_options fitting options
 .step_3_bis <- function(out_assignation, fitting_options){
  ## comes from hetero2
-
   Ta <- out_assignation$data$Ta
   Y <- out_assignation$data$Y
 
@@ -314,7 +316,7 @@ estimate_assignation <- function(Y, Ta,
 
   ## inside small fun
   expit <- function(x){1/(1 + exp(-x))} ##step not to be done if tlc and MTNZ and given
-  funabove <- function(x, mod){expit(coefficients(mod)[1] + coefficients(mod)[2]*x)} ##step not to be done if tlc and MTNZ and given
+  funabove <- function(x, mod){expit(coefficients(mod)[1] + stats::coefficients(mod)[2]*x)} ##step not to be done if tlc and MTNZ and given
   funbelow <- function(x, mod){-(funabove(x, mod)- 1)} ##step not to be done if tlc and MTNZ and given
 
   ####
@@ -323,9 +325,9 @@ estimate_assignation <- function(Y, Ta,
   length_tlc_dist <- length(out_assignation$out_brm_tlc$tlc_distribution)
 
   if(length_tlc_dist > 1) {
-  mod_glm <- glm(pnorm(q = out_assignation$out_brm_tlc$tlc_distribution, ## changed for tlc distribution
+  mod_glm <- stats::glm(pnorm(q = out_assignation$out_brm_tlc$tlc_distribution, ## changed for tlc distribution
                        mean = out_assignation$out_brm_tlc$tlc_estimated,
-                       sd = ifelse(length_tlc_dist > 1, sd(out_assignation$out_brm_tlc$tlc_distribution), 0)) ~
+                       sd = ifelse(length_tlc_dist > 1, stats::sd(out_assignation$out_brm_tlc$tlc_distribution), 0)) ~
                    out_assignation$out_brm_tlc$tlc_distribution,
                  family = "binomial") ##step not to be done if tlc and MTNZ and given
 
@@ -336,7 +338,7 @@ estimate_assignation <- function(Y, Ta,
 
   for(i in 1:length(Ta)) {
 
-    pstatus[i] <- as.numeric(binom.test(round(nbsamples*probStatus[i]),
+    pstatus[i] <- as.numeric(stats::binom.test(round(nbsamples*probStatus[i]),
                                         nbsamples,
                                         alternative = "greater",p = 0.5)$p.value)
 
@@ -430,16 +432,17 @@ tor_fit <- function(Ta, Y,
   path_to_model_3 <- system.file("extdata", "hetero3.txt",  package = "torpor")
 
   inits_3 <- list(tauy = runif(1),
-                  coef = runif(1,0.2,1),
                   p = runif(3),
                   Tbe = runif(1,tlc, 50),
                   Tbt = runif(1, tlc - 1, tlc),
                   TMR = runif(1,1e-5,MTNZ*0.8/Ym),
-                  MRr = runif(1,1e-5,MTNZ*0.8/Ym))
+                  MRr = runif(1,1e-5,MTNZ*0.8/Ym),
+                  tauy2=runif(1,0.05,0.1),
+                  tauy1=runif(1,0.03,0.05))
 
   inits_hetero_list_3 <- rep(list(inits_3), fitting_options[["nc"]])
   params <- params_hetero_2 <- c("tau","inte","intc","intr","betat",
-                                 "betac","Tt","TMR","MRr","coef", "Tbt", "Tbe")
+                                 "betac","Tt","TMR","MRr","tauy1", "tauy2", "Tbt", "Tbe")
 
   out_4 <- jagsUI::jags(data = win.data_3,
                        inits =  inits_hetero_list_3,
