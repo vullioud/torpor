@@ -52,7 +52,7 @@
 #'t_1 <- find_low_tlc_mtnz(Y = test_data$VO2, Ta = test_data$Ta)
 find_low_tlc_mtnz <- function(Y,Ta){
   ### clean arguments function
-  x <- na.omit(cbind(Ta, Y))
+  x <- stats::na.omit(cbind(Ta, Y))
 
   Y <- x[,2]
   Ta <- x[,1]
@@ -138,15 +138,15 @@ estimate_tlc_mtnz <- function(Y, Ta, fitting_options = list(ni = 50000,
   Y2 <- Y[Ta < low_tlc]
 
   inits <- list(
-      tauy = runif(1),
-      tauy2=runif(1,0.05,0.1),
-      tauy1=runif(1,0.03,0.05),
-      p = runif(2),
-      Tbe = runif(1,low_tlc,50),
-      tlc = runif(1, low_tlc, max(Ta)),
-      Tbt = runif(1, 0, max(Ta2)),
-      TMR = runif(1,1e-5, MTNZ*0.8/Ym),
-      MRr = runif(1,1e-5, MTNZ*0.8/Ym))
+      tauy = stats::runif(1),
+      tauy2= stats::runif(1,0.05,0.1),
+      tauy1= stats::runif(1,0.03,0.05),
+      p = stats::runif(2),
+      Tbe = stats::runif(1,low_tlc,50),
+      tlc = stats::runif(1, low_tlc, max(Ta)),
+      Tbt = stats::runif(1, 0, max(Ta2)),
+      TMR = stats::runif(1,1e-5, MTNZ*0.8/Ym),
+      MRr = stats::runif(1,1e-5, MTNZ*0.8/Ym))
 
   inits_hetero_list <- rep(list(inits), fitting_options[["nc"]])
 
@@ -174,17 +174,17 @@ estimate_tlc_mtnz <- function(Y, Ta, fitting_options = list(ni = 50000,
                         store.data = TRUE)
 
   ## extract the important output
-  tlc_estimated <- median(mod$sims.list$tlc) ## estimated tlc
+  tlc_estimated <- stats::median(mod$sims.list$tlc) ## estimated tlc
   tlc_distribution <- mod$sims.list$tlc ## distribution of tlc
   mtnz_estimated <- mean(Y[Ta >= tlc_estimated], na.rm = TRUE) # estimated MTNZ (mean of the points)
 
-  if(length(na.omit(Y[Ta >= tlc_estimated])) < 10) warning("Mtnz computed on less than 10 points")
+  if(length(stats::na.omit(Y[Ta >= tlc_estimated])) < 10) warning("Mtnz computed on less than 10 points")
 
 return(list(model_1 = mod,
             tlc_estimated = tlc_estimated,
             tlc_distribution = tlc_distribution,
             mtnz_estimated = mtnz_estimated,
-            mtnz_points = na.omit(Y[Ta >= tlc_estimated]),
+            mtnz_points = stats::na.omit(Y[Ta >= tlc_estimated]),
             Ta2 = Ta2))
 }
 
@@ -200,6 +200,7 @@ return(list(model_1 = mod,
 #'@examples
 #'\dontrun{
 #'t2_no_input <- estimate_assignation(Ta = test_data2$Ta, Y = test_data2$VO2)
+#'to_input <- estimate_assignation(Ta = test_data2$Ta, Y = test_data2$VO2, MTNZ = 1.49, tlc = 28.8)
 #'}
 estimate_assignation <- function(Y, Ta,
                                  MTNZ = NULL, tlc = NULL,
@@ -209,6 +210,7 @@ estimate_assignation <- function(Y, Ta,
                                                         nc = 2,
                                                         parallel = TRUE)){
 
+  runif <- NULL
   .complete_args(estimate_assignation)
 
   ## check input
@@ -235,7 +237,7 @@ estimate_assignation <- function(Y, Ta,
          tlc_distribution = tlc,
          mtnz_estimated = MTNZ,
          mtnz_points = MTNZ,
-         Ta2 = Ta[Ta < tlc_estimated])
+         Ta2 = Ta[Ta < tlc])
   }
   #### new code standard
   tlc <- out_mtnz_tlc$tlc_estimated
@@ -243,14 +245,14 @@ estimate_assignation <- function(Y, Ta,
 
   ## initial values
   inits_2 <- list(
-    tauy = runif(1),
-    tauy2=runif(1,0.05,0.1),
-    tauy1=runif(1,0.03,0.05),
-    p = runif(3),
-    Tbe = runif(1,tlc, 50),
-    Tbt = runif(1, tlc - 1, tlc),
-    TMR = runif(1,1e-5,MTNZ*0.8/Ym),
-    MRr = runif(1,1e-5,MTNZ*0.8/Ym))
+    tauy = stats::runif(1),
+    tauy2=stats::runif(1,0.05,0.1),
+    tauy1=stats::runif(1,0.03,0.05),
+    p = stats::runif(3),
+    Tbe = stats::runif(1,tlc, 50),
+    Tbt = stats::runif(1, tlc - 1, tlc),
+    TMR = stats::runif(1,1e-5,MTNZ*0.8/Ym),
+    MRr = stats::runif(1,1e-5,MTNZ*0.8/Ym))
 
   inits_hetero_list_2 <- rep(list(inits_2), fitting_options[["nc"]])
 
@@ -316,7 +318,7 @@ estimate_assignation <- function(Y, Ta,
 
   ## inside small fun
   expit <- function(x){1/(1 + exp(-x))} ##step not to be done if tlc and MTNZ and given
-  funabove <- function(x, mod){expit(coefficients(mod)[1] + stats::coefficients(mod)[2]*x)} ##step not to be done if tlc and MTNZ and given
+  funabove <- function(x, mod){expit(stats::coefficients(mod)[1] + stats::coefficients(mod)[2]*x)} ##step not to be done if tlc and MTNZ and given
   funbelow <- function(x, mod){-(funabove(x, mod)- 1)} ##step not to be done if tlc and MTNZ and given
 
   ####
@@ -325,7 +327,7 @@ estimate_assignation <- function(Y, Ta,
   length_tlc_dist <- length(out_assignation$out_brm_tlc$tlc_distribution)
 
   if(length_tlc_dist > 1) {
-  mod_glm <- stats::glm(pnorm(q = out_assignation$out_brm_tlc$tlc_distribution, ## changed for tlc distribution
+  mod_glm <- stats::glm(stats::pnorm(q = out_assignation$out_brm_tlc$tlc_distribution, ## changed for tlc distribution
                        mean = out_assignation$out_brm_tlc$tlc_estimated,
                        sd = ifelse(length_tlc_dist > 1, stats::sd(out_assignation$out_brm_tlc$tlc_distribution), 0)) ~
                    out_assignation$out_brm_tlc$tlc_distribution,
@@ -393,8 +395,8 @@ estimate_assignation <- function(Y, Ta,
 #'@export
 #'@examples
 #'\dontrun{
-#'test_mod <- tor_fit(Ta = test_data2$Ta,
-#'Y = test_data2$VO2,
+#'test_mod <- tor_fit(Ta = test_data$Ta,
+#'Y = test_data$VO2,
 #' fitting_options = list(parallel = TRUE))
 #'}
 tor_fit <- function(Ta, Y,
@@ -403,11 +405,11 @@ tor_fit <- function(Ta, Y,
                    fitting_options = list(ni = 50000,
                                           nt = 10,
                                           nb = 30000,
-                                          nc = 3,
+                                          nc = 1,
                                           parallel = TRUE)) {
 
 
-  if (length(Ta) != length(Y)) stop("Y, Ta don´t have the same length")
+  if (length(Ta) != length(Y)) stop("Y, Ta do not have the same length")
   ## run step 1-3
   .complete_args(tor_fit)
 
@@ -431,14 +433,14 @@ tor_fit <- function(Ta, Y,
 
   path_to_model_3 <- system.file("extdata", "hetero3.txt",  package = "torpor")
 
-  inits_3 <- list(tauy = runif(1),
-                  p = runif(3),
-                  Tbe = runif(1,tlc, 50),
-                  Tbt = runif(1, tlc - 1, tlc),
-                  TMR = runif(1,1e-5,MTNZ*0.8/Ym),
-                  MRr = runif(1,1e-5,MTNZ*0.8/Ym),
-                  tauy2=runif(1,0.05,0.1),
-                  tauy1=runif(1,0.03,0.05))
+  inits_3 <- list(tauy = stats::runif(1),
+                  p = stats::runif(3),
+                  Tbe = stats::runif(1,tlc, 50),
+                  Tbt = stats::runif(1, tlc - 1, tlc),
+                  TMR = stats::runif(1,1e-5,MTNZ*0.8/Ym),
+                  MRr = stats::runif(1,1e-5,MTNZ*0.8/Ym),
+                  tauy2 = stats::runif(1,0.05,0.1),
+                  tauy1 = stats::runif(1,0.03,0.05))
 
   inits_hetero_list_3 <- rep(list(inits_3), fitting_options[["nc"]])
   params <- params_hetero_2 <- c("tau","inte","intc","intr","betat",
@@ -458,7 +460,7 @@ tor_fit <- function(Ta, Y,
 
   ### check convergence.... if Rhat > 1.1 warrning sur parameters.
   for(i in seq_along(out_4$Rhat)){
-   if (any(out_4$Rhat[i][[1]] > 1.1)) warning(paste("Rhat > 1.1 on parameter:", names(out_4$Rhat[i])))
+   if (any(out_4$Rhat[i][[1]] > 1.1, na.rm = TRUE)) warning(paste("Rhat > 1.1 on parameter:", names(out_4$Rhat[i])))
   }
 
   out_assignation$mod_parameter <- out_4

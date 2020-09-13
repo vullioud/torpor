@@ -28,6 +28,9 @@ tor_plot <- function(tor_obj = NULL,
                      xlab = "Ta",
                      pdf = FALSE) {
 
+
+  ## please check
+  group <- measured_Ta <- measured_MR <- classification <- NULL
   ## retrieve values from the model
   TLC <- tor_obj$out_mtnz_tlc$tlc_estimated
   MTNZ <- tor_obj$out_mtnz_tlc$mtnz_estimated

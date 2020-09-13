@@ -14,8 +14,10 @@
 #'@export
 #'@examples
 #'data(test_data)
-#'test2 <- tor_fit(Y = test_data[,2],Ta = test_data[, 1], fitting_options = list(nc = 1, ni = 5000, nb = 3000))
-#'tor_summarise(tor_obj)
+#'test2 <- tor_fit(Y = test_data[,2],
+#'Ta = test_data[, 1],
+#'fitting_options = list(nc = 1, ni = 5000, nb = 3000))
+#'tor_summarise(test2)
 tor_summarise <- function(tor_obj){
 
 list(params = get_parameters(tor_obj),
@@ -39,7 +41,7 @@ list(params = get_parameters(tor_obj),
 #'@export
 
 tor_ppo <- function(tor_obj){
-
+  overlap <- NULL
   ### TLC
   mod_tlc <- tor_obj$out_mtnz_tlc$model_1
 
@@ -47,7 +49,7 @@ tor_ppo <- function(tor_obj){
 
   MIN<- max(tor_obj$out_mtnz_tlc$Ta2)
   MAX<-max(tor_obj$data$Ta)
-  PR<- runif(nbsamples,MIN,MAX)
+  PR<- stats::runif(nbsamples,MIN,MAX)
   tlc_chain <- tor_obj$out_mtnz_tlc$tlc_distribution
   overlapTlc <- as.numeric(round(overlapping::overlap(x = list(tlc_chain, PR))$OV, digits = 3))
   out_tlc <- data.frame(name = "Tlc", overlap = overlapTlc)
@@ -55,7 +57,7 @@ tor_ppo <- function(tor_obj){
   ## MRr
   MIN <- 0
   MAX <- tor_obj$out_mtnz_tlc$mtnz_estimated
-  PR<- runif(nbsamples,MIN,MAX)
+  PR<- stats::runif(nbsamples,MIN,MAX)
   MRr_chain <- tor_obj$mod_parameter$sims.list$MRr
   overlapMRr <- as.numeric(round(overlapping::overlap(x = list(MRr_chain, PR))$OV, digits = 3))
   out_MRr <- data.frame(name = "MRr", overlap = overlapMRr)
@@ -63,7 +65,7 @@ tor_ppo <- function(tor_obj){
   ## Tbe
   MIN <- tor_obj$out_mtnz_tlc$tlc_estimated
   MAX <- 100
-  PR <- runif(nbsamples,MIN,MAX)
+  PR <- stats::runif(nbsamples,MIN,MAX)
   Tbe_chain <- tor_obj$mod_parameter$sims.list$Tbe
   overlapTbe <- as.numeric(round(overlapping::overlap(x = list(Tbe_chain, PR))$OV, digits = 3))
 
@@ -73,7 +75,7 @@ tor_ppo <- function(tor_obj){
   MIN <- 0
   for(i in 1:nbsamples){
 
-    PR[i] <- runif(1,MIN,tor_obj$mod_parameter$sims.list$MRr[i])}
+    PR[i] <- stats::runif(1,MIN,tor_obj$mod_parameter$sims.list$MRr[i])}
 
   TMR_chain <- tor_obj$mod_parameter$sims.list$TMR
   overlapTMR <- as.numeric(round(overlapping::overlap(x = list(TMR_chain, PR))$OV, digits = 3))
@@ -82,7 +84,7 @@ tor_ppo <- function(tor_obj){
   ## tbt
   MIN<- -10
   MAX<- tor_obj$out_mtnz_tlc$tlc_estimated
-  PR<-runif(nbsamples,MIN,MAX)
+  PR<- stats::runif(nbsamples,MIN,MAX)
   Tbt_chain <- tor_obj$mod_parameter$sims.list$Tbt
   overlapTbt <- as.numeric(round(overlapping::overlap(x = list(Tbt_chain, PR))$OV, digits = 3))
   out_Tbt <- data.frame(name = "Tbt", overlap = overlapTbt)
@@ -117,13 +119,13 @@ out
 #'@return a data.frame
 #'@export
 get_parameters <- function(tor_obj) {  ## out4 et out2 pour tlc.
-
+  .data <- NULL
   Ym <- tor_obj$data$Ym
 
   ### first param for step_4
   mod_params <- tor_obj$mod_parameter
 
-  params_mod_parameter <- c("tau", "inte", "intc", "intr", "betat", "betac", "Tt", "TMR", "MRr", "coef") ## params of interest
+  params_mod_parameter <- c("tau", "inte", "intc", "intr", "betat", "betac", "Tt", "TMR", "MRr", "tauy1", "tauy2") ## params of interest
 
   mean <- unlist(mod_params$mean[params_mod_parameter])
   CI_97.5 <- unlist(mod_params$q97.5[params_mod_parameter])
@@ -155,9 +157,9 @@ get_parameters <- function(tor_obj) {  ## out4 et out2 pour tlc.
   ##### add MTNZ
   MTNZ <- tor_obj$out_mtnz_tlc$mtnz_points
   mean <- mean(MTNZ)
-  CI_97.5 <- mean(MTNZ)+1.96*sd(MTNZ)/sqrt(length(tor_obj$out_mtnz_tlc$mtnz_points))
-  median <- median(MTNZ)
-  CI_2.5 <- mean(MTNZ)-1.96*sd(MTNZ)/sqrt(length(tor_obj$out_mtnz_tlc$mtnz_points))
+  CI_97.5 <- mean(MTNZ)+1.96*stats::sd(MTNZ)/sqrt(length(tor_obj$out_mtnz_tlc$mtnz_points))
+  median <- stats::median(MTNZ)
+  CI_2.5 <- mean(MTNZ)-1.96*stats::sd(MTNZ)/sqrt(length(tor_obj$out_mtnz_tlc$mtnz_points))
   Rhat <- NA
 
   x_mtnz <- as.data.frame(cbind(mean, CI_2.5, median, CI_97.5, Rhat))
@@ -168,6 +170,7 @@ get_parameters <- function(tor_obj) {  ## out4 et out2 pour tlc.
   out <- rbind(x, x_tlc, x_mtnz)
 
   params_to_multiply <- c("tau1", "tau2", "inte", "intc", "intr", "BMR", "MRr", "TMR", "betat")
+
 
   out <- out %>%
     dplyr::mutate(mean = ifelse(.data$parameter %in% params_to_multiply, .data$mean*Ym, .data$mean),

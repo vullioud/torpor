@@ -68,8 +68,8 @@ tor_predict <- function(tor_obj, Ta){   #### En dessus de TLC = MTNZ, warning en
       MTNZ <- tor_obj$out_mtnz_tlc$mtnz_points
 
       Ymean_b[i] <-  mean <- mean(MTNZ, na.rm = TRUE)
-      Y975_b[i] <- mean(MTNZ)+1.96*sd(MTNZ)/sqrt(length(tor_obj$out_mtnz_tlc$mtnz_points))
-      Y025_b[i] <- mean(MTNZ)-1.96*sd(MTNZ)/sqrt(length(tor_obj$out_mtnz_tlc$mtnz_points))
+      Y975_b[i] <- mean(MTNZ)+1.96*stats::sd(MTNZ)/sqrt(length(tor_obj$out_mtnz_tlc$mtnz_points))
+      Y025_b[i] <- mean(MTNZ)-1.96*stats::sd(MTNZ)/sqrt(length(tor_obj$out_mtnz_tlc$mtnz_points))
 
     }
   }
@@ -109,7 +109,7 @@ tor_predict <- function(tor_obj, Ta){   #### En dessus de TLC = MTNZ, warning en
     out <- rbind(out_tor, out_eut, out_mtnz)
   }
 
-  return(na.omit(out))
+  return(stats::na.omit(out))
 
 }
 ################################################################################
