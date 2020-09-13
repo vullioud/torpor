@@ -19,10 +19,9 @@ sigmay[2]),
 sigmay[2])
 }
 
-  for(i in 1:2){
+for(i in 1:2){
     sigmay[i] <- 1/pow(tau[i],2)}
-    tau[1:2] <- c(tauy*coef,tauy)
-
+    tau[1:2] <- c(tauy1,tauy2)
 
 #Assumptions
 
@@ -38,10 +37,11 @@ sigmay[2])
   tlc ~ dunif(max(Ta),Max)
   Tbt ~ dunif(-10,max(Ta))
   tauy ~ dunif(0,3)
-  coef ~ dunif(0.2,1)
   p[1:2] ~ ddirch(rep(1,2))
     TMR ~ dunif(0,BMR*0.8)
     MRr ~ dunif(0,BMR)
   Tbe ~ dunif(max(Ta),50)
+  tauy2~ dunif(0,3)
+  tauy1~dunif(0.2*tauy2,tauy2)
 
 }

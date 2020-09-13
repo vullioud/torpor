@@ -20,9 +20,9 @@ model{
     sigmay[2])
     }
 
- for(i in 1:2){
+   for(i in 1:2){
     sigmay[i] <- 1/pow(tau[i],2)}
-    tau[1:2] <- c(tauy*coef,tauy)
+    tau[1:2] <- c(tauy1,tauy2)
 
     #Assumptions
     inte <- BMR-betat*tlc
@@ -35,9 +35,10 @@ model{
 #Priors
     Tbt ~ dunif(-10,tlc)
     tauy~ dunif(0,3)
-    coef~dunif(0.2,1)
     TMR~dunif(0,BMR*0.8)
     MRr~dunif(0,BMR)
     Tbe~dunif(tlc,50)
+    tauy2~ dunif(0,3)
+    tauy1~dunif(0.2*tauy2,tauy2)
 
     }
