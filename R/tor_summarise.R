@@ -14,12 +14,12 @@
 #'@export
 #'@examples
 #'data(test_data)
-#'test2 <- estimate_parameters(Y = test_data[,2],Ta = test_data[, 1], fitting_options = list(nc = 1, ni = 5000, nb = 3000))
+#'test2 <- tor_fit(Y = test_data[,2],Ta = test_data[, 1], fitting_options = list(nc = 1, ni = 5000, nb = 3000))
 #'tor_summarise(tor_obj)
 tor_summarise <- function(tor_obj){
 
 list(params = get_parameters(tor_obj),
-     overlap = tor_overlap(tor_obj))## round print to 3 digit.
+     overlap = tor_ppo(tor_obj))## round print to 3 digit.
 }
 ##############################################################################
 
@@ -38,14 +38,14 @@ list(params = get_parameters(tor_obj),
 #'@return a data.frame
 #'@export
 
-tor_overlap <- function(tor_obj){
+tor_ppo <- function(tor_obj){
 
   ### TLC
   mod_tlc <- tor_obj$out_mtnz_tlc$model_1
 
   nbsamples <- nrow(mod_tlc$samples[[1]])*length(mod_tlc$samples)
 
-  MIN<-max(tor_obj$out_mtnz_tlc$Ta2)
+  MIN<- max(tor_obj$out_mtnz_tlc$Ta2)
   MAX<-max(tor_obj$data$Ta)
   PR<- runif(nbsamples,MIN,MAX)
   tlc_chain <- tor_obj$out_mtnz_tlc$tlc_distribution
@@ -87,13 +87,20 @@ tor_overlap <- function(tor_obj){
   overlapTbt <- as.numeric(round(overlapping::overlap(x = list(Tbt_chain, PR))$OV, digits = 3))
   out_Tbt <- data.frame(name = "Tbt", overlap = overlapTbt)
 
-  out <- dplyr::bind_rows(out_tlc, out_MRr, out_Tbe, out_TMR, out_Tbt)
-
+  out <- dplyr::bind_rows(out_tlc, out_MRr, out_Tbe, out_TMR, out_Tbt) %>%
+    dplyr::mutate(overlap = overlap *100) %>%
+    dplyr::rename(ppo = overlap)
  ## add loop on out to flag overlap > 90 and 60 %.
-  # purrr::map(out, ~ attr(.x,which = names))
-  #         if(.x > 0.9) {warning("is not identifiable: PPO>90%")}
- #
- #   If (overlapXXX>60&overlapXX<=90){warning XXX is poorly identifiable: 90% >=PPO> 60%)
+  for (i in 1:nrow(out)){
+
+    if (out$ppo[i] > 90) {
+      warning(paste(out$name[i], "is not identifiable: 90% > PPO"))
+    }
+    if (out$ppo[i] > 60) {
+      warning(paste(out$name[i], "is not identifiable: 60% > PPO"))
+    }
+}
+
 out
 
 }
@@ -166,7 +173,8 @@ get_parameters <- function(tor_obj) {  ## out4 et out2 pour tlc.
     dplyr::mutate(mean = ifelse(.data$parameter %in% params_to_multiply, .data$mean*Ym, .data$mean),
                   CI_2.5 = ifelse(.data$parameter %in% params_to_multiply, .data$CI_2.5*Ym, .data$CI_2.5),
                   median = ifelse(.data$parameter %in% params_to_multiply, .data$median*Ym, .data$median),
-                  CI_97.5 = ifelse(.data$parameter %in% params_to_multiply, .data$CI_97.5*Ym, .data$CI_97.5))
+                  CI_97.5 = ifelse(.data$parameter %in% params_to_multiply, .data$CI_97.5*Ym, .data$CI_97.5)) %>%
+    dplyr::mutate_if(is.numeric, ~ round(.x, digits = 3))
 
 
   warning("Values for MTNZ are directly computed from data points")
