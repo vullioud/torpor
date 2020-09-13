@@ -29,5 +29,6 @@ This function estimate the assignation into torpor or euthermy.
 \examples{
 \dontrun{
 t2_no_input <- estimate_assignation(Ta = test_data2$Ta, Y = test_data2$VO2)
+to_input <- estimate_assignation(Ta = test_data2$Ta, Y = test_data2$VO2, MTNZ = 1.49, tlc = 28.8)
 }
 }

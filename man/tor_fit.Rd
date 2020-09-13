@@ -9,7 +9,7 @@ tor_fit(
   Y,
   MTNZ = NULL,
   tlc = NULL,
-  fitting_options = list(ni = 50000, nt = 10, nb = 30000, nc = 3, parallel = TRUE)
+  fitting_options = list(ni = 50000, nt = 10, nb = 30000, nc = 1, parallel = TRUE)
 )
 }
 \arguments{
@@ -44,8 +44,8 @@ described pattern while in torpor.
 }
 \examples{
 \dontrun{
-test_mod <- tor_fit(Ta = test_data2$Ta,
-Y = test_data2$VO2,
+test_mod <- tor_fit(Ta = test_data$Ta,
+Y = test_data$VO2,
 fitting_options = list(parallel = TRUE))
 }
 }

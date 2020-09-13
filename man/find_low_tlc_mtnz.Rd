@@ -18,5 +18,5 @@ A named vector with mtmz and low_tlc.
 This function estimate the lowest TLC and the mtnz
 }
 \examples{
-t_1 <- find_low_tlc_mtnz(Y = test_data2$VO2ms, Ta = test_data2$Ta)
+t_1 <- find_low_tlc_mtnz(Y = test_data$VO2, Ta = test_data$Ta)
 }
