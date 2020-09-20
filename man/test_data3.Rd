@@ -12,7 +12,7 @@ data(test_data3)
 }
 \description{
 Elephantulus_rozeti
-BMR: 1.055
+MTNZ: 1.055
 TLC: 29
 }
 \keyword{datasets}

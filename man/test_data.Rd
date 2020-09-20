@@ -12,7 +12,7 @@ data(test_data)
 }
 \description{
 Callithrix_pygmaea
-BMR: 98
+MTNZ: 98
 TLC: 28.88
 }
 \keyword{datasets}

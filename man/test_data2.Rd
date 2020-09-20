@@ -12,7 +12,7 @@ data(test_data2)
 }
 \description{
 Cercartetus_lepidus
-BMR: 1.49
+MTNZ: 1.49
 TLC: 28.8
 }
 \keyword{datasets}
