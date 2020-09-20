@@ -9,7 +9,7 @@ model{
     mu[i] <-
     ifelse(G[i]==3,
     ifelse(Ta[i]<tlc,
-    -100,BMR),
+    -100,MTNZ),
     ifelse(Ta[i]>tlc,-100,
     ifelse(G[i]==2,
     inte+betat*Ta[i],
@@ -31,11 +31,11 @@ model{
     tau[1:2] <- c(tauy1,tauy2)
 
     #Assumptions
-    inte <- BMR-betat*tlc
+    inte <- MTNZ-betat*tlc
     intr <- -Tbt*betat
-    intc <- MRr/exp(betac*tlc)
-    betac <-max(0,min(0.5,(log(MRr)-log(TMR))/(tlc-Tt)))
-    betat <- BMR/(tlc-Tbe)
+    intc <- MR/exp(betac*tlc)
+    betac <-max(0,min(0.5,(log(MR)-log(TMR))/(tlc-Tt)))
+    betat <- MTNZ/(tlc-Tbe)
     Tt <- (TMR-intr)/betat
 
 #Priors
@@ -43,8 +43,8 @@ model{
     Tbt ~ dunif(-10,tlc)
     tauy~ dunif(0,3)
     p[1:3] ~ ddirch(rep(1,3))
-    TMR~dunif(0,BMR*0.8)
-    MRr~dunif(0,BMR)
+    TMR~dunif(0,MTNZ*0.8)
+    MR~dunif(0,MTNZ)
     Tbe~dunif(tlc,50)
     tauy2~ dunif(0,3)
     tauy1~dunif(0.2*tauy2,tauy2)
