@@ -97,9 +97,9 @@ tor_plot <- function(tor_obj = NULL,
     Y975n <- pred[pred$classification == "Euthermy", "upr_95"]
     Y025n <- pred[pred$classification == "Euthermy", "lwr_95"]
 
-    YmeanM <- pred[pred$classification == "Ntmz", "pred"]
-    Y975M <- pred[pred$classification == "Ntmz", "upr_95"]
-    Y025M <- pred[pred$classification == "Ntmz", "lwr_95"]
+    YmeanM <- pred[pred$classification == "MTNZ", "pred"]
+    Y975M <- pred[pred$classification == "MTNZ", "upr_95"]
+    Y025M <- pred[pred$classification == "MTNZ", "lwr_95"]
 
     ylab <- paste(ylab)
     xlab <- paste(xlab)
@@ -112,7 +112,7 @@ tor_plot <- function(tor_obj = NULL,
     graphics::plot(da$measured_MR~da$measured_Ta, type="n",frame=FALSE, xlim=c(Tlimlo, Tlimup),ylim=c(MRlo, MRup),ylab= ylab, xlab = xlab)
     graphics::points(da$measured_MR[da$classification == "Torpor"] ~ da$measured_Ta[da$classification == "Torpor"],col = col_torp, pch = 19)
     graphics::points(da$measured_MR[da$classification == "Euthermy"] ~ da$measured_Ta[da$classification == "Euthermy"],col = col_eut , pch = 19)
-    graphics::points(da$measured_MR[da$classification == "Ntmz"] ~ da$measured_Ta[da$classification == "Ntmz"],col = col_n , pch = 19)
+    graphics::points(da$measured_MR[da$classification == "MTNZ"] ~ da$measured_Ta[da$classification == "MTNZ"],col = col_n , pch = 19)
 
 
     if(length(da$classification == "Torpor")> 0){
@@ -143,8 +143,8 @@ tor_plot <- function(tor_obj = NULL,
 
       }
 
-    if(length(da$classification == "Ntmz")>0){
-      X <-  pred[pred$classification == "Ntmz", "Ta"]
+    if(length(da$classification == "MTNZ")>0){
+      X <-  pred[pred$classification == "MTNZ", "Ta"]
       graphics::par(new=TRUE)
 
       graphics::plot(YmeanM~X,xlim=c(Tlimlo, Tlimup),ylim=c(MRlo, MRup),type="l",xaxt="n",frame=FALSE,yaxt="n",ylab="",xlab="",col=col_n)
@@ -156,7 +156,7 @@ tor_plot <- function(tor_obj = NULL,
       graphics::plot(Y025M~X,xlim=c(Tlimlo, Tlimup),ylim=c(MRlo, MRup),type="l",lty=2,xaxt="n",frame=FALSE,yaxt="n",ylab="",xlab="",col=col_n)
 
     }
-    graphics::legend("topright",c("Euthermy","Torpor"),pch=19, col=c(col_eut,col_torp),bty="n")
+    graphics::legend("topright",c("Euthermy","Torpor", "MTNZ"), pch=19, col=c(col_eut,col_torp, col_n),bty="n")
     if(pdf == TRUE){
       dev.off()
     }
