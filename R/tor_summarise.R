@@ -21,7 +21,7 @@
 tor_summarise <- function(tor_obj){
 
 list(params = get_parameters(tor_obj),
-     overlap = tor_ppo(tor_obj))## round print to 3 digit.
+     ppo = tor_ppo(tor_obj))## round print to 3 digit.
 }
 ##############################################################################
 
@@ -54,13 +54,13 @@ tor_ppo <- function(tor_obj){
   overlapTlc <- as.numeric(round(overlapping::overlap(x = list(tlc_chain, PR))$OV, digits = 3))
   out_tlc <- data.frame(name = "Tlc", overlap = overlapTlc)
 
-  ## MRr
+  ## MR
   MIN <- 0
   MAX <- tor_obj$out_mtnz_tlc$mtnz_estimated
   PR<- stats::runif(nbsamples,MIN,MAX)
-  MRr_chain <- tor_obj$mod_parameter$sims.list$MRr
-  overlapMRr <- as.numeric(round(overlapping::overlap(x = list(MRr_chain, PR))$OV, digits = 3))
-  out_MRr <- data.frame(name = "MRr", overlap = overlapMRr)
+  MR_chain <- tor_obj$mod_parameter$sims.list$MR
+  overlapMRr <- as.numeric(round(overlapping::overlap(x = list(MR_chain, PR))$OV, digits = 3))
+  out_MR <- data.frame(name = "MR", overlap = overlapMRr)
 
   ## Tbe
   MIN <- tor_obj$out_mtnz_tlc$tlc_estimated
@@ -75,7 +75,7 @@ tor_ppo <- function(tor_obj){
   MIN <- 0
   for(i in 1:nbsamples){
 
-    PR[i] <- stats::runif(1,MIN,tor_obj$mod_parameter$sims.list$MRr[i])}
+    PR[i] <- stats::runif(1,MIN,tor_obj$mod_parameter$sims.list$MR[i])}
 
   TMR_chain <- tor_obj$mod_parameter$sims.list$TMR
   overlapTMR <- as.numeric(round(overlapping::overlap(x = list(TMR_chain, PR))$OV, digits = 3))
@@ -89,22 +89,17 @@ tor_ppo <- function(tor_obj){
   overlapTbt <- as.numeric(round(overlapping::overlap(x = list(Tbt_chain, PR))$OV, digits = 3))
   out_Tbt <- data.frame(name = "Tbt", overlap = overlapTbt)
 
-  out <- dplyr::bind_rows(out_tlc, out_MRr, out_Tbe, out_TMR, out_Tbt) %>%
+  out <- dplyr::bind_rows(out_tlc, out_MR, out_Tbe, out_TMR, out_Tbt) %>%
     dplyr::mutate(overlap = overlap *100) %>%
     dplyr::rename(ppo = overlap)
  ## add loop on out to flag overlap > 90 and 60 %.
   for (i in 1:nrow(out)){
 
-    if (out$ppo[i] > 90) {
-      warning(paste(out$name[i], "is not identifiable: 90% > PPO"))
+    if (out$ppo[i] > 80) {
+      warning(paste(out$name[i], "is not identifiable: 80% > PPO"))
     }
-    if (out$ppo[i] > 60) {
-      warning(paste(out$name[i], "is not identifiable: 60% > PPO"))
-    }
-}
-
-out
-
+  }
+  out
 }
 ##############################################################################
 
@@ -118,14 +113,15 @@ out
 #'@param tor_obj a fitted model from [tor_fit()]
 #'@return a data.frame
 #'@export
-get_parameters <- function(tor_obj) {  ## out4 et out2 pour tlc.
+get_parameters <- function(tor_obj){  ## out4 et out2 pour tlc.
   .data <- NULL
   Ym <- tor_obj$data$Ym
 
   ### first param for step_4
   mod_params <- tor_obj$mod_parameter
 
-  params_mod_parameter <- c("tau", "inte", "intc", "intr", "betat", "betac", "Tt", "TMR", "MRr", "tauy1", "tauy2") ## params of interest
+  params_mod_parameter <- c("tau", "inte", "intc","intr", "betat", "betac",
+                            "Tt", "TMR", "MR", "tauy1", "tauy2", "Tbe", "Tbt") ## params of interest
 
   mean <- unlist(mod_params$mean[params_mod_parameter])
   CI_97.5 <- unlist(mod_params$q97.5[params_mod_parameter])
@@ -138,6 +134,7 @@ get_parameters <- function(tor_obj) {  ## out4 et out2 pour tlc.
   x$parameter <- rownames(x)
   x <- x[,c(6,1,2,3,4, 5)] ## put name as first column
   rownames(x) <- NULL
+
   ##### add TLC and MTNZ
   mod_tlc <- tor_obj$out_mtnz_tlc$model_1
 
@@ -169,7 +166,7 @@ get_parameters <- function(tor_obj) {  ## out4 et out2 pour tlc.
 
   out <- rbind(x, x_tlc, x_mtnz)
 
-  params_to_multiply <- c("tau1", "tau2", "inte", "intc", "intr", "BMR", "MRr", "TMR", "betat")
+  params_to_multiply <- c("tau1", "tau2", "inte", "intc", "intr", "MTNZ", "MR", "TMR", "betat")
 
 
   out <- out %>%
@@ -179,8 +176,8 @@ get_parameters <- function(tor_obj) {  ## out4 et out2 pour tlc.
                   CI_97.5 = ifelse(.data$parameter %in% params_to_multiply, .data$CI_97.5*Ym, .data$CI_97.5)) %>%
     dplyr::mutate_if(is.numeric, ~ round(.x, digits = 3))
 
-
   warning("Values for MTNZ are directly computed from data points")
   return(out)
 }
+
 
