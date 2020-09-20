@@ -146,7 +146,7 @@ estimate_tlc_mtnz <- function(Y, Ta, fitting_options = list(ni = 50000,
       tlc = stats::runif(1, low_tlc, max(Ta)),
       Tbt = stats::runif(1, 0, max(Ta2)),
       TMR = stats::runif(1,1e-5, MTNZ*0.8/Ym),
-      MRr = stats::runif(1,1e-5, MTNZ*0.8/Ym))
+      MR = stats::runif(1,1e-5, MTNZ*0.8/Ym))
 
   inits_hetero_list <- rep(list(inits), fitting_options[["nc"]])
 
@@ -155,7 +155,7 @@ estimate_tlc_mtnz <- function(Y, Ta, fitting_options = list(ni = 50000,
   win_data <- list(Y = Y2/Ym,
                    NbObservations = length(Y2),
                    Ta = Ta2,
-                   BMR = MTNZ/Ym,
+                   MTNZ = MTNZ/Ym,
                    Max = max(Ta))
 
   # MCMC settings
@@ -178,7 +178,7 @@ estimate_tlc_mtnz <- function(Y, Ta, fitting_options = list(ni = 50000,
   tlc_distribution <- mod$sims.list$tlc ## distribution of tlc
   mtnz_estimated <- mean(Y[Ta >= tlc_estimated], na.rm = TRUE) # estimated MTNZ (mean of the points)
 
-  if(length(stats::na.omit(Y[Ta >= tlc_estimated])) < 10) warning("Mtnz computed on less than 10 points")
+  if(length(stats::na.omit(Y[Ta >= tlc_estimated])) < 10) warning("MTNZ computed on less than 10 points")
 
 return(list(model_1 = mod,
             tlc_estimated = tlc_estimated,
@@ -252,16 +252,16 @@ estimate_assignation <- function(Y, Ta,
     Tbe = stats::runif(1,tlc, 50),
     Tbt = stats::runif(1, tlc - 1, tlc),
     TMR = stats::runif(1,1e-5,MTNZ*0.8/Ym),
-    MRr = stats::runif(1,1e-5,MTNZ*0.8/Ym))
+    MR = stats::runif(1,1e-5,MTNZ*0.8/Ym))
 
   inits_hetero_list_2 <- rep(list(inits_2), fitting_options[["nc"]])
 
-  params_hetero_2 <- c("tau","G","p","inte","intc","intr","betat","betac","Tt","TMR","MRr","tauy1", "tauy2")
+  params_hetero_2 <- c("tau","G","p","inte","intc","intr","betat","betac","Tt","TMR","MR","tauy1", "tauy2")
 
   win.data_2 <- list(Y = Y/Ym,
                      NbObservations = length(Y),
                      Ta = Ta,
-                     BMR = MTNZ/Ym,
+                     MTNZ = MTNZ/Ym,
                      tlc = tlc)
 
   path_to_model_2 <- system.file("extdata", "hetero2.txt",  package = "torpor")
@@ -426,25 +426,23 @@ tor_fit <- function(Ta, Y,
   win.data_3 <- list(Y = Y[G != 0 & G != 3] / Ym,
                      NbObservations = length(Y[G != 0 & G != 3]),
                      Ta = Ta[G != 0 & G != 3],
-                     BMR = MTNZ / Ym,
+                     MTNZ = MTNZ / Ym,
                      tlc = tlc,
-                     G = G[G != 0 & G != 3],
-                     Ym = Ym)
+                     G = G[G != 0 & G != 3])
 
   path_to_model_3 <- system.file("extdata", "hetero3.txt",  package = "torpor")
 
   inits_3 <- list(tauy = stats::runif(1),
-                  p = stats::runif(3),
                   Tbe = stats::runif(1,tlc, 50),
                   Tbt = stats::runif(1, tlc - 1, tlc),
                   TMR = stats::runif(1,1e-5,MTNZ*0.8/Ym),
-                  MRr = stats::runif(1,1e-5,MTNZ*0.8/Ym),
+                  MR = stats::runif(1,1e-5,MTNZ*0.8/Ym),
                   tauy2 = stats::runif(1,0.05,0.1),
                   tauy1 = stats::runif(1,0.03,0.05))
 
   inits_hetero_list_3 <- rep(list(inits_3), fitting_options[["nc"]])
   params <- params_hetero_2 <- c("tau","inte","intc","intr","betat",
-                                 "betac","Tt","TMR","MRr","tauy1", "tauy2", "Tbt", "Tbe")
+                                 "betac","Tt","TMR","MR","tauy1", "tauy2", "Tbt", "Tbe")
 
   out_4 <- jagsUI::jags(data = win.data_3,
                        inits =  inits_hetero_list_3,
