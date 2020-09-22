@@ -9,7 +9,7 @@ tor_plot(
   plot_type = "ggplot",
   col_torp = "cornflowerblue",
   col_eut = "coral3",
-  col_n = "green",
+  col_n = "black",
   ylab = "MR",
   xlab = "Ta",
   pdf = FALSE

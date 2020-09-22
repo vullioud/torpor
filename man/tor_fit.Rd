@@ -46,6 +46,6 @@ described pattern while in torpor.
 \dontrun{
 test_mod <- tor_fit(Ta = test_data$Ta,
 Y = test_data$VO2,
-fitting_options = list(parallel = TRUE))
+fitting_options = list(parallel = FALSE))
 }
 }
