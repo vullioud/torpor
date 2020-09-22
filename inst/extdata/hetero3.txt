@@ -34,7 +34,6 @@ model{
 
 #Priors
     Tbt ~ dunif(-10,tlc)
-    tauy~ dunif(0,3)
     TMR~dunif(0,MR)
     MR~dunif(0,MTNZ)
     Tbe~dunif(tlc,50)

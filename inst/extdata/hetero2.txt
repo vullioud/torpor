@@ -41,7 +41,6 @@ model{
 #Priors
 
     Tbt ~ dunif(-10,tlc)
-    tauy~ dunif(0,3)
     p[1:3] ~ ddirch(rep(1,3))
     TMR~dunif(0,MR)
     MR~dunif(0,MTNZ)

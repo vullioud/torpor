@@ -187,6 +187,7 @@ Ym <- tor_obj$data$Ym
 
 X <- nrow(data)
 data$predicted_MR <- rep(NA, X)
+
 data$classification <- dplyr::case_when(data$predicted_state == 0 ~ "Undefined",
                                      data$predicted_state == 1 ~ "Torpor",
                                      data$predicted_state == 2 ~ "Euthermy",

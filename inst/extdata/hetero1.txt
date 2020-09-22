@@ -36,7 +36,6 @@ for(i in 1:2){
 
   tlc ~ dunif(max(Ta),Max)
   Tbt ~ dunif(-10,max(Ta))
-  tauy ~ dunif(0,3)
   p[1:2] ~ ddirch(rep(1,2))
     TMR ~ dunif(0,MR)
     MR ~ dunif(0,MTNZ)
