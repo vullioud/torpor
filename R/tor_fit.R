@@ -324,13 +324,13 @@ estimate_assignation <- function(Y, Ta,
   ####
   probStatus <- 1 - sqrt((G - round(G))^2)
 
-  length_tlc_dist <- length(out_assignation$out_brm_tlc$tlc_distribution)
+  length_tlc_dist <- length(out_assignation$out_mtnz_tlc$tlc_distribution)
 
   if(length_tlc_dist > 1) {
-  mod_glm <- stats::glm(stats::pnorm(q = out_assignation$out_brm_tlc$tlc_distribution, ## changed for tlc distribution
-                       mean = out_assignation$out_brm_tlc$tlc_estimated,
-                       sd = ifelse(length_tlc_dist > 1, stats::sd(out_assignation$out_brm_tlc$tlc_distribution), 0)) ~
-                   out_assignation$out_brm_tlc$tlc_distribution,
+  mod_glm <- stats::glm(stats::pnorm(q = out_assignation$out_mtnz_tlc$tlc_distribution, ## changed for tlc distribution
+                       mean = out_assignation$out_mtnz_tlc$tlc_estimated,
+                       sd = ifelse(length_tlc_dist > 1, stats::sd(out_assignation$out_mtzn_tlc$tlc_distribution), 0)) ~
+                   out_assignation$out_mtnz_tlc$tlc_distribution,
                  family = "binomial") ##step not to be done if tlc and MTNZ and given
 
 
@@ -342,7 +342,7 @@ estimate_assignation <- function(Y, Ta,
 
     pstatus[i] <- as.numeric(stats::binom.test(round(nbsamples*probStatus[i]),
                                         nbsamples,
-                                        alternative = "greater",p = 0.5)$p.value)
+                                        alternative = "greater", p = 0.5)$p.value)
 
   }
 
