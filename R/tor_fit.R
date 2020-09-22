@@ -138,7 +138,6 @@ estimate_tlc_mtnz <- function(Y, Ta, fitting_options = list(ni = 50000,
   Y2 <- Y[Ta < low_tlc]
 
   inits <- list(
-      tauy = stats::runif(1),
       tauy2= stats::runif(1,0.05,0.1),
       tauy1= stats::runif(1,0.03,0.05),
       p = stats::runif(2),
@@ -146,7 +145,7 @@ estimate_tlc_mtnz <- function(Y, Ta, fitting_options = list(ni = 50000,
       tlc = stats::runif(1, low_tlc, max(Ta)),
       Tbt = stats::runif(1, 0, max(Ta2)),
       TMR = stats::runif(1,1e-5, MTNZ*0.8/Ym),
-      MR = stats::runif(1,1e-5, MTNZ*0.8/Ym))
+      MR = stats::runif(1, MTNZ*0.8/Ym, MTNZ/Ym))
 
   inits_hetero_list <- rep(list(inits), fitting_options[["nc"]])
 
@@ -245,14 +244,13 @@ estimate_assignation <- function(Y, Ta,
 
   ## initial values
   inits_2 <- list(
-    tauy = stats::runif(1),
     tauy2=stats::runif(1,0.05,0.1),
     tauy1=stats::runif(1,0.03,0.05),
     p = stats::runif(3),
     Tbe = stats::runif(1,tlc, 50),
     Tbt = stats::runif(1, tlc - 1, tlc),
     TMR = stats::runif(1,1e-5,MTNZ*0.8/Ym),
-    MR = stats::runif(1,1e-5,MTNZ*0.8/Ym))
+    MR = stats::runif(1, MTNZ*0.8/Ym, MTNZ/Ym))
 
   inits_hetero_list_2 <- rep(list(inits_2), fitting_options[["nc"]])
 
@@ -432,11 +430,10 @@ tor_fit <- function(Ta, Y,
 
   path_to_model_3 <- system.file("extdata", "hetero3.txt",  package = "torpor")
 
-  inits_3 <- list(tauy = stats::runif(1),
-                  Tbe = stats::runif(1,tlc, 50),
+  inits_3 <- list(Tbe = stats::runif(1,tlc, 50),
                   Tbt = stats::runif(1, tlc - 1, tlc),
                   TMR = stats::runif(1,1e-5,MTNZ*0.8/Ym),
-                  MR = stats::runif(1,1e-5,MTNZ*0.8/Ym),
+                  MR = stats::runif(1, MTNZ*0.8/Ym, MTNZ/Ym),
                   tauy2 = stats::runif(1,0.05,0.1),
                   tauy1 = stats::runif(1,0.03,0.05))
 
