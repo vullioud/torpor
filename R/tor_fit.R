@@ -327,7 +327,7 @@ estimate_assignation <- function(Y, Ta,
   if(length_tlc_dist > 1) {
   mod_glm <- stats::glm(stats::pnorm(q = out_assignation$out_mtnz_tlc$tlc_distribution, ## changed for tlc distribution
                        mean = out_assignation$out_mtnz_tlc$tlc_estimated,
-                       sd = ifelse(length_tlc_dist > 1, stats::sd(out_assignation$out_mtzn_tlc$tlc_distribution), 0)) ~
+                       sd = ifelse(length_tlc_dist > 1, stats::sd(out_assignation$out_mtnz_tlc$tlc_distribution), 0)) ~
                    out_assignation$out_mtnz_tlc$tlc_distribution,
                  family = "binomial") ##step not to be done if tlc and MTNZ and given
 
@@ -393,9 +393,7 @@ estimate_assignation <- function(Y, Ta,
 #'@export
 #'@examples
 #'\dontrun{
-#'test_mod <- tor_fit(Ta = test_data$Ta,
-#'Y = test_data$VO2,
-#' fitting_options = list(parallel = TRUE))
+#'test_mod <- tor_fit(Ta = test_data$Ta, Y = test_data$VO2, fitting_options = list(parallel = FALSE))
 #'}
 tor_fit <- function(Ta, Y,
                    MTNZ = NULL,
@@ -403,7 +401,7 @@ tor_fit <- function(Ta, Y,
                    fitting_options = list(ni = 50000,
                                           nt = 10,
                                           nb = 30000,
-                                          nc = 1,
+                                          nc = 3,
                                           parallel = TRUE)) {
 
 
