@@ -43,7 +43,7 @@ model{
     Tbt ~ dunif(-10,tlc)
     tauy~ dunif(0,3)
     p[1:3] ~ ddirch(rep(1,3))
-    TMR~dunif(0,MTNZ*0.8)
+    TMR~dunif(0,MR)
     MR~dunif(0,MTNZ)
     Tbe~dunif(tlc,50)
     tauy2~ dunif(0,3)
