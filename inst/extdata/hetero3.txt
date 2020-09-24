@@ -25,18 +25,18 @@ model{
     tau[1:2] <- c(tauy1,tauy2)
 
     #Assumptions
-    inte <- MTNZ-betat*tlc
+    inte <- MTNZ-betat*Tlc
     intr <- -Tbt*betat
-    intc <- MR/exp(betac*tlc)
-    betac <-max(0,min(0.5,(log(MR)-log(TMR))/(tlc-Tt)))
-    betat <- MTNZ/(tlc-Tbe)
+    intc <- MR/exp(betac*Tlc)
+    betac <-max(0,min(0.5,(log(MR)-log(TMR))/(Tlc-Tt)))
+    betat <- MTNZ/(Tlc-Tbe)
     Tt <- (TMR-intr)/betat
 
 #Priors
-    Tbt ~ dunif(-10,tlc)
+    Tbt ~ dunif(-10,Tlc)
     TMR~dunif(0,MR)
     MR~dunif(0,MTNZ)
-    Tbe~dunif(tlc,50)
+    Tbe~dunif(Tlc,50)
     tauy2~ dunif(0,3)
     tauy1~dunif(0.2*tauy2,tauy2)
 

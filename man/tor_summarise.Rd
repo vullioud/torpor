@@ -17,7 +17,7 @@ a list of two data.frame. The first element returns the parameter estimates, the
 returned by \code{\link[=tor_fit]{tor_fit()}}. Values of mean, 95CI bounds, median and
 Brooks–Gelman–Rubin criterion (i.e. chain convergence check) of parameters
 posterior distributions are provided. Additionally, prior posterior overlap
-values for parameters tlc, Tt and Betat are generated.
+values for parameters Tlc, Tt and Betat are generated.
 }
 \examples{
 data(test_data)

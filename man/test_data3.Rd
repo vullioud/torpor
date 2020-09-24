@@ -13,6 +13,6 @@ data(test_data3)
 \description{
 Elephantulus_rozeti
 MTNZ: 1.055
-TLC: 29
+Tlc: 29
 }
 \keyword{datasets}

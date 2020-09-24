@@ -18,7 +18,7 @@ estimate_tlc_mtnz(
 \item{fitting_options}{a list of fitting option to pass to jags.}
 }
 \description{
-This function estimate the lowest TLC and the MTNZ
+This function estimate the lowest Tlc and the MTNZ
 }
 \examples{
 t <- estimate_tlc_mtnz(test_data2$VO2ms, test_data2$Ta)

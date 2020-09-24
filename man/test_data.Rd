@@ -13,6 +13,6 @@ data(test_data)
 \description{
 Callithrix_pygmaea
 MTNZ: 98
-TLC: 28.88
+Tlc: 28.88
 }
 \keyword{datasets}

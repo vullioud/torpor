@@ -8,8 +8,8 @@ tor_fit(
   Ta,
   Y,
   MTNZ = NULL,
-  tlc = NULL,
-  fitting_options = list(ni = 50000, nt = 10, nb = 30000, nc = 1, parallel = TRUE)
+  Tlc = NULL,
+  fitting_options = list(ni = 50000, nt = 10, nb = 30000, nc = 3, parallel = TRUE)
 )
 }
 \arguments{
@@ -19,7 +19,7 @@ tor_fit(
 
 \item{MTNZ}{mtnz value if not estimated}
 
-\item{tlc}{tlc value if not estimated}
+\item{Tlc}{tlc value if not estimated}
 
 \item{fitting_options}{a list of fitting option to pass to jags.}
 }
@@ -44,8 +44,6 @@ described pattern while in torpor.
 }
 \examples{
 \dontrun{
-test_mod <- tor_fit(Ta = test_data$Ta,
-Y = test_data$VO2,
-fitting_options = list(parallel = FALSE))
+test_mod <- tor_fit(Ta = test_data$Ta, Y = test_data$VO2, fitting_options = list(parallel = FALSE))
 }
 }

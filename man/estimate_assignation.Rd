@@ -8,7 +8,7 @@ estimate_assignation(
   Y,
   Ta,
   MTNZ = NULL,
-  tlc = NULL,
+  Tlc = NULL,
   fitting_options = list(ni = 50000, nt = 10, nb = 20000, nc = 2, parallel = TRUE)
 )
 }
@@ -19,7 +19,7 @@ estimate_assignation(
 
 \item{MTNZ}{mtnz value if not estimated}
 
-\item{tlc}{tlc value if not estimated}
+\item{Tlc}{tlc value if not estimated}
 
 \item{fitting_options}{a list of fitting option to pass to jags.}
 }
@@ -29,6 +29,6 @@ This function estimate the assignation into torpor or euthermy.
 \examples{
 \dontrun{
 t2_no_input <- estimate_assignation(Ta = test_data2$Ta, Y = test_data2$VO2)
-to_input <- estimate_assignation(Ta = test_data2$Ta, Y = test_data2$VO2, MTNZ = 1.49, tlc = 28.8)
+to_input <- estimate_assignation(Ta = test_data2$Ta, Y = test_data2$VO2, MTNZ = 1.49, Tlc = 28.8)
 }
 }

@@ -10,7 +10,7 @@ tor_plot(
   col_torp = "cornflowerblue",
   col_eut = "coral3",
   col_n = "black",
-  ylab = "MR",
+  ylab = "M",
   xlab = "Ta",
   pdf = FALSE
 )

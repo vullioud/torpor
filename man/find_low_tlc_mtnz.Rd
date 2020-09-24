@@ -15,7 +15,7 @@ find_low_tlc_mtnz(Y, Ta)
 A named vector with mtmz and low_tlc.
 }
 \description{
-This function estimate the lowest TLC and the mtnz
+This function estimate the lowest Tlc and the mtnz
 }
 \examples{
 t_1 <- find_low_tlc_mtnz(Y = test_data$VO2, Ta = test_data$Ta)
