@@ -43,8 +43,10 @@ list(params = get_parameters(tor_obj),
 tor_ppo <- function(tor_obj){
   overlap <- NULL
   ### TLC
+
   mod_tlc <- tor_obj$out_mtnz_tlc$model_1
 
+  if(!(is.null(mod_tlc))) {
   nbsamples <- nrow(mod_tlc$samples[[1]])*length(mod_tlc$samples)
 
   MIN<- max(tor_obj$out_mtnz_tlc$Ta2)
@@ -54,9 +56,13 @@ tor_ppo <- function(tor_obj){
   overlapTlc <- as.numeric(round(overlapping::overlap(x = list(tlc_chain, PR))$OV, digits = 3))
   out_tlc <- data.frame(name = "Tlc", overlap = overlapTlc)
 
+  } else {
+    out_tlc <- data.frame(name = "Tlc", overlap = 0)
+  }
+
   ## MR
   MIN <- 0
-  MAX <- tor_obj$out_mtnz_tlc$mtnz_estimated
+  MAX <- tor_obj$out_mtnz_tlc$mtnz_estimated/tor_obj$data$Ym
   PR<- stats::runif(nbsamples,MIN,MAX)
   MR_chain <- tor_obj$mod_parameter$sims.list$MR
   overlapMRr <- as.numeric(round(overlapping::overlap(x = list(MR_chain, PR))$OV, digits = 3))
@@ -83,7 +89,7 @@ tor_ppo <- function(tor_obj){
 
   ## tbt
   MIN<- -10
-  MAX<- tor_obj$out_mtnz_tlc$tlc_estimated
+  MAX <- tor_obj$out_mtnz_tlc$tlc_estimated
   PR<- stats::runif(nbsamples,MIN,MAX)
   Tbt_chain <- tor_obj$mod_parameter$sims.list$Tbt
   overlapTbt <- as.numeric(round(overlapping::overlap(x = list(Tbt_chain, PR))$OV, digits = 3))
@@ -92,7 +98,7 @@ tor_ppo <- function(tor_obj){
   out <- dplyr::bind_rows(out_tlc, out_MR, out_Tbe, out_TMR, out_Tbt) %>%
     dplyr::mutate(overlap = overlap *100) %>%
     dplyr::rename(ppo = overlap)
- ## add loop on out to flag overlap > 90 and 60 %.
+ ## add loop on out to flag overlap > 80 %.
   for (i in 1:nrow(out)){
 
     if (out$ppo[i] > 80) {
@@ -114,6 +120,7 @@ tor_ppo <- function(tor_obj){
 #'@return a data.frame
 #'@export
 get_parameters <- function(tor_obj){  ## out4 et out2 pour tlc.
+
   .data <- NULL
   Ym <- tor_obj$data$Ym
 
@@ -144,6 +151,16 @@ get_parameters <- function(tor_obj){  ## out4 et out2 pour tlc.
   CI_2.5 <- unlist(mod_tlc$q2.5["tlc"])
   Rhat <- unlist(mod_tlc$Rhat["tlc"])
 
+
+  if(is.null(mod_tlc)) {
+    print("Tlc is not estimated from the data!")
+    mean <- tor_obj$out_mtnz_tlc$tlc_estimated
+    CI_97.5 <- NA
+    median <- tor_obj$out_mtnz_tlc$tlc_estimated
+    CI_2.5 <- NA
+    Rhat <- NA
+  }
+
   x_tlc <- as.data.frame(cbind(mean, CI_2.5, median, CI_97.5, Rhat))
   x_tlc$parameter <- "Tlc" ## unify names
   x_tlc <- x_tlc[,c(6,1,2,3,4, 5)] ## put name as first column
@@ -166,7 +183,7 @@ get_parameters <- function(tor_obj){  ## out4 et out2 pour tlc.
 
   out <- rbind(x, x_tlc, x_mtnz)
 
-  params_to_multiply <- c("tau1", "tau2", "inte", "intc", "intr", "MTNZ", "MR", "TMR", "betat")
+  params_to_multiply <- c("tau1", "tau2", "inte", "intc", "intr", "MR", "TMR", "betat")
 
 
   out <- out %>%
