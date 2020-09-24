@@ -22,8 +22,8 @@
 tor_plot <- function(tor_obj = NULL,
                      plot_type = "ggplot",
                      col_torp = "cornflowerblue",
-                     col_eut = "coral3",
-                     col_n = "black",
+                     col_euth = "coral3",
+                     col_mtnz = "black",
                      ylab = "M",
                      xlab = "Ta",
                      pdf = FALSE) {
@@ -32,7 +32,7 @@ tor_plot <- function(tor_obj = NULL,
   ## please check
   group <- measured_Ta <- measured_MR <- classification <- NULL
   ## retrieve values from the model
-  TLC <- tor_obj$out_mtnz_tlc$tlc_estimated
+  Tlc <- tor_obj$out_mtnz_tlc$tlc_estimated
   MTNZ <- tor_obj$out_mtnz_tlc$mtnz_estimated
 
 
@@ -62,22 +62,26 @@ tor_plot <- function(tor_obj = NULL,
 
     G <- lwr_95 <- upr_95 <- NULL ## check
 
-    plot <- ggplot2::ggplot(da) +
-      ggplot2::geom_point(ggplot2::aes(x = measured_Ta, y = measured_MR, col = classification, fill = classification))+
+    plot <- ggplot2::ggplot() +
+      ggplot2::geom_point(data = da[da$classification == "Torpor", ], ggplot2::aes(x = measured_Ta, y = measured_MR, col = "Torpor"), col = col_torp) + ## torpor
       ggplot2::xlim(c(min(da$measured_Ta), max(da$measured_Ta))) +
-      ggplot2::geom_line(data = pred,
-                         ggplot2::aes(x = Ta, y = pred, col = classification),
-                         inherit.aes = FALSE,
+      ggplot2::geom_line(data = pred[pred$classification == "Torpor", ], ggplot2::aes(x = Ta, y = pred), col = col_torp,
                          linetype = 2) +
-      ggplot2::geom_ribbon(data = pred,
-                           ggplot2::aes(x = Ta, ymin = lwr_95, ymax = upr_95, fill = classification, group = classification),
-                           #inherit.aes = FALSE,
+      ggplot2::geom_ribbon(data = pred[pred$classification == "Torpor", ],
+                           ggplot2::aes(x = Ta, ymin = lwr_95, ymax = upr_95), fill = col_torp,
                            alpha = 0.2,
-                           col = NA)+
-      ggplot2::scale_color_manual("", values =  c(col_eut, col_torp, col_n)) +
-      ggplot2::scale_fill_manual("", values =  c(col_eut, col_torp, col_n)) +
-      ggplot2::ylab(paste(ylab)) +
-      ggplot2::xlab(paste(xlab))+
+                           col = NA) +
+      ggplot2::geom_point(data = da[da$classification == "Euthermy", ], ggplot2::aes(x = measured_Ta, y = measured_MR, col = "Euthermy"), col = col_euth) + ## Euthermy
+      ggplot2::geom_line(data = pred[pred$classification == "Euthermy", ], ggplot2::aes(x = Ta, y = pred), col = col_euth,
+                         linetype = 2) +
+      ggplot2::geom_ribbon(data = pred[pred$classification == "Euthermy", ],
+                           ggplot2::aes(x = Ta, ymin = lwr_95, ymax = upr_95), fill = col_euth,
+                           alpha = 0.2,
+                           col = NA) +
+      ggplot2::geom_point(data = da[da$classification == "MTNZ", ], ggplot2::aes(x = measured_Ta, y = measured_MR, col = "MTNZ"), col = col_mtnz) + ## Euthermy
+      ggplot2::geom_line(data = pred[pred$classification == "MTNZ", ], ggplot2::aes(x = Ta, y = pred), col = col_mtnz,
+                         linetype = 2) +
+      ggplot2::geom_point(data = da[da$classification == "Undefined", ], ggplot2::aes(x = measured_Ta, y = measured_MR), shape = 5) +
       ggplot2::theme_light()
 
     if (pdf == TRUE){
@@ -111,8 +115,8 @@ tor_plot <- function(tor_obj = NULL,
 
     graphics::plot(da$measured_MR~da$measured_Ta, type="n",frame=FALSE, xlim=c(Tlimlo, Tlimup),ylim=c(MRlo, MRup),ylab= ylab, xlab = xlab)
     graphics::points(da$measured_MR[da$classification == "Torpor"] ~ da$measured_Ta[da$classification == "Torpor"],col = col_torp, pch = 19)
-    graphics::points(da$measured_MR[da$classification == "Euthermy"] ~ da$measured_Ta[da$classification == "Euthermy"],col = col_eut , pch = 19)
-    graphics::points(da$measured_MR[da$classification == "MTNZ"] ~ da$measured_Ta[da$classification == "MTNZ"],col = col_n , pch = 19)
+    graphics::points(da$measured_MR[da$classification == "Euthermy"] ~ da$measured_Ta[da$classification == "Euthermy"],col = col_euth , pch = 19)
+    graphics::points(da$measured_MR[da$classification == "MTNZ"] ~ da$measured_Ta[da$classification == "MTNZ"],col = col_mtnz , pch = 19)
     graphics::points(da$measured_MR[da$classification == "Undefined"] ~ da$measured_Ta[da$classification == "Undefined"], pch = 3)
 
     if(length(da$classification == "Torpor")> 0){
@@ -133,31 +137,25 @@ tor_plot <- function(tor_obj = NULL,
       X <-  pred[pred$classification == "Euthermy", "Ta"]
       graphics::par(new=TRUE)
 
-      graphics::plot(Ymeann~X,xlim=c(Tlimlo, Tlimup),ylim=c(MRlo, MRup),type="l",xaxt="n",frame=FALSE,yaxt="n",ylab="",xlab="",col=col_eut)
+      graphics::plot(Ymeann~X,xlim=c(Tlimlo, Tlimup),ylim=c(MRlo, MRup),type="l",xaxt="n",frame=FALSE,yaxt="n",ylab="",xlab="",col=col_euth)
       graphics::par(new=TRUE)
 
-      graphics::plot(Y975n~X,xlim=c(Tlimlo, Tlimup),ylim=c(MRlo, MRup),type="l",lty=2,xaxt="n",frame=FALSE,yaxt="n",ylab="",xlab="",col=col_eut)
+      graphics::plot(Y975n~X,xlim=c(Tlimlo, Tlimup),ylim=c(MRlo, MRup),type="l",lty=2,xaxt="n",frame=FALSE,yaxt="n",ylab="",xlab="",col=col_euth)
       graphics::par(new=TRUE)
 
-      graphics::plot(Y025n~X,xlim=c(Tlimlo, Tlimup),ylim=c(MRlo, MRup),type="l",lty=2,xaxt="n",frame=FALSE,yaxt="n",ylab="",xlab="",col=col_eut)
+      graphics::plot(Y025n~X,xlim=c(Tlimlo, Tlimup),ylim=c(MRlo, MRup),type="l",lty=2,xaxt="n",frame=FALSE,yaxt="n",ylab="",xlab="",col=col_euth)
 
       }
 
     if(length(da$classification == "MTNZ")>0){
       X <-  pred[pred$classification == "MTNZ", "Ta"]
       graphics::par(new=TRUE)
-      graphics::plot(YmeanM~X,xlim=c(Tlimlo, Tlimup),ylim=c(MRlo, MRup),type="l",xaxt="n",frame=FALSE,yaxt="n",ylab="",xlab="",col=col_n)
-    #  graphics::par(new=TRUE)
-
-      # graphics::plot(Y975M~X,xlim=c(Tlimlo, Tlimup),ylim=c(MRlo, MRup),type="l",lty=2,xaxt="n",frame=FALSE,yaxt="n",ylab="",xlab="",col=col_n)
-      # graphics::par(new=TRUE)
-      #
-      # graphics::plot(Y025M~X,xlim=c(Tlimlo, Tlimup),ylim=c(MRlo, MRup),type="l",lty=2,xaxt="n",frame=FALSE,yaxt="n",ylab="",xlab="",col=col_n)
+      graphics::plot(YmeanM~X,xlim=c(Tlimlo, Tlimup),ylim=c(MRlo, MRup),type="l",xaxt="n",frame=FALSE,yaxt="n",ylab="",xlab="",col=col_mtnz)
 
     }
 
 
-    graphics::legend("topright",c("Euthermy","Torpor", "MTNZ"), pch=19, col=c(col_eut,col_torp, col_n),bty="n")
+    graphics::legend("topright",c("Euthermy","Torpor", "Mtnz"), pch=19, col=c(col_euth,col_torp, col_mtnz),bty="n")
     if(pdf == TRUE){
       dev.off()
     }
