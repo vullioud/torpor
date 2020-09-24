@@ -71,7 +71,7 @@ tor_ppo <- function(tor_obj){
 
   ## Tbe
   MIN <- tor_obj$out_mtnz_tlc$tlc_estimated
-  MAX <- 100
+  MAX <- 50
   PR <- stats::runif(nbsamples,MIN,MAX)
   Tbe_chain <- tor_obj$mod_parameter$sims.list$Tbe
   overlapTbe <- as.numeric(round(overlapping::overlap(x = list(Tbe_chain, PR))$OV, digits = 3))
