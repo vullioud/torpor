@@ -10,8 +10,8 @@
 #'@param tor_obj a fitted model from [tor_fit()]
 #'@param plot_type A character string specifying the type of plot desired. Either "base" or "ggplot"
 #'@param col_torp color for torpor model prediction and points
-#'@param col_eut color for euthermy model prediction and points
-#'@param col_n color of NTMZ
+#'@param col_euth color for euthermy model prediction and points
+#'@param col_mtnz color of mtnz
 #'@param ylab y label
 #'@param xlab x label
 #'@param pdf logical if a .pdf copy of the plot should be saved
