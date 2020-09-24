@@ -2,7 +2,7 @@
 #'
 #' Callithrix_pygmaea
 #' MTNZ: 98
-#' TLC: 28.88
+#' Tlc: 28.88
 #'
 #' @docType data
 #' @keywords datasets
@@ -15,7 +15,7 @@ NULL
 #'
 #' Cercartetus_lepidus
 #' MTNZ: 1.49
-#' TLC: 28.8
+#' Tlc: 28.8
 #'
 #' @docType data
 #' @keywords datasets
@@ -28,7 +28,7 @@ NULL
 #'
 #' Elephantulus_rozeti
 #' MTNZ: 1.055
-#' TLC: 29
+#' Tlc: 29
 #'
 #' @docType data
 #' @keywords datasets

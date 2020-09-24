@@ -16,11 +16,11 @@
 #'test_mod <- tor_fit(MR = test_data2[,2],
 #'Ta = test_data2[, 1],
 #'MTNZ = 1.49,
-#'TLC = 28.88,
+#'Tlc = 28.88,
 #'fitting_options = list(nc = 2, nb = 3000, ni = 5000))
 #'tor_predict(tor_obj, Ta = 10:35)
 #'}
-tor_predict <- function(tor_obj, Ta){   #### En dessus de TLC = MTNZ, warning en dehors de MTNZ si plus que TLC.
+tor_predict <- function(tor_obj, Ta){   #### En dessus de Tlc = MTNZ, warning en dehors de MTNZ si plus que Tlc.
 
 
   # retrieved the posterior of interest
@@ -34,7 +34,7 @@ tor_predict <- function(tor_obj, Ta){   #### En dessus de TLC = MTNZ, warning en
   Tt <- mod$sims.list$Tt
 
   ##
-  tlc <- tor_obj$out_mtnz_tlc$tlc_estimated
+  Tlc <- tor_obj$out_mtnz_tlc$tlc_estimated
   Ym <- tor_obj$data$Ym
 
 
@@ -182,7 +182,7 @@ inte <- mod$sims.list$inte
 intc <- mod$sims.list$intc
 intr <- mod$sims.list$intr
 Tt <- mod$sims.list$Tt
-tlc <- mod$sims.list$tlc
+Tlc <- mod$sims.list$tlc
 Ym <- tor_obj$data$Ym
 
 X <- nrow(data)

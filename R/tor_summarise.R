@@ -4,7 +4,7 @@
 #'returned by [tor_fit()]. Values of mean, 95CI bounds, median and
 #'Brooks–Gelman–Rubin criterion (i.e. chain convergence check) of parameters
 #'posterior distributions are provided. Additionally, prior posterior overlap
-#'values for parameters tlc, Tt and Betat are generated.
+#'values for parameters Tlc, Tt and Betat are generated.
 #'
 #'@name tor_summarise
 #'@aliases tor_summarise
@@ -42,12 +42,13 @@ list(params = get_parameters(tor_obj),
 
 tor_ppo <- function(tor_obj){
   overlap <- NULL
-  ### TLC
-
+  ### Tlc
+  mod_param <- tor_obj$mod_parameter
   mod_tlc <- tor_obj$out_mtnz_tlc$model_1
 
+  nbsamples <- nrow(mod_param$samples[[1]])*length(mod_param$samples)
+
   if(!(is.null(mod_tlc))) {
-  nbsamples <- nrow(mod_tlc$samples[[1]])*length(mod_tlc$samples)
 
   MIN<- max(tor_obj$out_mtnz_tlc$Ta2)
   MAX<-max(tor_obj$data$Ta)
@@ -119,7 +120,7 @@ tor_ppo <- function(tor_obj){
 #'@param tor_obj a fitted model from [tor_fit()]
 #'@return a data.frame
 #'@export
-get_parameters <- function(tor_obj){  ## out4 et out2 pour tlc.
+get_parameters <- function(tor_obj){  ## out4 et out2 pour Tlc.
 
   .data <- NULL
   Ym <- tor_obj$data$Ym
@@ -142,14 +143,14 @@ get_parameters <- function(tor_obj){  ## out4 et out2 pour tlc.
   x <- x[,c(6,1,2,3,4, 5)] ## put name as first column
   rownames(x) <- NULL
 
-  ##### add TLC and MTNZ
+  ##### add Tlc and MTNZ
   mod_tlc <- tor_obj$out_mtnz_tlc$model_1
 
-  mean <- unlist(mod_tlc$mean["tlc"])
-  CI_97.5 <- unlist(mod_tlc$q97.5["tlc"])
-  median <- unlist(mod_tlc$q50["tlc"])
-  CI_2.5 <- unlist(mod_tlc$q2.5["tlc"])
-  Rhat <- unlist(mod_tlc$Rhat["tlc"])
+  mean <- unlist(mod_tlc$mean["Tlc"])
+  CI_97.5 <- unlist(mod_tlc$q97.5["Tlc"])
+  median <- unlist(mod_tlc$q50["Tlc"])
+  CI_2.5 <- unlist(mod_tlc$q2.5["Tlc"])
+  Rhat <- unlist(mod_tlc$Rhat["Tlc"])
 
 
   if(is.null(mod_tlc)) {

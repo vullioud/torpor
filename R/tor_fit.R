@@ -41,7 +41,7 @@
 
 #'find_low_tlc_mtnz
 #'
-#' This function estimate the lowest TLC and the mtnz
+#' This function estimate the lowest Tlc and the mtnz
 #'
 #'@name find_low_tlc_mtnz
 #'@param Y A vector of methabolic measure.
@@ -89,7 +89,7 @@ find_low_tlc_mtnz <- function(Y,Ta){
       length(SEQX[p < 0.01 & !is.na(p)]) == 0 &
       length(SEQX[whitetest < 0.01]) == 0) {
 
-    stop("TLC and MTNZ can not be estimated: provide values")
+    stop("Tlc and Mtnz can not be estimated: provide values")
 
   } else {
 
@@ -100,8 +100,8 @@ find_low_tlc_mtnz <- function(Y,Ta){
   low_tlc <- ifelse(length(stats::na.omit(c(test_1, test_2))) == 0, NA, max(test_1, test_2, na.rm = TRUE)) ### check if ifelse necessary
 
   }
-  if (is.na(low_tlc)) stop("TLC and MTNZ can not be estimated: provide values")
-  if (length(Y[Ta > low_tlc]) < 10) warning("MTNZ computed on less than 10 points")
+  if (is.na(low_tlc)) stop("Tlc and Mtnz can not be estimated: provide values")
+  if (length(Y[Ta > low_tlc]) < 10) warning("Mtnz computed on less than 10 points")
 
   MTNZ <- mean(Y[Ta > low_tlc], na.rm = TRUE)
   out <- c(MTNZ,low_tlc)
@@ -111,7 +111,7 @@ find_low_tlc_mtnz <- function(Y,Ta){
 
 #'estimate_tlc_mtnz
 #'
-#' This function estimate the lowest TLC and the MTNZ
+#' This function estimate the lowest Tlc and the MTNZ
 #'
 #'@name estimate_tlc_mtnz
 #'@param Y A vector of methabolic measure.
@@ -142,14 +142,14 @@ estimate_tlc_mtnz <- function(Y, Ta, fitting_options = list(ni = 50000,
       tauy1= stats::runif(1,0.03,0.05),
       p = stats::runif(2),
       Tbe = stats::runif(1,low_tlc,50),
-      tlc = stats::runif(1, low_tlc, max(Ta)),
+      Tlc = stats::runif(1, low_tlc, max(Ta)),
       Tbt = stats::runif(1, 0, max(Ta2)),
       TMR = stats::runif(1,1e-5, MTNZ*0.8/Ym),
       MR = stats::runif(1, MTNZ*0.8/Ym, MTNZ/Ym))
 
   inits_hetero_list <- rep(list(inits), fitting_options[["nc"]])
 
-  params_hetero <- c("tlc","betat","inte")
+  params_hetero <- c("Tlc","betat","inte")
 
   win_data <- list(Y = Y2/Ym,
                    NbObservations = length(Y2),
@@ -173,8 +173,8 @@ estimate_tlc_mtnz <- function(Y, Ta, fitting_options = list(ni = 50000,
                         store.data = TRUE)
 
   ## extract the important output
-  tlc_estimated <- stats::median(mod$sims.list$tlc) ## estimated tlc
-  tlc_distribution <- mod$sims.list$tlc ## distribution of tlc
+  tlc_estimated <- stats::median(mod$sims.list$Tlc) ## estimated tlc
+  tlc_distribution <- mod$sims.list$Tlc ## distribution of tlc
   mtnz_estimated <- mean(Y[Ta >= tlc_estimated], na.rm = TRUE) # estimated MTNZ (mean of the points)
 
   if(length(stats::na.omit(Y[Ta >= tlc_estimated])) < 10) warning("MTNZ computed on less than 10 points")
@@ -195,14 +195,14 @@ return(list(model_1 = mod,
 #'@export
 #'@inheritParams estimate_tlc_mtnz
 #'@param MTNZ mtnz value if not estimated
-#'@param tlc tlc value if not estimated
+#'@param Tlc tlc value if not estimated
 #'@examples
 #'\dontrun{
 #'t2_no_input <- estimate_assignation(Ta = test_data2$Ta, Y = test_data2$VO2)
-#'to_input <- estimate_assignation(Ta = test_data2$Ta, Y = test_data2$VO2, MTNZ = 1.49, tlc = 28.8)
+#'to_input <- estimate_assignation(Ta = test_data2$Ta, Y = test_data2$VO2, MTNZ = 1.49, Tlc = 28.8)
 #'}
 estimate_assignation <- function(Y, Ta,
-                                 MTNZ = NULL, tlc = NULL,
+                                 MTNZ = NULL, Tlc = NULL,
                                  fitting_options = list(ni = 50000,
                                                         nt = 10,
                                                         nb = 20000,
@@ -213,7 +213,7 @@ estimate_assignation <- function(Y, Ta,
   .complete_args(estimate_assignation)
 
   ## check input
-  if (length(Y) != length(Ta)) stop("Ta and MR have not the same length")
+  if (length(Y) != length(Ta)) stop("Ta and Y have not the same length")
 
   data <- cbind(Y, Ta)[!is.na(Y) & !is.na(Ta), ] ## remove Nas
 
@@ -221,25 +221,25 @@ estimate_assignation <- function(Y, Ta,
   Ta <- data[, "Ta"]
   Ym <- mean(Y, na.rm = T)
 
-  ## run step 1 and 2 to get mtnz and tlc
+  ## run step 1 and 2 to get mtnz and Tlc
 
-  if (is.null(MTNZ) | (is.null(tlc))) { ### need to change the filter it runs all the time
+  if (is.null(MTNZ) | (is.null(Tlc))) { ### need to change the filter it runs all the time
 
-    message("MTNZ and TLC are being estimated from the data")
+    message("Mtnz and Tlc are being estimated from the data")
 
   out_mtnz_tlc <- estimate_tlc_mtnz(Ta = Ta, Y = Y, fitting_options = fitting_options)
 
   } else { ## keep the structure of output of estimate_tlc_mtnz
 
     out_mtnz_tlc <- list(model_1 = NULL,
-         tlc_estimated = tlc,
-         tlc_distribution = tlc,
+         tlc_estimated = Tlc,
+         tlc_distribution = Tlc,
          mtnz_estimated = MTNZ,
          mtnz_points = MTNZ,
-         Ta2 = Ta[Ta < tlc])
+         Ta2 = Ta[Ta < Tlc])
   }
   #### new code standard
-  tlc <- out_mtnz_tlc$tlc_estimated
+  Tlc <- out_mtnz_tlc$tlc_estimated
   MTNZ <- out_mtnz_tlc$mtnz_estimated
 
   ## initial values
@@ -247,8 +247,8 @@ estimate_assignation <- function(Y, Ta,
     tauy2=stats::runif(1,0.05,0.1),
     tauy1=stats::runif(1,0.03,0.05),
     p = stats::runif(3),
-    Tbe = stats::runif(1,tlc, 50),
-    Tbt = stats::runif(1, tlc - 1, tlc),
+    Tbe = stats::runif(1,Tlc, 50),
+    Tbt = stats::runif(1, Tlc - 1, Tlc),
     TMR = stats::runif(1,1e-5,MTNZ*0.8/Ym),
     MR = stats::runif(1, MTNZ*0.8/Ym, MTNZ/Ym))
 
@@ -260,7 +260,7 @@ estimate_assignation <- function(Y, Ta,
                      NbObservations = length(Y),
                      Ta = Ta,
                      MTNZ = MTNZ/Ym,
-                     tlc = tlc)
+                     Tlc = Tlc)
 
   path_to_model_2 <- system.file("extdata", "hetero2.txt",  package = "torpor")
 
@@ -315,9 +315,9 @@ estimate_assignation <- function(Y, Ta,
   nbsamples <- ((ni - nb)*nc)/nt ## look how to take them from mod2
 
   ## inside small fun
-  expit <- function(x){1/(1 + exp(-x))} ##step not to be done if tlc and MTNZ and given
-  funabove <- function(x, mod){expit(stats::coefficients(mod)[1] + stats::coefficients(mod)[2]*x)} ##step not to be done if tlc and MTNZ and given
-  funbelow <- function(x, mod){-(funabove(x, mod)- 1)} ##step not to be done if tlc and MTNZ and given
+  expit <- function(x){1/(1 + exp(-x))} ##step not to be done if Tlc and MTNZ and given
+  funabove <- function(x, mod){expit(stats::coefficients(mod)[1] + stats::coefficients(mod)[2]*x)} ##step not to be done if Tlc and MTNZ and given
+  funbelow <- function(x, mod){-(funabove(x, mod)- 1)} ##step not to be done if Tlc and MTNZ and given
 
   ####
   probStatus <- 1 - sqrt((G - round(G))^2)
@@ -325,14 +325,14 @@ estimate_assignation <- function(Y, Ta,
   length_tlc_dist <- length(out_assignation$out_mtnz_tlc$tlc_distribution)
 
   if(length_tlc_dist > 1) {
-  mod_glm <- stats::glm(stats::pnorm(q = out_assignation$out_mtnz_tlc$tlc_distribution, ## changed for tlc distribution
+  mod_glm <- stats::glm(stats::pnorm(q = out_assignation$out_mtnz_tlc$tlc_distribution, ## changed for Tlc distribution
                        mean = out_assignation$out_mtnz_tlc$tlc_estimated,
                        sd = ifelse(length_tlc_dist > 1, stats::sd(out_assignation$out_mtnz_tlc$tlc_distribution), 0)) ~
                    out_assignation$out_mtnz_tlc$tlc_distribution,
-                 family = "binomial") ##step not to be done if tlc and MTNZ and given
+                 family = "binomial") ##step not to be done if Tlc and MTNZ and given
 
 
-  probStatus <- probStatus*ifelse(G == 3, funabove(Ta, mod_glm), funbelow(Ta, mod_glm))  ##step not to be done if tlc and MTNZ and given
+  probStatus <- probStatus*ifelse(G == 3, funabove(Ta, mod_glm), funbelow(Ta, mod_glm))  ##step not to be done if Tlc and MTNZ and given
   }
   pstatus <- rep(NA,length(Ta))
 
@@ -393,11 +393,11 @@ estimate_assignation <- function(Y, Ta,
 #'@export
 #'@examples
 #'\dontrun{
-#'test_mod <- tor_fit(Ta = test_data$Ta, Y = test_data$VO2, fitting_options = list(parallel = FALSE))
+#'test_mod <- tor_fit(Ta = test_data$Ta, Y = test_data$VO2, Tlc= 28.8, MTNZ = 98, fitting_options = list(parallel = FALSE))
 #'}
 tor_fit <- function(Ta, Y,
                    MTNZ = NULL,
-                   tlc = NULL,
+                   Tlc = NULL,
                    fitting_options = list(ni = 50000,
                                           nt = 10,
                                           nb = 30000,
@@ -410,12 +410,12 @@ tor_fit <- function(Ta, Y,
   .complete_args(tor_fit)
 
 
-  out_assignation <- estimate_assignation(Y, Ta, MTNZ, tlc, fitting_options)
+  out_assignation <- estimate_assignation(Y, Ta, MTNZ, Tlc, fitting_options)
 
   G <- out_assignation$assignation$G
   Y <- out_assignation$data$Y
   Ta <- out_assignation$data$Ta
-  tlc <- out_assignation$out_mtnz_tlc$tlc_estimated ## add option to include it manualy.
+  Tlc <- out_assignation$out_mtnz_tlc$tlc_estimated ## add option to include it manualy.
   MTNZ <- out_assignation$out_mtnz_tlc$mtnz_estimated ## add option to include it manualy.
   Ym <- out_assignation$data$Ym
 
@@ -423,13 +423,13 @@ tor_fit <- function(Ta, Y,
                      NbObservations = length(Y[G != 0 & G != 3]),
                      Ta = Ta[G != 0 & G != 3],
                      MTNZ = MTNZ / Ym,
-                     tlc = tlc,
+                     Tlc = Tlc,
                      G = G[G != 0 & G != 3])
 
   path_to_model_3 <- system.file("extdata", "hetero3.txt",  package = "torpor")
 
-  inits_3 <- list(Tbe = stats::runif(1,tlc, 50),
-                  Tbt = stats::runif(1, tlc - 1, tlc),
+  inits_3 <- list(Tbe = stats::runif(1,Tlc, 50),
+                  Tbt = stats::runif(1, Tlc - 1, Tlc),
                   TMR = stats::runif(1,1e-5,MTNZ*0.8/Ym),
                   MR = stats::runif(1, MTNZ*0.8/Ym, MTNZ/Ym),
                   tauy2 = stats::runif(1,0.05,0.1),
