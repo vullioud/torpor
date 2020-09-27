@@ -81,8 +81,10 @@ tor_plot <- function(tor_obj = NULL,
       ggplot2::geom_point(data = da[da$classification == "MTNZ", ], ggplot2::aes(x = measured_Ta, y = measured_MR, col = "MTNZ"), col = col_mtnz) + ## Euthermy
       ggplot2::geom_line(data = pred[pred$classification == "MTNZ", ], ggplot2::aes(x = Ta, y = pred), col = col_mtnz,
                          linetype = 2) +
-      ggplot2::geom_point(data = da[da$classification == "Undefined", ], ggplot2::aes(x = measured_Ta, y = measured_MR), shape = 5) +
-      ggplot2::theme_light()
+      ggplot2::geom_point(data = da[da$classification == "Undefined", ], ggplot2::aes(x = measured_Ta, y = measured_MR), shape = 4) +
+      ggplot2::theme_light() +
+      ggplot2::xlab(xlab) +
+      ggplot2::ylab(ylab)
 
     if (pdf == TRUE){
       ggplot2::ggsave(plot, filename = "plot.pdf", width = 7, units = "cm")
