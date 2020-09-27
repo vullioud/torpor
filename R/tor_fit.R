@@ -349,6 +349,7 @@ estimate_assignation <- function(Y, Ta,
 
   if(length(G[G ==1])!=0){
 
+    for(i in 1:length(G)){
     #Only proceed to this step if there are at least one torpid (G==1) value.
     G[i] <- ifelse(Y[i] <= stats::median(tor_predict_fun(x = Ta[i],
                                                          Tt = mod_assignation$sims.list$Tt,
@@ -362,7 +363,9 @@ estimate_assignation <- function(Y, Ta,
                                                           inte = mod_assignation$sims.list$inte,
                                                           betat = mod_assignation$sims.list$betat,
                                                           Ym = out_assignation$data$Ym)) & G[i] != 3, 2 ,G[i])
+    }
   }
+
   list(G = G,
        pstatus = pstatus)
 
@@ -393,7 +396,7 @@ estimate_assignation <- function(Y, Ta,
 #'@export
 #'@examples
 #'\dontrun{
-#'test_mod <- tor_fit(Ta = test_data$Ta, Y = test_data$VO2, Tlc= 28.8, MTNZ = 98, fitting_options = list(parallel = FALSE))
+#'test_mod <- tor_fit(Ta = test_data$Ta, Y = test_data$VO2, fitting_options = list(parallel = FALSE))
 #'}
 tor_fit <- function(Ta, Y,
                    MTNZ = NULL,
