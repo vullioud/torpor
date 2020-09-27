@@ -129,7 +129,7 @@ get_parameters <- function(tor_obj){  ## out4 et out2 pour Tlc.
   mod_params <- tor_obj$mod_parameter
 
   params_mod_parameter <- c("tau", "inte", "intc","intr", "betat", "betac",
-                            "Tt", "TMR", "MR", "tauy1", "tauy2", "Tbe", "Tbt") ## params of interest
+                            "Tt", "TMR", "MR", "Tbe", "Tbt") ## params of interest
 
   mean <- unlist(mod_params$mean[params_mod_parameter])
   CI_97.5 <- unlist(mod_params$q97.5[params_mod_parameter])
