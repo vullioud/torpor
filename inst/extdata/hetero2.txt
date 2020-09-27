@@ -34,7 +34,7 @@ model{
     inte <- MTNZ-betat*Tlc
     intr <- -Tbt*betat
     intc <- MR/exp(betac*Tlc)
-    betac <-max(0,min(0.5,(log(MR)-log(TMR))/(Tlc-Tt)))
+    betac <-min(0.5,(log(MR)-log(TMR))/(Tlc-Tt))
     betat <- MTNZ/(Tlc-Tbe)
     Tt <- (TMR-intr)/betat
 
