@@ -8,8 +8,8 @@ tor_plot(
   tor_obj = NULL,
   plot_type = "ggplot",
   col_torp = "cornflowerblue",
-  col_eut = "coral3",
-  col_n = "black",
+  col_euth = "coral3",
+  col_mtnz = "black",
   ylab = "M",
   xlab = "Ta",
   pdf = FALSE
@@ -22,9 +22,9 @@ tor_plot(
 
 \item{col_torp}{color for torpor model prediction and points}
 
-\item{col_eut}{color for euthermy model prediction and points}
+\item{col_euth}{color for euthermy model prediction and points}
 
-\item{col_n}{color of NTMZ}
+\item{col_mtnz}{color of mtnz}
 
 \item{ylab}{y label}
 
