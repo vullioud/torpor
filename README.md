@@ -35,11 +35,4 @@ remotes::install_github("vullioud/torpor", build_opts =  c("--build_vignettes"),
 ## Where can I find more about torpor?
 
 You can learn more about the goal and the theory behind the package in
-the companion article (Fassel et al., in prep). A developped example and
-the model specification are also presented as vignettes. They can be
-accessed through `R` direcly by typing.
-
-``` r
-library(torpor)
-browseVignettes("torpor")
-```
+the companion article (Fassel et al., in prep).
