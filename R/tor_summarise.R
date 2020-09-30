@@ -194,7 +194,7 @@ get_parameters <- function(tor_obj){  ## out4 et out2 pour Tlc.
                   CI_97.5 = ifelse(.data$parameter %in% params_to_multiply, .data$CI_97.5*Ym, .data$CI_97.5)) %>%
     dplyr::mutate_if(is.numeric, ~ round(.x, digits = 3))
 
-  warning("Values for MTNZ are directly computed from data points")
+  warning("Values for Mtnz are directly computed from data points")
   return(out)
 }
 
