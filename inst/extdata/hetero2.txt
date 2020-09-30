@@ -42,10 +42,11 @@ model{
 
     Tbt ~ dunif(-10,Tlc)
     p[1:3] ~ ddirch(rep(1,3))
-    TMR~dunif(0,MR)
-    MR~dunif(0,MTNZ)
+    TMR ~ dunif(0,0.8*MTNZ)
+    MR ~ dunif(TMR,MTNZ)
     Tbe~dunif(Tlc,50)
-    tauy2~ dunif(0,3)
-    tauy1~dunif(0.2*tauy2,tauy2)
+    tauy2 ~ dunif(0,3)
+    tauy1 ~ dunif(0.2*tauy2,tauy2)
 
     }
+
