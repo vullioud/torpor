@@ -1,6 +1,6 @@
 #'Plot raw data and predicted values
 #'
-#'[tor_plot()] provides a plot of the metabolic rate (MR) values over the respective ambient temperature (Ta).
+#'[tor_plot()] provides a plot of the metabolic rate (M) values over the respective ambient temperature (Ta).
 #'Raw data and predicted values are presented in different colors depending of the metabolic state.
 #`Predicted values are represented by continuous and stripped lines for the estimates’ median and 95CI bounds
 #`of the posterior distribution, respectively.
@@ -30,7 +30,7 @@ tor_plot <- function(tor_obj = NULL,
 
 
   ## please check
-  group <- measured_Ta <- measured_MR <- classification <- NULL
+  group <- measured_Ta <- measured_M <- classification <- NULL
   ## retrieve values from the model
   Tlc <- tor_obj$out_mtnz_tlc$tlc_estimated
   MTNZ <- tor_obj$out_mtnz_tlc$mtnz_estimated
@@ -63,7 +63,7 @@ tor_plot <- function(tor_obj = NULL,
     G <- lwr_95 <- upr_95 <- NULL ## check
 
     plot <- ggplot2::ggplot() +
-      ggplot2::geom_point(data = da[da$classification == "Torpor", ], ggplot2::aes(x = measured_Ta, y = measured_MR, col = "Torpor"), col = col_torp) + ## torpor
+      ggplot2::geom_point(data = da[da$classification == "Torpor", ], ggplot2::aes(x = measured_Ta, y = measured_M, col = "Torpor"), col = col_torp) + ## torpor
       ggplot2::xlim(c(min(da$measured_Ta), max(da$measured_Ta))) +
       ggplot2::geom_line(data = pred[pred$classification == "Torpor", ], ggplot2::aes(x = Ta, y = pred), col = col_torp,
                          linetype = 2) +
@@ -71,17 +71,17 @@ tor_plot <- function(tor_obj = NULL,
                            ggplot2::aes(x = Ta, ymin = lwr_95, ymax = upr_95), fill = col_torp,
                            alpha = 0.2,
                            col = NA) +
-      ggplot2::geom_point(data = da[da$classification == "Euthermy", ], ggplot2::aes(x = measured_Ta, y = measured_MR, col = "Euthermy"), col = col_euth) + ## Euthermy
+      ggplot2::geom_point(data = da[da$classification == "Euthermy", ], ggplot2::aes(x = measured_Ta, y = measured_M, col = "Euthermy"), col = col_euth) + ## Euthermy
       ggplot2::geom_line(data = pred[pred$classification == "Euthermy", ], ggplot2::aes(x = Ta, y = pred), col = col_euth,
                          linetype = 2) +
       ggplot2::geom_ribbon(data = pred[pred$classification == "Euthermy", ],
                            ggplot2::aes(x = Ta, ymin = lwr_95, ymax = upr_95), fill = col_euth,
                            alpha = 0.2,
                            col = NA) +
-      ggplot2::geom_point(data = da[da$classification == "MTNZ", ], ggplot2::aes(x = measured_Ta, y = measured_MR, col = "MTNZ"), col = col_mtnz) + ## Euthermy
+      ggplot2::geom_point(data = da[da$classification == "MTNZ", ], ggplot2::aes(x = measured_Ta, y = measured_M, col = "MTNZ"), col = col_mtnz) + ## Euthermy
       ggplot2::geom_line(data = pred[pred$classification == "MTNZ", ], ggplot2::aes(x = Ta, y = pred), col = col_mtnz,
                          linetype = 2) +
-      ggplot2::geom_point(data = da[da$classification == "Undefined", ], ggplot2::aes(x = measured_Ta, y = measured_MR), shape = 4) +
+      ggplot2::geom_point(data = da[da$classification == "Undefined", ], ggplot2::aes(x = measured_Ta, y = measured_M), shape = 4) +
       ggplot2::theme_light() +
       ggplot2::xlab(xlab) +
       ggplot2::ylab(ylab)
@@ -115,11 +115,11 @@ tor_plot <- function(tor_obj = NULL,
       pdf("plot.pdf")
     }
 
-    graphics::plot(da$measured_MR~da$measured_Ta, type="n",frame=FALSE, xlim=c(Tlimlo, Tlimup),ylim=c(MRlo, MRup),ylab= ylab, xlab = xlab)
-    graphics::points(da$measured_MR[da$classification == "Torpor"] ~ da$measured_Ta[da$classification == "Torpor"],col = col_torp, pch = 19)
-    graphics::points(da$measured_MR[da$classification == "Euthermy"] ~ da$measured_Ta[da$classification == "Euthermy"],col = col_euth , pch = 19)
-    graphics::points(da$measured_MR[da$classification == "MTNZ"] ~ da$measured_Ta[da$classification == "MTNZ"],col = col_mtnz , pch = 19)
-    graphics::points(da$measured_MR[da$classification == "Undefined"] ~ da$measured_Ta[da$classification == "Undefined"], pch = 3)
+    graphics::plot(da$measured_M~da$measured_Ta, type="n",frame=FALSE, xlim=c(Tlimlo, Tlimup),ylim=c(MRlo, MRup),ylab= ylab, xlab = xlab)
+    graphics::points(da$measured_M[da$classification == "Torpor"] ~ da$measured_Ta[da$classification == "Torpor"],col = col_torp, pch = 19)
+    graphics::points(da$measured_M[da$classification == "Euthermy"] ~ da$measured_Ta[da$classification == "Euthermy"],col = col_euth , pch = 19)
+    graphics::points(da$measured_M[da$classification == "MTNZ"] ~ da$measured_Ta[da$classification == "MTNZ"],col = col_mtnz , pch = 19)
+    graphics::points(da$measured_M[da$classification == "Undefined"] ~ da$measured_Ta[da$classification == "Undefined"], pch = 3)
 
     if(length(da$classification == "Torpor")> 0){
       X <-  pred[pred$classification == "Torpor", "Ta"]
