@@ -1,6 +1,6 @@
 #' get predictions
 #'
-#' [tor_predict()] provides the predicted metabolic rate (MR) and 95CI bounds at
+#' [tor_predict()] provides the predicted metabolic rate (M) and 95CI bounds at
 #' a given ambient temperature (Ta), in euthermic and/or torpid state.
 #'
 #'@name tor_predict
@@ -13,14 +13,12 @@
 #'@examples
 #'\dontrun{
 #'data(test_data2)
-#'test_mod <- tor_fit(MR = test_data2[,2],
+#'test_mod <- tor_fit(M = test_data2[,2],
 #'Ta = test_data2[, 1],
-#'MTNZ = 1.49,
-#'Tlc = 28.88,
 #'fitting_options = list(nc = 2, nb = 3000, ni = 5000))
 #'tor_predict(tor_obj, Ta = 10:35)
 #'}
-tor_predict <- function(tor_obj, Ta){   #### En dessus de Tlc = MTNZ, warning en dehors de MTNZ si plus que Tlc.
+tor_predict <- function(tor_obj, Ta){
 
 
   # retrieved the posterior of interest
@@ -99,7 +97,7 @@ tor_predict <- function(tor_obj, Ta){   #### En dessus de Tlc = MTNZ, warning en
 
 
   ###
-  if(any(Ta > tor_obj$out_mtnz_tlc$tlc_estimated)) warning("Tuc is not considered: MTNZ is calculated independently of Ta above Tlc")
+  if(any(Ta > tor_obj$out_mtnz_tlc$tlc_estimated)) warning("Tuc is not considered: Mtnz is calculated independently of Ta above Tlc")
 
   if(!any(tor_obj$assignation$G == 1)){ ## no torpor
     out <- rbind(out_eut,out_mtnz)
@@ -157,7 +155,7 @@ eut_predict_fun <- function(x, inte, betat, Ym) { ## backtransform parameters to
 #'[tor_classify()] returns the raw data with the related
 #'predicted state values (between 1 and 2), which leads to the state
 #'classification (torpor or euthermy). Additionally, it also provides the
-#'predicted metabolic rate (MR) at the given ambient temperature (Ta).
+#'predicted metabolic rate (M) at the given ambient temperature (Ta).
 #'
 #'@name tor_classify
 #'@aliases tor_classify
@@ -168,11 +166,11 @@ eut_predict_fun <- function(x, inte, betat, Ym) { ## backtransform parameters to
 
 tor_classify <- function(tor_obj){
 
-data <- data.frame(measured_MR = tor_obj$data$Y,
+data <- data.frame(measured_M = tor_obj$data$Y,
                 measured_Ta = tor_obj$data$Ta,
                 predicted_state = tor_obj$assignation$G)
 
-## sort tout MR et Ta et classification des data sur data step_4. 1 torpor,
+## sort tout M et Ta et classification des data sur data step_4. 1 torpor,
 ## 2 euth, 3 NTMZ, 0 not classify. + Probastatus. + valeur predict qui vient de step_4.
 mod <- tor_obj$mod_parameter
 
@@ -186,7 +184,7 @@ Tlc <- mod$sims.list$tlc
 Ym <- tor_obj$data$Ym
 
 X <- nrow(data)
-data$predicted_MR <- rep(NA, X)
+data$predicted_M <- rep(NA, X)
 
 data$classification <- dplyr::case_when(data$predicted_state == 0 ~ "Undefined",
                                      data$predicted_state == 1 ~ "Torpor",
@@ -195,13 +193,13 @@ data$classification <- dplyr::case_when(data$predicted_state == 0 ~ "Undefined",
 
 for(i in 1:nrow(data)) {
   if (data$predicted_state[i] == 1) {
-  data$predicted_MR[i] <- stats::median(tor_predict_fun(data$measured_Ta[i], Tt, intr, intc, betat, betac, Ym))
+  data$predicted_M[i] <- stats::median(tor_predict_fun(data$measured_Ta[i], Tt, intr, intc, betat, betac, Ym))
   } else if(data$predicted_state[i] == 2) {
-  data$predicted_MR[i] <- stats::median(eut_predict_fun(data$measured_Ta[i], inte, betat, Ym))
+  data$predicted_M[i] <- stats::median(eut_predict_fun(data$measured_Ta[i], inte, betat, Ym))
   } else if(data$predicted_state[i] == 3) {
-    data$predicted_MR[i] <- tor_obj$out_mtnz_tlc$mtnz_estimated
+    data$predicted_M[i] <- tor_obj$out_mtnz_tlc$mtnz_estimated
   } else {
-    data$predicted_MR[i] <- NA
+    data$predicted_M[i] <- NA
   }
 }
 
