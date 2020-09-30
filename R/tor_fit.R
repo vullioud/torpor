@@ -120,7 +120,7 @@ find_low_tlc_mtnz <- function(M,Ta){
 #'@param fitting_options a list of fitting option to pass to jags.
 #'@export
 #'@examples
-#'t <- estimate_tlc_mtnz(test_data2$VO2ms, test_data2$Ta)
+#'t <- estimate_tlc_mtnz(M = test_data2$VO2ms, Ta = test_data2$Ta)
 
 estimate_tlc_mtnz <- function(M, Ta, fitting_options = list(ni = 50000,
                                                        nt = 10,
