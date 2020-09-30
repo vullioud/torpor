@@ -64,10 +64,11 @@ tor_ppo <- function(tor_obj){
   ## MR
   MIN <- 0
   MAX <- tor_obj$out_mtnz_tlc$mtnz_estimated/tor_obj$data$Ym
-  PR<- stats::runif(nbsamples,MIN,MAX)
+  for(i in 1:nbsamples){
+    PR[i] <- stats::runif(1,tor_obj$mod_parameter$sims.list$TMR[i],MAX)}
   MR_chain <- tor_obj$mod_parameter$sims.list$MR
-  overlapMRr <- as.numeric(round(overlapping::overlap(x = list(MR_chain, PR))$OV, digits = 3))
-  out_MR <- data.frame(name = "MR", overlap = overlapMRr)
+  overlapMR <- as.numeric(round(overlapping::overlap(x = list(MR_chain, PR))$OV, digits = 3))
+  out_MR <- data.frame(name = "MR", overlap = overlapMR)
 
   ## Tbe
   MIN <- tor_obj$out_mtnz_tlc$tlc_estimated
@@ -80,10 +81,8 @@ tor_ppo <- function(tor_obj){
 
   ## TMR
   MIN <- 0
-  for(i in 1:nbsamples){
-
-    PR[i] <- stats::runif(1,MIN,tor_obj$mod_parameter$sims.list$MR[i])}
-
+  MAX <- 0.8 * tor_obj$out_mtnz_tlc$mtnz_estimated/tor_obj$data$Ym
+  PR<- stats::runif(nbsamples,MIN,MAX)
   TMR_chain <- tor_obj$mod_parameter$sims.list$TMR
   overlapTMR <- as.numeric(round(overlapping::overlap(x = list(TMR_chain, PR))$OV, digits = 3))
   out_TMR <- data.frame(name = "TMR", overlap = overlapTMR)
