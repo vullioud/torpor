@@ -6,7 +6,7 @@
 \usage{
 tor_fit(
   Ta,
-  Y,
+  M,
   MTNZ = NULL,
   Tlc = NULL,
   fitting_options = list(ni = 50000, nt = 10, nb = 30000, nc = 3, parallel = TRUE)
@@ -15,7 +15,7 @@ tor_fit(
 \arguments{
 \item{Ta}{A vector of ambient temperature.}
 
-\item{Y}{A vector of methabolic measure.}
+\item{M}{A vector of methabolic measure.}
 
 \item{MTNZ}{mtnz value if not estimated}
 
@@ -44,6 +44,6 @@ described pattern while in torpor.
 }
 \examples{
 \dontrun{
-test_mod <- tor_fit(Ta = test_data$Ta, Y = test_data$VO2, fitting_options = list(parallel = FALSE))
+test_mod <- tor_fit(Ta = test_data3$Ta, M = test_data3$Y, fitting_options = list(parallel = TRUE))
 }
 }

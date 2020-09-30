@@ -5,14 +5,12 @@
 \alias{test_data}
 \title{test_data}
 \format{
-A data frame with 28 obs. taken from Genoud EA 1997
+A data frame with 28 obs. Genoud EA 1997
 }
 \usage{
 data(test_data)
 }
 \description{
-Callithrix_pygmaea
-MTNZ: 98
-Tlc: 28.88
+Callithrix pygmaea
 }
 \keyword{datasets}

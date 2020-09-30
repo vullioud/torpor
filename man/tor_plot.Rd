@@ -36,7 +36,7 @@ tor_plot(
 a base-R plot or a ggplot object
 }
 \description{
-\code{\link[=tor_plot]{tor_plot()}} provides a plot of the metabolic rate (MR) values over the respective ambient temperature (Ta).
+\code{\link[=tor_plot]{tor_plot()}} provides a plot of the metabolic rate (M) values over the respective ambient temperature (Ta).
 Raw data and predicted values are presented in different colors depending of the metabolic state.
 For more flexibility the users can use \code{\link[=tor_fit]{tor_fit()}} and \code{\link[=tor_predict]{tor_predict()}} directly.
 }

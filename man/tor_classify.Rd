@@ -16,7 +16,7 @@ a data.frame
 \code{\link[=tor_classify]{tor_classify()}} returns the raw data with the related
 predicted state values (between 1 and 2), which leads to the state
 classification (torpor or euthermy). Additionally, it also provides the
-predicted metabolic rate (MR) at the given ambient temperature (Ta).
+predicted metabolic rate (M) at the given ambient temperature (Ta).
 }
 \seealso{
 Other predict: 

@@ -5,14 +5,12 @@
 \alias{test_data2}
 \title{test_data2}
 \format{
-A data frame with 103 obs. taken from Geiser 1987
+A data frame with 103 obs. Geiser 1987
 }
 \usage{
 data(test_data2)
 }
 \description{
-Cercartetus_lepidus
-MTNZ: 1.49
-Tlc: 28.8
+Cercartetus lepidus
 }
 \keyword{datasets}

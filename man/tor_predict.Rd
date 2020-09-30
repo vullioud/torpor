@@ -15,16 +15,14 @@ tor_predict(tor_obj, Ta)
 a data.frame
 }
 \description{
-\code{\link[=tor_predict]{tor_predict()}} provides the predicted metabolic rate (MR) and 95CI bounds at
+\code{\link[=tor_predict]{tor_predict()}} provides the predicted metabolic rate (M) and 95CI bounds at
 a given ambient temperature (Ta), in euthermic and/or torpid state.
 }
 \examples{
 \dontrun{
 data(test_data2)
-test_mod <- tor_fit(MR = test_data2[,2],
+test_mod <- tor_fit(M = test_data2[,2],
 Ta = test_data2[, 1],
-MTNZ = 1.49,
-Tlc = 28.88,
 fitting_options = list(nc = 2, nb = 3000, ni = 5000))
 tor_predict(tor_obj, Ta = 10:35)
 }

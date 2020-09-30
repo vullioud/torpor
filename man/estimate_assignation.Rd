@@ -5,7 +5,7 @@
 \title{estimate_assignation}
 \usage{
 estimate_assignation(
-  Y,
+  M,
   Ta,
   MTNZ = NULL,
   Tlc = NULL,
@@ -13,7 +13,7 @@ estimate_assignation(
 )
 }
 \arguments{
-\item{Y}{A vector of methabolic measure.}
+\item{M}{A vector of methabolic measure.}
 
 \item{Ta}{A vector of ambient temperature.}
 
@@ -28,7 +28,7 @@ This function estimate the assignation into torpor or euthermy.
 }
 \examples{
 \dontrun{
-t2_no_input <- estimate_assignation(Ta = test_data2$Ta, Y = test_data2$VO2)
-to_input <- estimate_assignation(Ta = test_data2$Ta, Y = test_data2$VO2, MTNZ = 1.49, Tlc = 28.8)
+t2_no_input <- estimate_assignation(Ta = test_data2$Ta, M = test_data2$VO2)
+to_input <- estimate_assignation(Ta = test_data2$Ta, M = test_data2$VO2, MTNZ = 1.49, Tlc = 28.8)
 }
 }

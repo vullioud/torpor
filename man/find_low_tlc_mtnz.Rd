@@ -4,10 +4,10 @@
 \alias{find_low_tlc_mtnz}
 \title{find_low_tlc_mtnz}
 \usage{
-find_low_tlc_mtnz(Y, Ta)
+find_low_tlc_mtnz(M, Ta)
 }
 \arguments{
-\item{Y}{A vector of methabolic measure.}
+\item{M}{A vector of methabolic measure.}
 
 \item{Ta}{A vector of ambient temperature.}
 }
@@ -18,5 +18,5 @@ A named vector with mtmz and low_tlc.
 This function estimate the lowest Tlc and the mtnz
 }
 \examples{
-t_1 <- find_low_tlc_mtnz(Y = test_data$VO2, Ta = test_data$Ta)
+t_1 <- find_low_tlc_mtnz(M = test_data$VO2, Ta = test_data$Ta)
 }

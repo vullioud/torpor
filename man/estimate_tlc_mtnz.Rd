@@ -5,13 +5,13 @@
 \title{estimate_tlc_mtnz}
 \usage{
 estimate_tlc_mtnz(
-  Y,
+  M,
   Ta,
   fitting_options = list(ni = 50000, nt = 10, nb = 20000, nc = 2, parallel = TRUE)
 )
 }
 \arguments{
-\item{Y}{A vector of methabolic measure.}
+\item{M}{A vector of methabolic measure.}
 
 \item{Ta}{A vector of ambient temperature.}
 
@@ -21,5 +21,5 @@ estimate_tlc_mtnz(
 This function estimate the lowest Tlc and the MTNZ
 }
 \examples{
-t <- estimate_tlc_mtnz(test_data2$VO2ms, test_data2$Ta)
+t <- estimate_tlc_mtnz(M = test_data2$VO2ms, Ta = test_data2$Ta)
 }
