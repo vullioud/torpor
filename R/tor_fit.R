@@ -44,14 +44,15 @@
 #' This function estimate the lowest Tlc and the mtnz
 #'
 #'@name find_low_tlc_mtnz
-#'@param Y A vector of methabolic measure.
+#'@param M A vector of methabolic measure.
 #'@param Ta A vector of ambient temperature.
 #'@return A named vector with mtmz and low_tlc.
 #'@export
 #'@examples
-#'t_1 <- find_low_tlc_mtnz(Y = test_data$VO2, Ta = test_data$Ta)
-find_low_tlc_mtnz <- function(Y,Ta){
+#'t_1 <- find_low_tlc_mtnz(M = test_data$VO2, Ta = test_data$Ta)
+find_low_tlc_mtnz <- function(M,Ta){
   ### clean arguments function
+  Y <- M
   x <- stats::na.omit(cbind(Ta, Y))
 
   Y <- x[,2]
@@ -114,20 +115,20 @@ find_low_tlc_mtnz <- function(Y,Ta){
 #' This function estimate the lowest Tlc and the MTNZ
 #'
 #'@name estimate_tlc_mtnz
-#'@param Y A vector of methabolic measure.
+#'@param M A vector of methabolic measure.
 #'@param Ta A vector of ambient temperature.
 #'@param fitting_options a list of fitting option to pass to jags.
 #'@export
 #'@examples
 #'t <- estimate_tlc_mtnz(test_data2$VO2ms, test_data2$Ta)
 
-estimate_tlc_mtnz <- function(Y, Ta, fitting_options = list(ni = 50000,
+estimate_tlc_mtnz <- function(M, Ta, fitting_options = list(ni = 50000,
                                                        nt = 10,
                                                        nb = 20000,
                                                        nc = 2,
                                                        parallel = TRUE)) { ## add parallel to fitting options
   .complete_args(estimate_tlc_mtnz)
-
+  Y <- M
   out_1 <- find_low_tlc_mtnz(Y, Ta) ## run first step
 
   MTNZ <- out_1["MTNZ"] ## extract MTNZ
@@ -177,7 +178,7 @@ estimate_tlc_mtnz <- function(Y, Ta, fitting_options = list(ni = 50000,
   tlc_distribution <- mod$sims.list$Tlc ## distribution of tlc
   mtnz_estimated <- mean(Y[Ta >= tlc_estimated], na.rm = TRUE) # estimated MTNZ (mean of the points)
 
-  if(length(stats::na.omit(Y[Ta >= tlc_estimated])) < 10) warning("MTNZ computed on less than 10 points")
+  if(length(stats::na.omit(Y[Ta >= tlc_estimated])) < 10) warning("Mtnz computed on less than 10 points")
 
 return(list(model_1 = mod,
             tlc_estimated = tlc_estimated,
@@ -198,10 +199,10 @@ return(list(model_1 = mod,
 #'@param Tlc tlc value if not estimated
 #'@examples
 #'\dontrun{
-#'t2_no_input <- estimate_assignation(Ta = test_data2$Ta, Y = test_data2$VO2)
-#'to_input <- estimate_assignation(Ta = test_data2$Ta, Y = test_data2$VO2, MTNZ = 1.49, Tlc = 28.8)
+#'t2_no_input <- estimate_assignation(Ta = test_data2$Ta, M = test_data2$VO2)
+#'to_input <- estimate_assignation(Ta = test_data2$Ta, M = test_data2$VO2, MTNZ = 1.49, Tlc = 28.8)
 #'}
-estimate_assignation <- function(Y, Ta,
+estimate_assignation <- function(M, Ta,
                                  MTNZ = NULL, Tlc = NULL,
                                  fitting_options = list(ni = 50000,
                                                         nt = 10,
@@ -213,7 +214,8 @@ estimate_assignation <- function(Y, Ta,
   .complete_args(estimate_assignation)
 
   ## check input
-  if (length(Y) != length(Ta)) stop("Ta and Y have not the same length")
+  Y <- M
+  if (length(Y) != length(Ta)) stop("Ta and M have not the same length")
 
   data <- cbind(Y, Ta)[!is.na(Y) & !is.na(Ta), ] ## remove Nas
 
@@ -227,7 +229,7 @@ estimate_assignation <- function(Y, Ta,
 
     message("Mtnz and Tlc are being estimated from the data")
 
-  out_mtnz_tlc <- estimate_tlc_mtnz(Ta = Ta, Y = Y, fitting_options = fitting_options)
+  out_mtnz_tlc <- estimate_tlc_mtnz(Ta = Ta, M = Y, fitting_options = fitting_options)
 
   } else { ## keep the structure of output of estimate_tlc_mtnz
 
@@ -396,9 +398,9 @@ estimate_assignation <- function(Y, Ta,
 #'@export
 #'@examples
 #'\dontrun{
-#'test_mod <- tor_fit(Ta = test_data$Ta, Y = test_data$VO2, fitting_options = list(parallel = FALSE))
+#'test_mod <- tor_fit(Ta = test_data3$Ta, M = test_data3$Y, fitting_options = list(parallel = TRUE))
 #'}
-tor_fit <- function(Ta, Y,
+tor_fit <- function(Ta, M,
                    MTNZ = NULL,
                    Tlc = NULL,
                    fitting_options = list(ni = 50000,
@@ -408,12 +410,12 @@ tor_fit <- function(Ta, Y,
                                           parallel = TRUE)) {
 
 
-  if (length(Ta) != length(Y)) stop("Y, Ta do not have the same length")
+  if (length(Ta) != length(M)) stop("M, Ta do not have the same length")
   ## run step 1-3
   .complete_args(tor_fit)
 
 
-  out_assignation <- estimate_assignation(Y, Ta, MTNZ, Tlc, fitting_options)
+  out_assignation <- estimate_assignation(M = M, Ta = Ta, MTNZ = MTNZ, Tlc = Tlc, fitting_options)
 
   G <- out_assignation$assignation$G
   Y <- out_assignation$data$Y
