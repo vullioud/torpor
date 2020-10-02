@@ -20,7 +20,7 @@
 #'@importFrom grDevices dev.off
 
 tor_plot <- function(tor_obj = NULL,
-                     plot_type = "ggplot",
+                     plot_type = "base",
                      col_torp = "cornflowerblue",
                      col_euth = "coral3",
                      col_mtnz = "black",
@@ -157,7 +157,7 @@ tor_plot <- function(tor_obj = NULL,
     }
 
 
-    graphics::legend("topright",c("Euthermy","Torpor", "Mtnz"), pch=19, col=c(col_euth,col_torp, col_mtnz),bty="n")
+    graphics::legend("topright",c("Euthermy","Torpor", "Mtnz", "Undefined"), pch=c(19, 19,19, 3), col=c(col_euth,col_torp, col_mtnz, "black"),bty="n")
     if(pdf == TRUE){
       dev.off()
     }
