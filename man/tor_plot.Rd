@@ -6,7 +6,7 @@
 \usage{
 tor_plot(
   tor_obj = NULL,
-  plot_type = "ggplot",
+  plot_type = "base",
   col_torp = "cornflowerblue",
   col_euth = "coral3",
   col_mtnz = "black",

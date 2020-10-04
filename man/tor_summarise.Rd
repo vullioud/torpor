@@ -29,6 +29,6 @@ tor_summarise(test2)
 \seealso{
 Other summary: 
 \code{\link{get_parameters}()},
-\code{\link{tor_overlap}}
+\code{\link{tor_ppo}()}
 }
 \concept{summary}
