@@ -27,14 +27,14 @@ list(params = get_parameters(tor_obj),
 
 #' Check priors/posteriors overlap
 #'
-#'[tor_overlap()] generates prior/posterior overlap values for Tlc,
+#'[tor_ppo()] generates prior/posterior overlap values for Tlc,
 #'Tt and Betat. Values larger than 0.3 should lead to the conclusion that conforming
 #'torpor, regulated torpor or thermoregulation respectively could not be modeled
-#'with the data provided (Fasel et al. (in prep)). [tor_overlap()] can be used independently but is also used internally in
+#'with the data provided (Fasel et al. (in prep)). [tor_ppo()] can be used independently but is also used internally in
 #'[tor_summarise()].
 #'
-#'@name tor_overlap
-#'@aliases tor_overlap
+#'@name tor_ppo
+#'@aliases tor_ppo
 #'@family summary
 #'@param tor_obj a fitted model from [tor_fit()]
 #'@return a data.frame
@@ -62,8 +62,7 @@ tor_ppo <- function(tor_obj){
   }
 
   ## MR
-  MIN <- 0
-  MAX <- tor_obj$out_mtnz_tlc$mtnz_estimated/tor_obj$data$Ym
+  MAX <- tor_obj$out_mtnz_tlc$mtnz_estimated
   for(i in 1:nbsamples){
     PR[i] <- stats::runif(1,tor_obj$mod_parameter$sims.list$TMR[i],MAX)}
   MR_chain <- tor_obj$mod_parameter$sims.list$MR
@@ -81,7 +80,7 @@ tor_ppo <- function(tor_obj){
 
   ## TMR
   MIN <- 0
-  MAX <- 0.8 * tor_obj$out_mtnz_tlc$mtnz_estimated/tor_obj$data$Ym
+  MAX <- 0.8 * tor_obj$out_mtnz_tlc$mtnz_estimated
   PR<- stats::runif(nbsamples,MIN,MAX)
   TMR_chain <- tor_obj$mod_parameter$sims.list$TMR
   overlapTMR <- as.numeric(round(overlapping::overlap(x = list(TMR_chain, PR))$OV, digits = 3))
