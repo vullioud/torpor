@@ -53,10 +53,6 @@ tor_plot <- function(tor_obj = NULL,
   pred <- tor_predict(tor_obj, seq(Tlimlo,Tlimup,length=100)) %>%
     dplyr::rename(classification = group)
 
-  ## check overlap ## warning if > 0.3
-  #tor_overlap(out)
-
-
   ## ggplot
   if(plot_type == "ggplot"){
 
