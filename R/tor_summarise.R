@@ -80,7 +80,7 @@ tor_ppo <- function(tor_obj){
 
   ## TMR
   MIN <- 0
-  MAX <- 0.8 * tor_obj$out_mtnz_tlc$mtnz_estimatedtor_obj$data$Ym
+  MAX <- 0.8 * tor_obj$out_mtnz_tlc$mtnz_estimated/tor_obj$data$Ym
   PR<- stats::runif(nbsamples,MIN,MAX)
   TMR_chain <- tor_obj$mod_parameter$sims.list$TMR
   overlapTMR <- as.numeric(round(overlapping::overlap(x = list(TMR_chain, PR))$OV, digits = 3))
