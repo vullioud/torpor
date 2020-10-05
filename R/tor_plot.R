@@ -50,7 +50,7 @@ tor_plot <- function(tor_obj = NULL,
 
 
   ## get the predictions
-  pred <- tor_predict(tor_obj, seq(Tlimlo,Tlimup,length=100)) %>%
+  pred <- tor_predict(tor_obj, seq(Tlimlo,Tlimup,length=1000)) %>%
     dplyr::rename(classification = group)
 
   ## ggplot

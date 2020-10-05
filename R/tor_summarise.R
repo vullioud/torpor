@@ -101,7 +101,7 @@ tor_ppo <- function(tor_obj){
   for (i in 1:nrow(out)){
 
     if (out$ppo[i] > 80) {
-      warning(paste(out$name[i], "is not identifiable: 80% > PPO"))
+      warning(paste(out$name[i], "is not identifiable: PPO > 80%"))
     }
   }
   out
