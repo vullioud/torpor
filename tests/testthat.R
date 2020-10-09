@@ -1,4 +1,3 @@
-# library(testthat)
-# library(torpor)
-#
-# test_check("torpor")
+ library(testthat)
+ library(torpor)
+ test_check("torpor")
