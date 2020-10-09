@@ -2,7 +2,6 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
 ^data-raw$
-^README\.Rmd$
 ^doc$
 ^Meta$
 ^\.travis\.yml$
@@ -10,3 +9,4 @@
 ^test\_new\_func\.R$
 ^metabolism\_det\_full\_script\.R$
 ^vignettes$
+^README\.Rmd$
