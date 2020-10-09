@@ -15,7 +15,7 @@ coverage](https://codecov.io/gh/vullioud/torpor/branch/master/graph/badge.svg)](
 
 This is the repository of torpor an `R` (<https://www.r-project.org/>)
 package aiming at an objective and standardized distinction between
-torpid and euthermic metabolic rates (MR) measured in steady-state
+torpid and euthermic metabolic rates (M) measured in steady-state
 conditions. Note: This package is not aimed for general use without
 careful researcher’s attention.
 
@@ -29,7 +29,7 @@ typing:
 
 ``` r
 library(remotes)
-remotes::install_github("vullioud/torpor", build_opts =  c("--build_vignettes"),force=TRUE)
+remotes::install_github("vullioud/torpor", force=TRUE)
 ```
 
 ## Where can I find more about torpor?
