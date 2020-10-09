@@ -19,7 +19,8 @@
 #'tor_predict(tor_obj, Ta = 10:35)
 #'}
 tor_predict <- function(tor_obj, Ta){
-
+  if(!("tor_obj" %in% class(tor_obj))) stop("tor_obj need to be of class tor_obj")
+  if(!(class(Ta) %in% c("integer", "numeric"))) stop("Ta need to be a integer or a numeric vector")
 
   # retrieved the posterior of interest
   mod <- tor_obj$mod_parameter
