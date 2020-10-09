@@ -8,7 +8,8 @@
 #'
 #'@name tor_plot
 #'@param tor_obj a fitted model from [tor_fit()]
-#'@param plot_type A character string specifying the type of plot desired. Either "base" or "ggplot"
+#'@param plot_type A character string specifying the type of plot desired. Either "base" or "ggplot". Note that ggplots are still in development stage.
+#'@param legend A logical specifying if a legend should be added to the plot. Only work for base plot at the moment.
 #'@param col_torp color for torpor model prediction and points
 #'@param col_euth color for euthermy model prediction and points
 #'@param col_mtnz color of mtnz
@@ -21,6 +22,7 @@
 
 tor_plot <- function(tor_obj = NULL,
                      plot_type = "base",
+                     legend = TRUE,
                      col_torp = "cornflowerblue",
                      col_euth = "coral3",
                      col_mtnz = "black",
@@ -100,11 +102,8 @@ tor_plot <- function(tor_obj = NULL,
     Y025n <- pred[pred$classification == "Euthermy", "lwr_95"]
 
     YmeanM <- pred[pred$classification == "MTNZ", "pred"]
-    Y975M <- pred[pred$classification == "MTNZ", "upr_95"]
-    Y025M <- pred[pred$classification == "MTNZ", "lwr_95"]
 
-    ylab <- paste(ylab)
-    xlab <- paste(xlab)
+
 
    ## plot
     if(pdf == TRUE){
@@ -151,9 +150,10 @@ tor_plot <- function(tor_obj = NULL,
       graphics::plot(YmeanM~X,xlim=c(Tlimlo, Tlimup),ylim=c(MRlo, MRup),type="l",xaxt="n",frame=FALSE,yaxt="n",ylab="",xlab="",col=col_mtnz)
 
     }
-
-
+    if (legend) {
     graphics::legend("topright",c("Euthermy","Torpor", "Mtnz", "Undefined"), pch=c(19, 19,19, 3), col=c(col_euth,col_torp, col_mtnz, "black"),bty="n")
+    }
+
     if(pdf == TRUE){
       dev.off()
     }
