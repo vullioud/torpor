@@ -6,7 +6,7 @@
    expect_equal(class(test[[1]]), "data.frame")
    expect_equal(class(test[[2]]), "data.frame")
  })
-#
+
  test_that("tor_overlap return a data.frame of 3 rows and 2 columns", {
    expect_warning(mod <- tor_fit(M = test_data$VO2, Ta = test_data$Ta, fitting_options = list(ni = 5000, nb = 3000, nc = 1)))
    expect_warning(test <- tor_ppo(tor_obj = mod))
