@@ -7,6 +7,7 @@
 tor_plot(
   tor_obj = NULL,
   plot_type = "base",
+  legend = TRUE,
   col_torp = "cornflowerblue",
   col_euth = "coral3",
   col_mtnz = "black",
@@ -18,7 +19,9 @@ tor_plot(
 \arguments{
 \item{tor_obj}{a fitted model from \code{\link[=tor_fit]{tor_fit()}}}
 
-\item{plot_type}{A character string specifying the type of plot desired. Either "base" or "ggplot"}
+\item{plot_type}{A character string specifying the type of plot desired. Either "base" or "ggplot". Note that ggplots are still in development stage.}
+
+\item{legend}{A logical specifying if a legend should be added to the plot. Only work for base plot at the moment.}
 
 \item{col_torp}{color for torpor model prediction and points}
 
