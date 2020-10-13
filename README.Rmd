@@ -33,5 +33,9 @@ remotes::install_github("vullioud/torpor", force=TRUE)
  
 ## Where can I find more about torpor?
 
-You can learn more about the goal and the theory behind the package in the companion article (Fassel et al., in prep). 
+You can learn more about the goal and the theory behind the package in the companion article (Fassel et al., in prep).
+
+ <!-- badges: start -->
+  [![Travis build status](https://travis-ci.com/vullioud/torpor.svg?branch=master)](https://travis-ci.com/vullioud/torpor)
+  <!-- badges: end -->
 
