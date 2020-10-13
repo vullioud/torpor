@@ -6,7 +6,4 @@
 ^Meta$
 ^\.travis\.yml$
 ^codecov\.yml$
-^test\_new\_func\.R$
-^metabolism\_det\_full\_script\.R$
-^vignettes$
 ^README\.Rmd$
