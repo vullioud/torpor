@@ -12,5 +12,5 @@
 \item{pkgname}{a character string giving the name of the package.}
 }
 \description{
-It displays a message when the package is being loaded.
+Display a message when the package is being loaded.
 }
