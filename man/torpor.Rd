@@ -16,7 +16,6 @@ can be found on the compagnon article Fasel et al. (in prep) and in the vignette
 \details{
 This package is center around the \code{\link[=tor_fit]{tor_fit()}} function which
 allows to fit binary mixture model on metabolic rates data using Bayesian inference.
-#'
 }
 \section{tor_fit}{
 
