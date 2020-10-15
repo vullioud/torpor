@@ -44,6 +44,11 @@ described pattern while in torpor.
 }
 \examples{
 \dontrun{
-test_mod <- tor_fit(Ta = test_data3$Ta, M = test_data3$Y, fitting_options = list(parallel = TRUE))
+test_mod <- tor_fit(Ta = test_data3$Ta, M = test_data3$Y,
+fitting_options = list(parallel = TRUE))
+test_mod2 <- tor_fit(Ta = test_data2$Ta, M = test_data2$VO2ms, MTNZ = 1.8, Tlc = 29.2,
+fitting_options = list(parallel = TRUE))
+test_mod3 <- tor_fit(Ta = test_data2$Ta, M = test_data2$VO2ms, MTNZ = 1.8,
+fitting_options = list(parallel = TRUE))
 }
 }

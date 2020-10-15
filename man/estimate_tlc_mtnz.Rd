@@ -7,6 +7,7 @@
 estimate_tlc_mtnz(
   M,
   Ta,
+  MTNZ,
   fitting_options = list(ni = 50000, nt = 10, nb = 20000, nc = 2, parallel = TRUE)
 )
 }
@@ -15,11 +16,13 @@ estimate_tlc_mtnz(
 
 \item{Ta}{A vector of ambient temperature.}
 
+\item{MTNZ}{A value of MTNZ.}
+
 \item{fitting_options}{a list of fitting option to pass to jags.}
 }
 \description{
 This function estimate the lowest Tlc and the MTNZ
 }
 \examples{
-t <- estimate_tlc_mtnz(M = test_data2$VO2ms, Ta = test_data2$Ta)
+t <- estimate_tlc_mtnz(M = test_data2$VO2ms, Ta = test_data2$Ta, MTNZ = NULL)
 }
