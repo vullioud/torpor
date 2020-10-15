@@ -62,9 +62,13 @@ tor_ppo <- function(tor_obj){
   }
 
   ## MR
-  MAX <- tor_obj$out_mtnz_tlc$mtnz_estimated/tor_obj$data$Ym
+
+  MIN<- max(tor_obj$out_mtnz_tlc$Ta2)
+  MAX<-max(tor_obj$data$Ta)
+  PR<- stats::runif(nbsamples,MIN,MAX)
   for(i in 1:nbsamples){
-    PR[i] <- stats::runif(1,tor_obj$mod_parameter$sims.list$TMR[i],MAX)}
+    PR[i] <- stats::runif(1,tor_obj$mod_parameter$sims.list$TMR[i],MAX)
+    }
   MR_chain <- tor_obj$mod_parameter$sims.list$MR
   overlapMR <- as.numeric(round(overlapping::overlap(x = list(MR_chain, PR))$OV, digits = 3))
   out_MR <- data.frame(name = "MR", overlap = overlapMR)
@@ -152,7 +156,7 @@ get_parameters <- function(tor_obj){  ## out4 et out2 pour Tlc.
 
 
   if(is.null(mod_tlc)) {
-    print("Tlc is not estimated from the data!")
+    message("Tlc was not estimated from the data!")
     mean <- tor_obj$out_mtnz_tlc$tlc_estimated
     CI_97.5 <- NA
     median <- tor_obj$out_mtnz_tlc$tlc_estimated
@@ -191,9 +195,7 @@ get_parameters <- function(tor_obj){  ## out4 et out2 pour Tlc.
                   median = ifelse(.data$parameter %in% params_to_multiply, .data$median*Ym, .data$median),
                   CI_97.5 = ifelse(.data$parameter %in% params_to_multiply, .data$CI_97.5*Ym, .data$CI_97.5)) %>%
     dplyr::mutate_if(is.numeric, ~ round(.x, digits = 3))
-
-  warning("Values for Mtnz are directly computed from data points")
-  return(out)
+return(out)
 }
 
 
