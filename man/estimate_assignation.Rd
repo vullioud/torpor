@@ -2,7 +2,7 @@
 % Please edit documentation in R/tor_fit.R
 \name{estimate_assignation}
 \alias{estimate_assignation}
-\title{estimate_assignation}
+\title{Estimate assignation}
 \usage{
 estimate_assignation(
   M,
@@ -24,7 +24,8 @@ estimate_assignation(
 \item{fitting_options}{a list of fitting option to pass to jags.}
 }
 \description{
-This function estimate the assignation into torpor or euthermy.
+This function estimate the assignation into torpor or euthermy. It is used
+internally prior to estimate the parameters
 }
 \examples{
 \dontrun{

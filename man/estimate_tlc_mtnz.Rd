@@ -2,7 +2,7 @@
 % Please edit documentation in R/tor_fit.R
 \name{estimate_tlc_mtnz}
 \alias{estimate_tlc_mtnz}
-\title{estimate_tlc_mtnz}
+\title{Estimate Tlc}
 \usage{
 estimate_tlc_mtnz(
   M,

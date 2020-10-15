@@ -2,7 +2,7 @@
 % Please edit documentation in R/tor_fit.R
 \name{find_low_tlc_mtnz}
 \alias{find_low_tlc_mtnz}
-\title{find_low_tlc_mtnz}
+\title{Find the low Tlc.}
 \usage{
 find_low_tlc_mtnz(M, Ta)
 }

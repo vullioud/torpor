@@ -2,7 +2,7 @@
 % Please edit documentation in R/tor_fit.R
 \name{tor_fit}
 \alias{tor_fit}
-\title{estimate_parameters}
+\title{Fit a binomial mixture model}
 \usage{
 tor_fit(
   Ta,
@@ -23,6 +23,9 @@ tor_fit(
 
 \item{fitting_options}{a list of fitting option to pass to jags.}
 }
+\value{
+A list of class tor_obj
+}
 \description{
 \code{\link[=tor_fit]{tor_fit()}} fits a binomial mixture model using Bayesian
 inference.  The function considers the assumed relation between metabolic rate (MR) and ambient temperature (Ta)
@@ -35,7 +38,7 @@ The function uses Rjags in the background and enables users to specify
 some - but not all - sampling parameters. The structure of the model can also
 be changed. Users who want more flexibility are encouraged to use Rjags
 directly.
-More information about the model can be found in the \code{vignette("model_description", package = "torpor")}.
+More information about the model can be found in Fassel et al. (in prep).
 }
 \details{
 This model should be applied with sufficient sample size and if
@@ -45,10 +48,10 @@ described pattern while in torpor.
 \examples{
 \dontrun{
 test_mod <- tor_fit(Ta = test_data3$Ta, M = test_data3$Y,
-fitting_options = list(parallel = TRUE))
+                   fitting_options = list(parallel = TRUE))
 test_mod2 <- tor_fit(Ta = test_data2$Ta, M = test_data2$VO2ms, MTNZ = 1.8, Tlc = 29.2,
-fitting_options = list(parallel = TRUE))
+                   fitting_options = list(parallel = TRUE))
 test_mod3 <- tor_fit(Ta = test_data2$Ta, M = test_data2$VO2ms, MTNZ = 1.8,
-fitting_options = list(parallel = TRUE))
+                   fitting_options = list(parallel = TRUE))
 }
 }
