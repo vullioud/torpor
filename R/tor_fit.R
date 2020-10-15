@@ -39,7 +39,7 @@
 
 ##############################################################################
 
-#'find_low_tlc_mtnz
+#'Find the low Tlc.
 #'
 #' This function estimate the lowest Tlc and the mtnz
 #'
@@ -110,7 +110,7 @@ find_low_tlc_mtnz <- function(M,Ta){
   out
 }
 
-#'estimate_tlc_mtnz
+#' Estimate Tlc
 #'
 #' This function estimate the lowest Tlc and the MTNZ
 #'
@@ -204,9 +204,10 @@ return(list(model_1 = mod,
             Ta2 = Ta2))
 }
 
-#'estimate_assignation
+#' Estimate assignation
 #'
-#' This function estimate the assignation into torpor or euthermy.
+#' This function estimate the assignation into torpor or euthermy. It is used
+#' internally prior to estimate the parameters
 #'
 #'@name estimate_assignation
 #'@export
@@ -262,7 +263,6 @@ estimate_assignation <- function(M, Ta,
          mtnz_points = MTNZ,
          Ta2 = Ta[Ta < Tlc])
   }
-  #### new code standard
   Tlc <- out_mtnz_tlc$tlc_estimated
   MTNZ <- out_mtnz_tlc$mtnz_estimated
 
@@ -396,7 +396,7 @@ estimate_assignation <- function(M, Ta,
 }
 
 
-#' estimate_parameters
+#' Fit a binomial mixture model
 #'
 #'[tor_fit()] fits a binomial mixture model using Bayesian
 #'inference.  The function considers the assumed relation between metabolic rate (MR) and ambient temperature (Ta)
@@ -409,7 +409,7 @@ estimate_assignation <- function(M, Ta,
 #'some - but not all - sampling parameters. The structure of the model can also
 #'be changed. Users who want more flexibility are encouraged to use Rjags
 #'directly.
-#'More information about the model can be found in the \code{vignette("model_description", package = "torpor")}.
+#'More information about the model can be found in Fassel et al. (in prep).
 #'
 #'This model should be applied with sufficient sample size and if
 #'evidence suggest that individuals under study will conform to the previously
@@ -417,16 +417,16 @@ estimate_assignation <- function(M, Ta,
 #'
 #'@name tor_fit
 #'@inheritParams estimate_assignation
+#'@return A list of class tor_obj
 #'@export
 #'@examples
 #'\dontrun{
 #'test_mod <- tor_fit(Ta = test_data3$Ta, M = test_data3$Y,
-#'fitting_options = list(parallel = TRUE))
+#'                    fitting_options = list(parallel = TRUE))
 #'test_mod2 <- tor_fit(Ta = test_data2$Ta, M = test_data2$VO2ms, MTNZ = 1.8, Tlc = 29.2,
-#'fitting_options = list(parallel = TRUE))
+#'                    fitting_options = list(parallel = TRUE))
 #'test_mod3 <- tor_fit(Ta = test_data2$Ta, M = test_data2$VO2ms, MTNZ = 1.8,
-#'fitting_options = list(parallel = TRUE))
-
+#'                    fitting_options = list(parallel = TRUE))
 #'}
 tor_fit <- function(Ta, M,
                    MTNZ = NULL,
