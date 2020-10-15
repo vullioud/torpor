@@ -24,7 +24,7 @@ plot.tor_obj <- function(x, ...) {
 
 #' Display welcome message when loading the package
 #'
-#' It displays a message when the package is being loaded.
+#' Display a message when the package is being loaded.
 #' @param  libname a character string giving the library directory where the package defining the namespace was found.
 #' @param pkgname a character string giving the name of the package.
 .onAttach <- function(libname, pkgname) {
