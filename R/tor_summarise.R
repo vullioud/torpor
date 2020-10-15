@@ -13,12 +13,13 @@
 #'@return a list of two data.frame. The first element returns the parameter estimates, the second reports the overlap values.
 #'@export
 #'@examples
-#'data(test_data)
 #'test2 <- tor_fit(M = test_data[,2],
-#'Ta = test_data[, 1],
-#'fitting_options = list(nc = 1, ni = 5000, nb = 3000))
+#'                 Ta = test_data[, 1],
+#'                 fitting_options = list(nc = 1, ni = 5000, nb = 3000))
 #'tor_summarise(test2)
 tor_summarise <- function(tor_obj){
+
+  if(!("tor_obj" %in% class(tor_obj))) stop("tor_obj need to be of class tor_obj")
 
 list(params = get_parameters(tor_obj),
      ppo = tor_ppo(tor_obj))## round print to 3 digit.
@@ -41,7 +42,9 @@ list(params = get_parameters(tor_obj),
 #'@export
 
 tor_ppo <- function(tor_obj){
-  overlap <- NULL
+
+  if(!("tor_obj" %in% class(tor_obj))) stop("tor_obj need to be of class tor_obj")
+
   ### Tlc
   mod_param <- tor_obj$mod_parameter
   mod_tlc <- tor_obj$out_mtnz_tlc$model_1
@@ -99,8 +102,8 @@ tor_ppo <- function(tor_obj){
   out_Tbt <- data.frame(name = "Tbt", overlap = overlapTbt)
 
   out <- dplyr::bind_rows(out_tlc, out_MR, out_Tbe, out_TMR, out_Tbt) %>%
-    dplyr::mutate(overlap = overlap *100) %>%
-    dplyr::rename(ppo = overlap)
+    dplyr::mutate(overlap = .data$overlap *100) %>%
+    dplyr::rename(ppo = .data$overlap)
  ## add loop on out to flag overlap > 80 %.
   for (i in 1:nrow(out)){
 
@@ -121,10 +124,12 @@ tor_ppo <- function(tor_obj){
 #'@family summary
 #'@param tor_obj a fitted model from [tor_fit()]
 #'@return a data.frame
+#'@importFrom rlang .data
 #'@export
 get_parameters <- function(tor_obj){  ## out4 et out2 pour Tlc.
 
-  .data <- NULL
+  if(!("tor_obj" %in% class(tor_obj))) stop("tor_obj need to be of class tor_obj")
+
   Ym <- tor_obj$data$Ym
 
   ### first param for step_4
@@ -188,14 +193,14 @@ get_parameters <- function(tor_obj){  ## out4 et out2 pour Tlc.
 
   params_to_multiply <- c("tau1", "tau2", "inte", "intc", "intr", "MR", "TMR", "betat")
 
-
   out <- out %>%
     dplyr::mutate(mean = ifelse(.data$parameter %in% params_to_multiply, .data$mean*Ym, .data$mean),
                   CI_2.5 = ifelse(.data$parameter %in% params_to_multiply, .data$CI_2.5*Ym, .data$CI_2.5),
                   median = ifelse(.data$parameter %in% params_to_multiply, .data$median*Ym, .data$median),
                   CI_97.5 = ifelse(.data$parameter %in% params_to_multiply, .data$CI_97.5*Ym, .data$CI_97.5)) %>%
     dplyr::mutate_if(is.numeric, ~ round(.x, digits = 3))
-return(out)
+
+out
 }
 
 
