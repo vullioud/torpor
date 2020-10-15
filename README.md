@@ -16,8 +16,13 @@ coverage](https://codecov.io/gh/vullioud/torpor/branch/master/graph/badge.svg)](
 This is the repository of torpor an `R` (<https://www.r-project.org/>)
 package aiming at an objective and standardized distinction between
 torpid and euthermic metabolic rates (M) measured in steady-state
-conditions. Note: This package is not aimed for general use without
-careful researcher’s attention.
+conditions. Note: This package is not aimed for use without careful
+researcher’s attention.
+
+A stable version of the package will be soon available on CRAN. However,
+to allow greater flexibility and interactivity at this early stage of
+the project, the package is only available on github at the moment. Any
+bug report or request features would therefore be appreciated.
 
 ## Installation
 
@@ -29,10 +34,26 @@ typing:
 
 ``` r
 library(remotes)
-remotes::install_github("vullioud/torpor", force=TRUE)
+remotes::install_github("vullioud/torpor", build_vignettes = TRUE)
 ```
 
-## Where can I find more about torpor?
+## Where can you find more about torpor?
 
 You can learn more about the goal and the theory behind the package in
-the companion article (Fassel et al., in prep).
+the companion article (Fassel et al., in prep). And you will find an
+example in the vignettes of the package. You can access it directly from
+R by typing:
+
+``` r
+browseVignettes("torpor")
+```
+
+## How can you help ?
+
+Torpor is still in its infancy and despite numerous testing it is
+possible that bugs appears. You can help us by reporting bugs or request
+new features.
+
+<!-- badges: start --> [![Travis build
+status](https://travis-ci.com/vullioud/torpor.svg?branch=master)](https://travis-ci.com/vullioud/torpor)
+<!-- badges: end -->
