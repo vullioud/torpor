@@ -21,3 +21,19 @@ test_that(".complete_args completes unclompleted list", {
  test <- fun(arg = list(c=5))
  expect_equal(test, 5)
 })
+
+########### test methods
+test_that("method, summary return the same as tor_summarise", {
+expect_warning(mod <- tor_fit(M = test_data$VO2, Ta = test_data$Ta, fitting_options = list(ni = 5000, nb = 3000, nc = 1)))
+ expect_warning(ref <- tor_summarise(mod))
+ expect_warning(job <- summary(mod))
+ expect_equal(str(ref), str(job))
+})
+
+test_that("method, plot return the same as tor_plot", {
+   expect_warning(mod <- tor_fit(M = test_data$VO2, Ta = test_data$Ta, fitting_options = list(ni = 5000, nb = 3000, nc = 1)))
+   expect_warning(ref <- class(tor_plot(mod, plot_type = "ggplot")))
+   expect_warning(job <- class(plot(mod, plot_type = "ggplot")))
+   expect_equal(str(ref), str(job))
+})
+
