@@ -36,7 +36,7 @@ test_that("tor_overlap and tor_summarise return a warning if tlc_overlap, Tt_ove
     set.seed(123)
    expect_warning(mod <- tor_fit(M = test_data$VO2, Ta = test_data$Ta, fitting_options = list(ni = 5000, nb = 3000, nc = 1)))
 
-   expect_warning(test <- get_parameters(mod))
+   test <- get_parameters(mod)
    expect_equal(nrow(test), 14)
    expect_equal(ncol(test), 6)
 })
