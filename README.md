@@ -53,7 +53,3 @@ browseVignettes("torpor")
 Torpor is still in its infancy and despite numerous testing it is
 possible that bugs appears. You can help us by reporting bugs or request
 new features.
-
-<!-- badges: start --> [![Travis build
-status](https://travis-ci.com/vullioud/torpor.svg?branch=master)](https://travis-ci.com/vullioud/torpor)
-<!-- badges: end -->
