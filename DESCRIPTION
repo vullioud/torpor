@@ -26,13 +26,13 @@ RoxygenNote: 7.1.1
 Imports: jagsUI, 
         ggplot2,
         truncnorm, 
-        purrr, 
         dplyr, 
         magrittr,
         overlapping, 
         knitr,
         rmarkdown, 
-        lmtest
+        lmtest, 
+        rlang
 VignetteBuilder: knitr
 Suggests: 
     testthat (>= 2.1.0),
