@@ -117,22 +117,31 @@ find_low_tlc_mtnz <- function(M,Ta){
 #'@name estimate_tlc_mtnz
 #'@param M A vector of methabolic measure.
 #'@param Ta A vector of ambient temperature.
+#'@param MTNZ A value of MTNZ.
 #'@param fitting_options a list of fitting option to pass to jags.
 #'@export
 #'@examples
-#'t <- estimate_tlc_mtnz(M = test_data2$VO2ms, Ta = test_data2$Ta)
+#'t <- estimate_tlc_mtnz(M = test_data2$VO2ms, Ta = test_data2$Ta, MTNZ = NULL)
 
-estimate_tlc_mtnz <- function(M, Ta, fitting_options = list(ni = 50000,
+estimate_tlc_mtnz <- function(M, Ta, MTNZ, fitting_options = list(ni = 50000,
                                                        nt = 10,
                                                        nb = 20000,
                                                        nc = 2,
                                                        parallel = TRUE)) { ## add parallel to fitting options
   .complete_args(estimate_tlc_mtnz)
   Y <- M
+  MTNZ_input <- MTNZ
+
+
   out_1 <- find_low_tlc_mtnz(Y, Ta) ## run first step
 
-  MTNZ <- out_1["MTNZ"] ## extract MTNZ
+  if(!is.null(MTNZ_input)) {
+    MTNZ <- MTNZ_input
+  } else {
+  MTNZ <- out_1["MTNZ"]
+  } ## extract MTNZ
   low_tlc <- out_1["low_tlc"] ## extract low tlc
+
 
   Ym <- mean(Y, na.rm = TRUE) ## keep the mean
   Ta2 <- Ta[Ta < low_tlc]
@@ -176,15 +185,22 @@ estimate_tlc_mtnz <- function(M, Ta, fitting_options = list(ni = 50000,
   ## extract the important output
   tlc_estimated <- stats::median(mod$sims.list$Tlc) ## estimated tlc
   tlc_distribution <- mod$sims.list$Tlc ## distribution of tlc
-  mtnz_estimated <- mean(Y[Ta >= tlc_estimated], na.rm = TRUE) # estimated MTNZ (mean of the points)
 
-  if(length(stats::na.omit(Y[Ta >= tlc_estimated])) < 10) warning("Mtnz computed on less than 10 points")
+  if(is.null(MTNZ_input)) {
+  mtnz_estimated <- mean(Y[Ta >= tlc_estimated], na.rm = TRUE) # estimated MTNZ (mean of the points)
+  mtnz_points <- stats::na.omit(Y[Ta >= tlc_estimated])
+  } else {
+    mtnz_estimated <- MTNZ_input
+    mtnz_points <- MTNZ_input
+  }
+
+if(length(stats::na.omit(Y[Ta >= tlc_estimated])) < 10 & is.null(MTNZ_input)) warning("Mtnz computed on less than 10 points")
 
 return(list(model_1 = mod,
             tlc_estimated = tlc_estimated,
             tlc_distribution = tlc_distribution,
             mtnz_estimated = mtnz_estimated,
-            mtnz_points = stats::na.omit(Y[Ta >= tlc_estimated]),
+            mtnz_points = mtnz_points,
             Ta2 = Ta2))
 }
 
@@ -225,13 +241,19 @@ estimate_assignation <- function(M, Ta,
 
   ## run step 1 and 2 to get mtnz and Tlc
 
-  if (is.null(MTNZ) | (is.null(Tlc))) { ### need to change the filter it runs all the time
+  if (is.null(MTNZ) & (is.null(Tlc))) { ### need to change the filter it runs all the time
 
     message("Mtnz and Tlc are being estimated from the data")
 
-  out_mtnz_tlc <- estimate_tlc_mtnz(Ta = Ta, M = Y, fitting_options = fitting_options)
+  out_mtnz_tlc <- estimate_tlc_mtnz(Ta = Ta, M = Y, MTNZ = MTNZ, fitting_options = fitting_options)
 
-  } else { ## keep the structure of output of estimate_tlc_mtnz
+  } else if (!(is.null(MTNZ)) & (is.null(Tlc))) { ### need to change the filter it runs all the time
+
+    message("Tlc is being estimated from the data")
+
+    out_mtnz_tlc <- estimate_tlc_mtnz(Ta = Ta, M = Y, MTNZ = MTNZ, fitting_options = fitting_options)
+
+  } else { ## keep the structure of output of estimate_tlc_mtnz when there are provided as input
 
     out_mtnz_tlc <- list(model_1 = NULL,
          tlc_estimated = Tlc,
@@ -398,7 +420,13 @@ estimate_assignation <- function(M, Ta,
 #'@export
 #'@examples
 #'\dontrun{
-#'test_mod <- tor_fit(Ta = test_data3$Ta, M = test_data3$Y, fitting_options = list(parallel = TRUE))
+#'test_mod <- tor_fit(Ta = test_data3$Ta, M = test_data3$Y,
+#'fitting_options = list(parallel = TRUE))
+#'test_mod2 <- tor_fit(Ta = test_data2$Ta, M = test_data2$VO2ms, MTNZ = 1.8, Tlc = 29.2,
+#'fitting_options = list(parallel = TRUE))
+#'test_mod3 <- tor_fit(Ta = test_data2$Ta, M = test_data2$VO2ms, MTNZ = 1.8,
+#'fitting_options = list(parallel = TRUE))
+
 #'}
 tor_fit <- function(Ta, M,
                    MTNZ = NULL,
