@@ -10,7 +10,7 @@
 #'
 #'This package is center around the [tor_fit()] function which
 #'allows to fit binary mixture model on metabolic rates data using Bayesian inference.
-#'#'
+#'
 #'@docType package
 #'@name torpor
 #'
