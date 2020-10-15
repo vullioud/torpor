@@ -20,7 +20,7 @@ knitr::opts_chunk$set(
 ## Welcome to torpor
 
 This is the repository of torpor an `R` (https://www.r-project.org/) package aiming at  an objective and standardized distinction between torpid and euthermic metabolic rates (M) measured in steady-state conditions.
-Note: This package is not aimed for general use without careful researcher’s attention.
+Note: This package is not aimed for use without careful researcher’s attention.
 
 ## Installation
 
@@ -28,12 +28,16 @@ Torpor is using `JAGS` (Just Another Gibbs Sampler) in the background and thus y
 
 ```{r eval=FALSE, include=TRUE}
 library(remotes)
-remotes::install_github("vullioud/torpor", force=TRUE)
+remotes::install_github("vullioud/torpor", build_vignettes = TRUE)
 ```
  
 ## Where can I find more about torpor?
 
-You can learn more about the goal and the theory behind the package in the companion article (Fassel et al., in prep).
+You can learn more about the goal and the theory behind the package in the companion article (Fassel et al., in prep). And you will find an example in the vignettes of the package. You can access it directly from R by typing: 
+```{r eval=FALSE, include=TRUE}
+browseVignettes("torpor")
+```
+ 
 
  <!-- badges: start -->
   [![Travis build status](https://travis-ci.com/vullioud/torpor.svg?branch=master)](https://travis-ci.com/vullioud/torpor)
