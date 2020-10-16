@@ -2,7 +2,7 @@
 % Please edit documentation in R/tor_predict.R
 \name{tor_classify}
 \alias{tor_classify}
-\title{tor_classify}
+\title{Assign metabolic state}
 \usage{
 tor_classify(tor_obj)
 }

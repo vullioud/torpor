@@ -2,7 +2,7 @@
 % Please edit documentation in R/tor_plot.R
 \name{tor_plot}
 \alias{tor_plot}
-\title{Plot raw data and predicted values}
+\title{Plot raw data and predicted values of a fitted model}
 \usage{
 tor_plot(
   tor_obj = NULL,
@@ -39,7 +39,11 @@ tor_plot(
 a base-R plot or a ggplot object
 }
 \description{
-\code{\link[=tor_plot]{tor_plot()}} provides a plot of the metabolic rate (M) values over the respective ambient temperature (Ta).
-Raw data and predicted values are presented in different colors depending of the metabolic state.
+\code{\link[=tor_plot]{tor_plot()}} provides a plot of the metabolic rate (M) values over the respective
+ambient temperature (Ta).
+Raw data and predicted values are presented in different colors depending
+of the metabolic state. Predicted values are represented by continuous and
+stripped lines for the estimates’ median and 95\% CI bounds of the posterior
+distribution, respectively.
 For more flexibility the users can use \code{\link[=tor_fit]{tor_fit()}} and \code{\link[=tor_predict]{tor_predict()}} directly.
 }

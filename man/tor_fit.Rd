@@ -2,7 +2,7 @@
 % Please edit documentation in R/tor_fit.R
 \name{tor_fit}
 \alias{tor_fit}
-\title{Fit a binomial mixture model}
+\title{Mixture model aimed at assigning metabolic rate measurements (M) to torpor and euthermia}
 \usage{
 tor_fit(
   Ta,
@@ -27,23 +27,20 @@ tor_fit(
 A list of class tor_obj
 }
 \description{
-\code{\link[=tor_fit]{tor_fit()}} fits a binomial mixture model using Bayesian
-inference.  The function considers the assumed relation between metabolic rate (MR) and ambient temperature (Ta)
-(Speakman & Thomas 2003). In the hypothermic state (torpor) and above some
-threshold Ta (Tmin), MR follows an exponential curve reflecting the Arrhenius
-rate enhancing effect of temperature on chemical reactions, whereas below
-Tmin, it increases linearly with decreasing Ta to maintain a minimal body temperature (Tb) in
-torpor. In the euthermic state, MR solely increases linearly with decreasing Ta.
-The function uses Rjags in the background and enables users to specify
-some - but not all - sampling parameters. The structure of the model can also
-be changed. Users who want more flexibility are encouraged to use Rjags
-directly.
-More information about the model can be found in Fassel et al. (in prep).
+The function \code{\link[=tor_fit]{tor_fit()}} considers the relation between metabolic rate (M) and
+ambient temperature (Ta) assumed by the Scholander-Irving model and its later extensions.
 }
 \details{
-This model should be applied with sufficient sample size and if
-evidence suggest that individuals under study will conform to the previously
-described pattern while in torpor.
+Resting M measured within the thermoneutral zone (TNZ) is independent of Ta.
+This rate is hereafter referred to as MTNZ, although it would correspond to
+the basal metabolic rate (BMR) provided that the specific criteria for the
+BMR are met (see Fasel et al. in prep.). Below the lower critical temperature
+of TNZ (Tlc), M of euthermic animals increases linearly with decreasing Ta.
+M of torpid animals increases linearly with decreasing Ta to maintain a minimal
+body temperature below some threshold ambient temperature (Tt). This state is
+usually referred to as "regulated torpor". Between Tt and Tlc, M of torpid
+animals follows an exponential curve. In this Ta range, torpor is referred to
+as "conforming torpor".
 }
 \examples{
 \dontrun{

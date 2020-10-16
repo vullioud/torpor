@@ -14,7 +14,7 @@ a data.frame
 }
 \description{
 \code{\link[=get_parameters]{get_parameters()}} Retrieves the parameters estimates from the model output
-and creates a dataframe used in the \code{\link[=tor_summarise]{tor_summarise()}} function
+and creates a data.frame used in the \code{\link[=tor_summarise]{tor_summarise()}} function
 }
 \seealso{
 Other summary: 

@@ -2,7 +2,7 @@
 % Please edit documentation in R/tor_predict.R
 \name{tor_predict}
 \alias{tor_predict}
-\title{get predictions}
+\title{Model predictions}
 \usage{
 tor_predict(tor_obj, Ta)
 }
@@ -15,7 +15,7 @@ tor_predict(tor_obj, Ta)
 a data.frame
 }
 \description{
-\code{\link[=tor_predict]{tor_predict()}} provides the predicted metabolic rate (M) and 95CI bounds at
+\code{\link[=tor_predict]{tor_predict()}} provides the predicted metabolic rate (M) and 95\% CI bounds at
 a given ambient temperature (Ta), in euthermic and/or torpid state.
 }
 \examples{
