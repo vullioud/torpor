@@ -1,6 +1,6 @@
-#' get predictions
+#' Model predictions
 #'
-#' [tor_predict()] provides the predicted metabolic rate (M) and 95CI bounds at
+#' [tor_predict()] provides the predicted metabolic rate (M) and 95% CI bounds at
 #' a given ambient temperature (Ta), in euthermic and/or torpid state.
 #'
 #'@name tor_predict
@@ -15,7 +15,7 @@
 #'test_mod <- tor_fit(M = test_data2[,2],
 #'                    Ta = test_data2[, 1],
 #'                    fitting_options = list(nc = 1, nb = 3000, ni = 5000))
-#'tor_predict(tor_obj, Ta = 10:35)
+#' tor_predict(tor_obj, Ta = 10:35)
 #'}
 tor_predict <- function(tor_obj, Ta){
   if(!("tor_obj" %in% class(tor_obj))) stop("tor_obj need to be of class tor_obj")
@@ -61,14 +61,22 @@ tor_predict <- function(tor_obj, Ta){
     Ymean_n[i] <- stats::median(eut_predict_fun(Ta[i], inte, betat, Ym))
     Y975_n[i] <- stats::quantile(eut_predict_fun(Ta[i], inte, betat, Ym),0.975)
     Y025_n[i] <- stats::quantile(eut_predict_fun(Ta[i], inte, betat, Ym),0.025)
+
     } else {
 
       MTNZ <- tor_obj$out_mtnz_tlc$mtnz_points
 
-      Ymean_b[i] <-  mean <- mean(MTNZ, na.rm = TRUE)
+      if(length(MTNZ < 2)) { # cases when MTNZ is provided by the user
+        Ymean_b[i] <-MTNZ
+        Y975_b[i] <- MTNZ ## cannot give NA because of the filter at the end
+        Y025_b[i] <- MTNZ ##
+
+
+      } else {
+      Ymean_b[i] <- mean(MTNZ, na.rm = TRUE)
       Y975_b[i] <- mean(MTNZ)+1.96*stats::sd(MTNZ)/sqrt(length(tor_obj$out_mtnz_tlc$mtnz_points))
       Y025_b[i] <- mean(MTNZ)-1.96*stats::sd(MTNZ)/sqrt(length(tor_obj$out_mtnz_tlc$mtnz_points))
-
+  }
     }
   }
 
@@ -107,11 +115,10 @@ tor_predict <- function(tor_obj, Ta){
     out <- rbind(out_tor, out_eut, out_mtnz)
   }
 
-  return(stats::na.omit(out))
+  stats::na.omit(out)
 
 }
 ################################################################################
-#'
 #' tor_predict_fun // internal
 #'
 #'Function to fit the model in torpor
@@ -131,8 +138,6 @@ tor_predict_fun <- function(x, Tt, intr, intc, betat, betac, Ym) {
   return(out)
 }
 ################################################################################
-
-
 #' eut_predict_fun // internal
 #'
 #'function to fit the model in euthermy
@@ -149,8 +154,7 @@ eut_predict_fun <- function(x, inte, betat, Ym) { ## backtransform parameters to
 }
 ################################################################################
 
-
-#' tor_classify
+#' Assign metabolic state
 #'
 #'[tor_classify()] returns the raw data with the related
 #'predicted state values (between 1 and 2), which leads to the state
@@ -204,8 +208,7 @@ for(i in 1:nrow(data)) {
   }
 }
 
-data <- data[,c(1,2,5,4)]
-return(data)
+data[,c(1,2,5,4)]
 }
 
 
