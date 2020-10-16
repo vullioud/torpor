@@ -118,7 +118,7 @@ tor_ppo <- function(tor_obj){
 #'Fetch parameters from model output
 #'
 #'[get_parameters()] Retrieves the parameters estimates from the model output
-#'and creates a dataframe used in the [tor_summarise()] function
+#'and creates a data.frame used in the [tor_summarise()] function
 #'
 #'@aliases get_parameters
 #'@family summary
