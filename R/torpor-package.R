@@ -14,9 +14,9 @@
 #'
 #'This package is center around the [tor_fit()] function which allows to fit
 #'mixture models on metabolic rates data using Bayesian inference.
+#'
 #'@docType package
 #'@name torpor
-#'
 #'@section tor_fit:
 #'The function [tor_fit()] considers the relation between metabolic rate (M) and
 #'ambient temperature (Ta) assumed by the Scholander-Irving model and its later extensions.
@@ -51,4 +51,4 @@
 #'
 #'@section tor_summarise:
 #'The function gives a summary statistics of the model fit.
-#'NULL
+NULL
