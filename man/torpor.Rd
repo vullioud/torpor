@@ -3,38 +3,50 @@
 \docType{package}
 \name{torpor}
 \alias{torpor}
-\title{torpor: Binary mixture model aimed at distinguishing torpid and
-euthermic metabolic rates}
+\title{torpor: Mixture model aimed at assigning metabolic rate measurements (M) to torpor and euthermia in heterothermic endotherms.
+#'
+#'This package estimate the assignment of M to torpor or euthermia.
+It uses the variation in M measured during euthermic rest and torpor at
+different ambient temperatures (Ta) to estimate the lower critical
+temperature (Tlc) of the thermoneutral zone (TNZ) and determine physiological
+state membership using mixture models. In addition, this package allows
+the further prediction of M during rest and torpor along Ta, including resting
+metabolic rate within the TNZ.}
 \description{
-This package enables an objective and standardized distinction between torpid
-and euthermic metabolic rates (M) measured in steady-state conditions.
-Furthermore, it provides parameters’ estimations of the relation between
-ambient temperatures (Ta) and MR in both physiological stages. This package
-is aimed to support any physiologist working in thermal energetics. More information
-can be found on the compagnon article Fasel et al. (in prep) and in the vignettes.
+This package is aimed to support any physiologist working in thermal energetics.
+More information can be found on the companion article Fasel et al. (in prep)
+and in the vignettes.
 }
 \details{
-This package is center around the \code{\link[=tor_fit]{tor_fit()}} function which
-allows to fit binary mixture model on metabolic rates data using Bayesian inference.
+This package is center around the \code{\link[=tor_fit]{tor_fit()}} function which allows to fit
+mixture models on metabolic rates data using Bayesian inference.
 }
 \section{tor_fit}{
 
-The function \code{\link[=tor_fit]{tor_fit()}} considers the assumed relation between
-metabolic rate (M) and ambient temperature (Ta) (Speakman & Thomas 2003).In the hypothermic state (torpor) and above some threshold Ta (Tmin),
-M follows an exponential curve reflecting the Arrhenius rate enhancing
-effect of temperature on chemical reactions, whereas below Tmin, it increases
-linearly with decreasing Ta to maintain a minimal Tb in torpor. In the
-euthermic state, M solely increases linearly with decreasing Ta.
+The function \code{\link[=tor_fit]{tor_fit()}} considers the relation between metabolic rate (M) and
+ambient temperature (Ta) assumed by the Scholander-Irving model and its later extensions.
+
+Resting M measured within the thermoneutral zone (TNZ) is independent of Ta.
+This rate is hereafter referred to as MTNZ, although it would correspond to
+the basal metabolic rate (BMR) provided that the specific criteria for the
+BMR are met (see Fasel et al. in prep.). Below the lower critical temperature
+of TNZ (Tlc), M of euthermic animals increases linearly with decreasing Ta.
+M of torpid animals increases linearly with decreasing Ta to maintain a minimal
+body temperature below some threshold ambient temperature (Tt). This state is
+usually referred to as "regulated torpor". Between Tt and Tlc, M of torpid
+animals follows an exponential curve. In this Ta range, torpor is referred to
+as "conforming torpor".
 }
 
 \section{tor_plot}{
 
 The function \code{\link[=tor_plot]{tor_plot()}} is a wrapper function around the [tor_fit())] and [tor_predict()].
-It uses [tor_fit()] to fit a binomial mixture model using
+
+It uses [tor_fit()] to fit a mixture model using
 Bayesian inference and plot the predicted value as well as the raw data.
 Measures are presented in different colors depending of the metabolic state.
 Predicted values as well as 95\% credibility interval (segmented lines)
-are also presented. This function enable the user to replicates the analysis done in
+are also presented. This function enables the user to replicates the analysis done in
 Fasel et al. (in prep).
 
 [tor_fit())]: R:tor_fit())
@@ -45,7 +57,7 @@ Fasel et al. (in prep).
 \section{tor_predict}{
 
 The function provides the predicted M and 95\% credible interval boundaries
-at a defined Ta given a certain model, in normothermic and/or torpid stage.
+at a defined Ta given a certain model, in euthermic and/or torpid state.
 }
 
 \section{tor_classify}{
