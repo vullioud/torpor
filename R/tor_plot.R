@@ -1,9 +1,11 @@
-#'Plot raw data and predicted values
+#'Plot raw data and predicted values of a fitted model
 #'
-#'[tor_plot()] provides a plot of the metabolic rate (M) values over the respective ambient temperature (Ta).
-#'Raw data and predicted values are presented in different colors depending of the metabolic state.
-#`Predicted values are represented by continuous and stripped lines for the estimates’ median and 95CI bounds
-#`of the posterior distribution, respectively.
+#'[tor_plot()] provides a plot of the metabolic rate (M) values over the respective
+#'ambient temperature (Ta).
+#'Raw data and predicted values are presented in different colors depending
+#'of the metabolic state. Predicted values are represented by continuous and
+#'stripped lines for the estimates’ median and 95% CI bounds of the posterior
+#'distribution, respectively.
 #'For more flexibility the users can use [tor_fit()] and [tor_predict()] directly.
 #'
 #'@name tor_plot
@@ -30,6 +32,8 @@ tor_plot <- function(tor_obj = NULL,
                      xlab = "Ta",
                      pdf = FALSE) {
 
+
+  if(!("tor_obj" %in% class(tor_obj))) stop("tor_obj need to be of class tor_obj")
 
   ## please check
   group <- measured_Ta <- measured_M <- classification <- NULL
