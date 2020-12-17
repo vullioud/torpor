@@ -28,19 +28,19 @@ for(i in 1:2){
     inte <- MTNZ-betat*Tlc
     intr <- -Tbt*betat
     intc <- MR/exp(betac*Tlc)
-    betac <- min(0.5,(log(MR)-log(TMR))/(Tlc-Tt))
+    maxTbt <- min(Tbe-MTNZ*2/TMR,(Tlc*betat-TMR)/betat)
     betat <- MTNZ/(Tlc-Tbe)
     Tt <- (TMR-intr)/betat
 
 #Priors
 
-  Tlc ~ dunif(max(Ta),Max)
-  Tbt ~ dunif(-10,max(Ta))
-  p[1:2] ~ ddirch(rep(1,2))
-    TMR ~ dunif(0,MR)
-    MR ~ dunif(0,MTNZ)
-  Tbe ~ dunif(max(Ta),50)
-  tauy2~ dunif(0,3)
-  tauy1~dunif(0.2*tauy2,tauy2)
+    tlc ~dnorm(0,0.001)T(max(Ta),Max)
+    Tbt ~ dnorm(0,0.01)T(-5,maxTbt)
+    tauy2~ dunif(0,3)
+    tauy1~dunif(0.2*tauy2,tauy2)
+    p[1:2] ~ ddirch(rep(1,2))
+    TMR~dnorm(0,0.001)T(0,0.8*BMR)
+    MR~dnorm(0,0.001)T(TMR,BMR)
+    Tbe~dnorm(0,0.001)T(max(Ta),50)
 
 }
