@@ -32,7 +32,7 @@ tor_predict <- function(tor_obj, Ta){
   Tt <- mod$sims.list$Tt
 
   ##
-  Tlc <- tor_obj$out_mtnz_tlc$tlc_estimated
+  Tlc <- tor_obj$out_Mtnz_Tlc$Tlc_estimated
   Ym <- tor_obj$data$Ym
 
 
@@ -51,7 +51,7 @@ tor_predict <- function(tor_obj, Ta){
 
   for (i in 1:X) {
 
-    if(Ta[i] < tor_obj$out_mtnz_tlc$tlc_estimated) {
+    if(Ta[i] < tor_obj$out_Mtnz_Tlc$Tlc_estimated) {
 
 
     Ymean_t[i] <- stats::median(tor_predict_fun(Ta[i], Tt, intr, intc, betat, betac, Ym))
@@ -64,18 +64,18 @@ tor_predict <- function(tor_obj, Ta){
 
     } else {
 
-      MTNZ <- tor_obj$out_mtnz_tlc$mtnz_points
+      Mtnz <- tor_obj$out_Mtnz_Tlc$Mtnz_points
 
-      if(length(MTNZ < 2)) { # cases when MTNZ is provided by the user
-        Ymean_b[i] <-MTNZ
-        Y975_b[i] <- MTNZ ## cannot give NA because of the filter at the end
-        Y025_b[i] <- MTNZ ##
+      if(length(Mtnz < 2)) { # cases when Mtnz is provided by the user
+        Ymean_b[i] <-Mtnz
+        Y975_b[i] <- Mtnz ## cannot give NA because of the filter at the end
+        Y025_b[i] <- Mtnz ##
 
 
       } else {
-      Ymean_b[i] <- mean(MTNZ, na.rm = TRUE)
-      Y975_b[i] <- mean(MTNZ)+1.96*stats::sd(MTNZ)/sqrt(length(tor_obj$out_mtnz_tlc$mtnz_points))
-      Y025_b[i] <- mean(MTNZ)-1.96*stats::sd(MTNZ)/sqrt(length(tor_obj$out_mtnz_tlc$mtnz_points))
+      Ymean_b[i] <- mean(Mtnz, na.rm = TRUE)
+      Y975_b[i] <- mean(Mtnz)+1.96*stats::sd(Mtnz)/sqrt(length(tor_obj$out_Mtnz_Tlc$Mtnz_points))
+      Y025_b[i] <- mean(Mtnz)-1.96*stats::sd(Mtnz)/sqrt(length(tor_obj$out_Mtnz_Tlc$Mtnz_points))
   }
     }
   }
@@ -97,22 +97,22 @@ tor_predict <- function(tor_obj, Ta){
 
 
   ### values for > Tlc.
-  out_mtnz <- data.frame(Ta = Ta,
-                        group = rep("MTNZ", length(X)),
+  out_Mtnz <- data.frame(Ta = Ta,
+                        group = rep("Mtnz", length(X)),
                         pred =  Ymean_b,
                         upr_95 = Y975_b,
                         lwr_95 = Y025_b)
 
 
   ###
-  if(any(Ta > tor_obj$out_mtnz_tlc$tlc_estimated)) warning("Tuc is not considered: Mtnz is calculated independently of Ta above Tlc")
+  if(any(Ta > tor_obj$out_Mtnz_Tlc$Tlc_estimated)) warning("Tuc is not considered: Mtnz is calculated independently of Ta above Tlc")
 
   if(!any(tor_obj$assignation$G == 1)){ ## no torpor
-    out <- rbind(out_eut,out_mtnz)
+    out <- rbind(out_eut,out_Mtnz)
   } else if (!any(tor_obj$assignation$G == 2)){ ## no euthermy
-    out <- rbind(out_tor, out_mtnz)
+    out <- rbind(out_tor, out_Mtnz)
   } else { ## both torpor and euthermy
-    out <- rbind(out_tor, out_eut, out_mtnz)
+    out <- rbind(out_tor, out_eut, out_Mtnz)
   }
 
   stats::na.omit(out)
@@ -185,7 +185,7 @@ inte <- mod$sims.list$inte
 intc <- mod$sims.list$intc
 intr <- mod$sims.list$intr
 Tt <- mod$sims.list$Tt
-Tlc <- mod$sims.list$tlc
+Tlc <- mod$sims.list$Tlc
 Ym <- tor_obj$data$Ym
 
 X <- nrow(data)
@@ -194,7 +194,7 @@ data$predicted_M <- rep(NA, X)
 data$classification <- dplyr::case_when(data$predicted_state == 0 ~ "Undefined",
                                      data$predicted_state == 1 ~ "Torpor",
                                      data$predicted_state == 2 ~ "Euthermy",
-                                     data$predicted_state == 3 ~ "MTNZ")
+                                     data$predicted_state == 3 ~ "Mtnz")
 
 for(i in 1:nrow(data)) {
   if (data$predicted_state[i] == 1) {
@@ -202,7 +202,7 @@ for(i in 1:nrow(data)) {
   } else if(data$predicted_state[i] == 2) {
   data$predicted_M[i] <- stats::median(eut_predict_fun(data$measured_Ta[i], inte, betat, Ym))
   } else if(data$predicted_state[i] == 3) {
-    data$predicted_M[i] <- tor_obj$out_mtnz_tlc$mtnz_estimated
+    data$predicted_M[i] <- tor_obj$out_Mtnz_Tlc$Mtnz_estimated
   } else {
     data$predicted_M[i] <- NA
   }
