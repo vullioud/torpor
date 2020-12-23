@@ -10,7 +10,7 @@ tor_plot(
   legend = TRUE,
   col_torp = "cornflowerblue",
   col_euth = "coral3",
-  col_mtnz = "black",
+  col_Mtnz = "black",
   ylab = "M",
   xlab = "Ta",
   pdf = FALSE
@@ -27,7 +27,7 @@ tor_plot(
 
 \item{col_euth}{color for euthermy model prediction and points}
 
-\item{col_mtnz}{color of mtnz}
+\item{col_Mtnz}{color of Mtnz}
 
 \item{ylab}{y label}
 

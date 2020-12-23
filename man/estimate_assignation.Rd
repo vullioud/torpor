@@ -7,9 +7,9 @@
 estimate_assignation(
   M,
   Ta,
-  MTNZ = NULL,
+  Mtnz = NULL,
   Tlc = NULL,
-  fitting_options = list(ni = 50000, nt = 10, nb = 20000, nc = 2, parallel = TRUE)
+  fitting_options = list(ni = 80000, nt = 10, nb = 30000, nc = 3, parallel = TRUE)
 )
 }
 \arguments{
@@ -17,9 +17,9 @@ estimate_assignation(
 
 \item{Ta}{A vector of ambient temperature.}
 
-\item{MTNZ}{mtnz value if not estimated}
+\item{Mtnz}{Mtnz value if not estimated}
 
-\item{Tlc}{tlc value if not estimated}
+\item{Tlc}{Tlc value if not estimated}
 
 \item{fitting_options}{a list of fitting option to pass to jags.}
 }
@@ -30,6 +30,6 @@ internally prior to estimate the parameters
 \examples{
 \dontrun{
 t2_no_input <- estimate_assignation(Ta = test_data2$Ta, M = test_data2$VO2)
-to_input <- estimate_assignation(Ta = test_data2$Ta, M = test_data2$VO2, MTNZ = 1.49, Tlc = 28.8)
+to_input <- estimate_assignation(Ta = test_data2$Ta, M = test_data2$VO2, Mtnz = 1.49, Tlc = 28.8)
 }
 }

@@ -12,5 +12,5 @@
 \item{fitting_options}{fitting options}
 }
 \description{
-This function estimate the lowest TLC and the MTNZ
+This function estimate the lowest TLC and the Mtnz
 }

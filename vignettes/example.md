@@ -1,7 +1,7 @@
 ---
 title: "An example"
 author: "Colin Vullioud"
-date: "`r Sys.Date()`"
+date: "2020-12-19"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{An example}
@@ -20,23 +20,71 @@ The first step in any analysis is to get data. In order to fit a model using the
 
 The data are accessible with the following command. 
 
-```{r, data}
+
+```r
 library(torpor)
 data(test_data2)
 str(test_data2)
-``` 
+```
+
+```
+## 'data.frame':	103 obs. of  2 variables:
+##  $ Ta   : num  2.82 3.01 3.09 3.31 3.33 ...
+##  $ VO2ms: num  0.364 NA NA NA 0.222 ...
+```
 
 The lower critical temperature (i.e., lower limit of the thermoneutral zone, $T_{lc}$ and the basal metabolic rate $Mtnz$ are also needed in order to fit the model with the `tor_fit()` function. These two values can be found in the documentation of the dataset (?test_data2) for the present example and should be provided by the researcher when using her/his own data. 
 `tor_fit()` represents the core function of the model and should be the first step in any analysis using the torpor package. Researchers not familiar with `R` and only interested in a visual representation of their data can skip this step and use the `tor_plot()` function directly. This option is however not recommended since problems might remain unnoticed. 
 
 The model is fitted with the following call: 
 
-```{r, fit model}
+
+```r
 model <- tor_fit(M = test_data2[, "VO2ms"], Ta = test_data2[, "Ta"],
                     fitting_options = list(ni = 5000,
                                            nt = 10,
                                            nb = 3000,
                                            nc = 2))
+```
+
+```
+## Mtnz and Tlc are being estimated from the data
+```
+
+```
+## Warning in estimate_Tlc_Mtnz(Ta = Ta, M = Y, Mtnz = Mtnz, fitting_options =
+## fitting_options): Mtnz computed on less than 10 points
+```
+
+```
+## Warning in eval(family$initialize): non-integer #successes in a binomial glm!
+```
+
+```
+## $params
+##    parameter   mean CI_2.5 median CI_97.5  Rhat
+## 1       tau1  0.129  0.092  0.126   0.199 1.033
+## 2       tau2  0.444  0.350  0.439   0.562 1.002
+## 3       inte  7.261  6.981  7.259   7.558 1.007
+## 4       intc  0.081  0.068  0.078   0.112 1.020
+## 5       intr  0.895  0.076  0.921   1.193 1.038
+## 6      betat -0.186 -0.196 -0.186  -0.176 1.007
+## 7      betac  0.075  0.055  0.077   0.090 1.007
+## 8         Tt  4.212 -0.113  4.347   5.870 1.037
+## 9        TMR  0.112  0.099  0.109   0.139 1.011
+## 10        MR  0.759  0.508  0.762   1.015 1.009
+## 11       Tbe 39.092 38.602 39.086  39.587 1.007
+## 12       Tbt  4.814  0.416  4.946   6.497 1.036
+## 13       Tlc 29.667 28.053 29.662  31.326 1.013
+## 14      Mtnz  1.750  1.528  1.701   1.972    NA
+## 
+## $ppo
+##   name  ppo
+## 1  Tlc 25.6
+## 2   MR 28.3
+## 3  Tbe  7.4
+## 4  TMR  4.5
+## 5  Tbt 11.7
 ```
 Note that for the purpose of this example we only run 5000 iterations with 3000 
 burned-in. The results are thus not trusthworthy.
@@ -47,14 +95,34 @@ The output of the `tor_fit()` function is a list of class `tor_obj`. The rest of
 
 Once the model is fitted, it is recommended to have an overlook at the results. This can be achieved via the function `tor_summarise()`. The latter will return a list with the essentials: A data.frame with the mean and median of parameter estimates, the 95% credible interval and the $\hat{R}$ value (i.e. chain convergence estimation). It also reports the parameters’ identifiability. 
 
-```{r, tor summarise}
+
+```r
 summary <- tor_summarise(model)
 ```
 
 The parameter estimates are accessible with: 
 
-```{r, parameter estimates}
+
+```r
 summary$params
+```
+
+```
+##    parameter   mean CI_2.5 median CI_97.5  Rhat
+## 1       tau1  0.129  0.092  0.126   0.199 1.033
+## 2       tau2  0.444  0.350  0.439   0.562 1.002
+## 3       inte  7.261  6.981  7.259   7.558 1.007
+## 4       intc  0.081  0.068  0.078   0.112 1.020
+## 5       intr  0.895  0.076  0.921   1.193 1.038
+## 6      betat -0.186 -0.196 -0.186  -0.176 1.007
+## 7      betac  0.075  0.055  0.077   0.090 1.007
+## 8         Tt  4.212 -0.113  4.347   5.870 1.037
+## 9        TMR  0.112  0.099  0.109   0.139 1.011
+## 10        MR  0.759  0.508  0.762   1.015 1.009
+## 11       Tbe 39.092 38.602 39.086  39.587 1.007
+## 12       Tbt  4.814  0.416  4.946   6.497 1.036
+## 13       Tlc 29.667 28.053 29.662  31.326 1.013
+## 14      Mtnz  1.750  1.528  1.701   1.972    NA
 ```
 
 ### Checking the convergence
@@ -65,9 +133,19 @@ In addition to check of the convergence it is advised to control the identifiabi
 
 The ovelap is also given by the `tor_summarise()` function. Let's continue with our analysis of *Cercartetus lepidus*: 
 
-```{r message=TRUE, warning=TRUE, paged.print=FALSE}
+
+```r
 summary$ppo
-``` 
+```
+
+```
+##   name  ppo
+## 1  Tlc 26.9
+## 2   MR 25.2
+## 3  Tbe  6.7
+## 4  TMR  3.6
+## 5  Tbt 11.2
+```
 
 ### Making sens of the model 
 
@@ -78,31 +156,7 @@ Once the basic checks have been done, we can go on with the evaluation of the ou
 
 To look at the classification of the data the corresponding predicted values we use the function `tor_classify()`, which will assign the measured metabolic values to either torpor or euthermy and returns a dataframe with the measured $M$, the measured $T_a$, the predicted $M$ and the classification (predicted_state).
 
-```{r, tor_classify}
-classification <- tor_classify(tor_obj = model)
- 
-head(classification)
-```
 
-
-
-### Prediction 
-The `tor_predict()` function is slightly different as it takes a vector of $T_a$ as input and return the predicted $M$ both in torpor and in euthermy and the 95% credible interval. For example, let's see what are the predicted $M$ at Ta 22°C. 
-
-```{r, tor_predict}
-prediction <- tor_predict(tor_obj = model, Ta = 22)
-head(prediction)
-```
-
-### plotting the data and predicted values 
-
-Finally a built-in function allows plot the results. The user can specifie some parameters and can save the plot using the arguments `pdf = TRUE`. The `plot_type` argument also allows to choose between `ggplot` and `base-R`
-
-```{r message=FALSE, warning=FALSE}
-plot <- tor_plot(tor_obj = model, ylab = "MR")
-plot 
-
-```
 
 
 

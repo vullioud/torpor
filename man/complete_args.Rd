@@ -12,5 +12,5 @@
 }
 \description{
 this function is used internally for tor_fit
-From Alex Courtiol - informed. He does not want to be listed as an author -
+From Alex Courtiol - informed.
 }

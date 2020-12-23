@@ -7,9 +7,9 @@
 tor_fit(
   Ta,
   M,
-  MTNZ = NULL,
+  Mtnz = NULL,
   Tlc = NULL,
-  fitting_options = list(ni = 50000, nt = 10, nb = 30000, nc = 3, parallel = TRUE)
+  fitting_options = list(ni = 80000, nt = 10, nb = 50000, nc = 3, parallel = TRUE)
 )
 }
 \arguments{
@@ -17,9 +17,9 @@ tor_fit(
 
 \item{M}{A vector of methabolic measure.}
 
-\item{MTNZ}{mtnz value if not estimated}
+\item{Mtnz}{Mtnz value if not estimated}
 
-\item{Tlc}{tlc value if not estimated}
+\item{Tlc}{Tlc value if not estimated}
 
 \item{fitting_options}{a list of fitting option to pass to jags.}
 }
@@ -32,7 +32,7 @@ ambient temperature (Ta) assumed by the Scholander-Irving model and its later ex
 }
 \details{
 Resting M measured within the thermoneutral zone (TNZ) is independent of Ta.
-This rate is hereafter referred to as MTNZ, although it would correspond to
+This rate is hereafter referred to as Mtnz, although it would correspond to
 the basal metabolic rate (BMR) provided that the specific criteria for the
 BMR are met (see Fasel et al. in prep.). Below the lower critical temperature
 of TNZ (Tlc), M of euthermic animals increases linearly with decreasing Ta.
@@ -46,9 +46,12 @@ as "conforming torpor".
 \dontrun{
 test_mod <- tor_fit(Ta = test_data3$Ta, M = test_data3$Y,
                    fitting_options = list(parallel = TRUE))
-test_mod2 <- tor_fit(Ta = test_data2$Ta, M = test_data2$VO2ms, MTNZ = 1.8, Tlc = 29.2,
+test_mod2 <- tor_fit(Ta = test_data2$Ta, M = test_data2$VO2ms, Mtnz = 1.8, Tlc = 29.2,
                    fitting_options = list(parallel = TRUE))
-test_mod3 <- tor_fit(Ta = test_data2$Ta, M = test_data2$VO2ms, MTNZ = 1.8,
+test_mod3 <- tor_fit(Ta = test_data2$Ta, M = test_data2$VO2ms, Mtnz = 1.8,
+                   fitting_options = list(parallel = TRUE))
+
+test_mod4 <- tor_fit(Ta = test_data2$Ta, M = test_data2$VO2ms, Tlc = 29.2,
                    fitting_options = list(parallel = TRUE))
 }
 }
