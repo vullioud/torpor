@@ -14,7 +14,7 @@
 #'@param legend A logical specifying if a legend should be added to the plot. Only work for base plot at the moment.
 #'@param col_torp color for torpor model prediction and points
 #'@param col_euth color for euthermy model prediction and points
-#'@param col_mtnz color of mtnz
+#'@param col_Mtnz color of Mtnz
 #'@param ylab y label
 #'@param xlab x label
 #'@param pdf logical if a .pdf copy of the plot should be saved
@@ -27,7 +27,7 @@ tor_plot <- function(tor_obj = NULL,
                      legend = TRUE,
                      col_torp = "cornflowerblue",
                      col_euth = "coral3",
-                     col_mtnz = "black",
+                     col_Mtnz = "black",
                      ylab = "M",
                      xlab = "Ta",
                      pdf = FALSE) {
@@ -38,8 +38,8 @@ tor_plot <- function(tor_obj = NULL,
   ## please check
   group <- measured_Ta <- measured_M <- classification <- NULL
   ## retrieve values from the model
-  Tlc <- tor_obj$out_mtnz_tlc$tlc_estimated
-  MTNZ <- tor_obj$out_mtnz_tlc$mtnz_estimated
+  Tlc <- tor_obj$out_Mtnz_Tlc$Tlc_estimated
+  Mtnz <- tor_obj$out_Mtnz_Tlc$Mtnz_estimated
 
 
   Y <- MR <- tor_obj$data$Y
@@ -80,8 +80,8 @@ tor_plot <- function(tor_obj = NULL,
                            ggplot2::aes(x = Ta, ymin = lwr_95, ymax = upr_95), fill = col_euth,
                            alpha = 0.2,
                            col = NA) +
-      ggplot2::geom_point(data = da[da$classification == "MTNZ", ], ggplot2::aes(x = measured_Ta, y = measured_M, col = "MTNZ"), col = col_mtnz) + ## Euthermy
-      ggplot2::geom_line(data = pred[pred$classification == "MTNZ", ], ggplot2::aes(x = Ta, y = pred), col = col_mtnz,
+      ggplot2::geom_point(data = da[da$classification == "Mtnz", ], ggplot2::aes(x = measured_Ta, y = measured_M, col = "Mtnz"), col = col_Mtnz) + ## Euthermy
+      ggplot2::geom_line(data = pred[pred$classification == "Mtnz", ], ggplot2::aes(x = Ta, y = pred), col = col_Mtnz,
                          linetype = 2) +
       ggplot2::geom_point(data = da[da$classification == "Undefined", ], ggplot2::aes(x = measured_Ta, y = measured_M), shape = 4) +
       ggplot2::theme_light() +
@@ -105,7 +105,7 @@ tor_plot <- function(tor_obj = NULL,
     Y975n <- pred[pred$classification == "Euthermy", "upr_95"]
     Y025n <- pred[pred$classification == "Euthermy", "lwr_95"]
 
-    YmeanM <- pred[pred$classification == "MTNZ", "pred"]
+    YmeanM <- pred[pred$classification == "Mtnz", "pred"]
 
 
 
@@ -117,7 +117,7 @@ tor_plot <- function(tor_obj = NULL,
     graphics::plot(da$measured_M~da$measured_Ta, type="n",frame=FALSE, xlim=c(Tlimlo, Tlimup),ylim=c(MRlo, MRup),ylab= ylab, xlab = xlab)
     graphics::points(da$measured_M[da$classification == "Torpor"] ~ da$measured_Ta[da$classification == "Torpor"],col = col_torp, pch = 19)
     graphics::points(da$measured_M[da$classification == "Euthermy"] ~ da$measured_Ta[da$classification == "Euthermy"],col = col_euth , pch = 19)
-    graphics::points(da$measured_M[da$classification == "MTNZ"] ~ da$measured_Ta[da$classification == "MTNZ"],col = col_mtnz , pch = 19)
+    graphics::points(da$measured_M[da$classification == "Mtnz"] ~ da$measured_Ta[da$classification == "Mtnz"],col = col_Mtnz , pch = 19)
     graphics::points(da$measured_M[da$classification == "Undefined"] ~ da$measured_Ta[da$classification == "Undefined"], pch = 3)
 
     if(length(da$classification == "Torpor")> 0){
@@ -148,14 +148,14 @@ tor_plot <- function(tor_obj = NULL,
 
       }
 
-    if(length(da$classification == "MTNZ")>0){
-      X <-  pred[pred$classification == "MTNZ", "Ta"]
+    if(length(da$classification == "Mtnz")>0){
+      X <-  pred[pred$classification == "Mtnz", "Ta"]
       graphics::par(new=TRUE)
-      graphics::plot(YmeanM~X,xlim=c(Tlimlo, Tlimup),ylim=c(MRlo, MRup),type="l",xaxt="n",frame=FALSE,yaxt="n",ylab="",xlab="",col=col_mtnz)
+      graphics::plot(YmeanM~X,xlim=c(Tlimlo, Tlimup),ylim=c(MRlo, MRup),type="l",xaxt="n",frame=FALSE,yaxt="n",ylab="",xlab="",col=col_Mtnz)
 
     }
     if (legend) {
-    graphics::legend("topright",c("Euthermy","Torpor", "Mtnz", "Undefined"), pch=c(19, 19,19, 3), col=c(col_euth,col_torp, col_mtnz, "black"),bty="n")
+    graphics::legend("topright",c("Euthermy","Torpor", "Mtnz", "Undefined"), pch=c(19, 19,19, 3), col=c(col_euth,col_torp, col_Mtnz, "black"),bty="n")
     }
 
     if(pdf == TRUE){
