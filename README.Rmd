@@ -41,6 +41,6 @@ browseVignettes("torpor")
  
 ## How can you help ?
 
-Torpor is still in its infancy and despite numerous testing it is possible that bugs appears. You can help us by reporting bugs or request new features.    
+Torpor is still in its infancy and despite numerous testing it is possible that bugs appear. You can help us by reporting bugs or request new features.    
 
 
