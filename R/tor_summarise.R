@@ -68,7 +68,7 @@ tor_ppo <- function(tor_obj){
     out_Tlc <- data.frame(name = "Tlc", overlap = 0)
   }
 
-  ## MR
+  ## Mr
   PR<- rep(NA, nbsamples)
   MAX<-tor_obj$out_Mtnz_Tlc$Mtnz_estimated/tor_obj$data$Ym
   for(i in 1:nbsamples){
@@ -78,9 +78,9 @@ tor_ppo <- function(tor_obj){
                                    mean=0,
                                    sd=sqrt(1/0.001))
   }
-  MR_chain <- tor_obj$mod_parameter$sims.list$MR
+  MR_chain <- tor_obj$mod_parameter$sims.list$Mr
   overlapMR <- as.numeric(round(overlapping::overlap(x = list(MR_chain, PR))$OV, digits = 3))
-  out_MR <- data.frame(name = "MR", overlap = overlapMR)
+  out_MR <- data.frame(name = "Mr", overlap = overlapMR)
 
   ## Tbe
   MIN <- tor_obj$out_Mtnz_Tlc$Tlc_estimated
@@ -111,7 +111,10 @@ tor_ppo <- function(tor_obj){
   MIN<- -5
   for(i in 1:nbsamples){
     PR[i]<- truncnorm::rtruncnorm(1,
-                                  a=-5,
+                                  a = -5,
+                                  b = min(tor_obj$mod_parameter$sims.list$Tbe[i]- tor_obj$out_Mtnz_Tlc$Mtnz_estimated*2 ## control the parenthesis
+                                           / (tor_obj$data$Ym*tor_obj$mod_parameter$sims.list$TMR[i]), (tor_obj$out_Mtnz_Tlc$model_1$q2.5$Tlc* tor_obj$mod_parameter$sims.list$betat[i]- tor_obj$mod_parameter$sims.list$TMR[i])
+                                          / tor_obj$mod_parameter$sims.list$betat[i]),
                                   mean=0,
                                   sd=sqrt(1/0.001))
   }
@@ -155,7 +158,7 @@ get_parameters <- function(tor_obj){  ## out4 et out2 pour Tlc.
   mod_params <- tor_obj$mod_parameter
 
   params_mod_parameter <- c("tau", "inte", "intc","intr", "betat", "betac",
-                            "Tt", "TMR", "MR", "Tbe", "Tbt") ## params of interest
+                            "Tt", "TMR", "Mr", "Tbe", "Tbt") ## params of interest
 
   mean <- unlist(mod_params$mean[params_mod_parameter])
   CI_97.5 <- unlist(mod_params$q97.5[params_mod_parameter])
@@ -210,7 +213,7 @@ get_parameters <- function(tor_obj){  ## out4 et out2 pour Tlc.
 
   out <- rbind(x, x_Tlc, x_Mtnz)
 
-  params_to_multiply <- c("tau1", "tau2", "inte", "intc", "intr", "MR", "TMR", "betat")
+  params_to_multiply <- c("tau1", "tau2", "inte", "intc", "intr", "Mr", "TMR", "betat")
 
   out <- out %>%
     dplyr::mutate(mean = ifelse(.data$parameter %in% params_to_multiply, .data$mean*Ym, .data$mean),
