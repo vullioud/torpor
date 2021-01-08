@@ -9,43 +9,44 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-## How to use torpor ? An example
+## How to use torpor ? 
 
 This vignette presents a suggested workflow of the `torpor` package. This package is firstly aimed at users not familiar with `rjags`, yet interested in investigating the thermoregulatory pattern of their model species, especially when the latter is a heterotherm and when metabolic rate measurements are to be assigned to either torpor or euthermia.
 
-This workflow is based on one of the provided datasets. We go through a complete analysis to illustrate how to use the package functions. At each step we also present the options for the users and the possible solution to expected problems. Note, however, that this example does not present all aspects of the package. 
+This workflow is based on one of the provided datasets. We go through a complete analysis to illustrate how to use the package functions. At each step, we also present some options for the users and the possible solution to expected problems. Note, however, that this example does not present all aspects of the package. 
 
 ### Fitting a model  
-The first step in any analysis is to get data. In order to fit a model using the function `tor_fit()` we need a set of measurements of Metabolic rate $M$ and the ambient temperature $T_a$ at which the measurements have been made. These values can be vectors of the same length or two columns of a data.frame. In the chosen example on the Tasmanian pygmy possum, *Cercartetus lepidus*, we have 103 metabolic rate values at various $T_a$ by digitalization of a figure (Geiser, 1987).
+The first step in any analysis is to import the data. In order to fit a model using the function `tor_fit()`, we need a set of measurements of metabolic rate $M$ and of the ambient temperature $T_a$ at which they were made. These values can be vectors of the same length or two columns of a data frame. In the chosen example on the Tasmanian pygmy possum, *Cercartetus lepidus*, e have 103 metabolic rate values at various $T_a$ that were digitized from a published figure (Geiser, 1987).
 
-The data are accessible with the following command. 
+The data are accessible with the following command:
 
 ```{r, data}
 library(torpor)
 data(test_data2)
 str(test_data2)
 ``` 
-
-The lower critical temperature (i.e., lower limit of the thermoneutral zone, $T_{lc}$ and the basal metabolic rate $Mtnz$ are also needed in order to fit the model with the `tor_fit()` function. These two values can be found in the documentation of the dataset (?test_data2) for the present example and should be provided by the researcher when using her/his own data. 
-`tor_fit()` represents the core function of the model and should be the first step in any analysis using the torpor package. Researchers not familiar with `R` and only interested in a visual representation of their data can skip this step and use the `tor_plot()` function directly. This option is however not recommended since problems might remain unnoticed. 
+The lower critical temperature ($T_{lc}$) of the thermoneutral zone ($TNZ$) and the metabolic rate within $TNZ$ ($M_{TNZ}$)  can be estimated by or provided to the `tor_fit()` function. These two values were originally estimated by the author and can be found in the documentation of the dataset (test_data2). For the present example, we will estimate them. 
+`tor_fit()`represents the core function of the model and should be the first step in any analysis using the torpor package. 
 
 The model is fitted with the following call: 
 
-```{r, fit model}
-model <- tor_fit(M = test_data2[, "VO2ms"], Ta = test_data2[, "Ta"],
-                    fitting_options = list(ni = 5000,
-                                           nt = 10,
-                                           nb = 3000,
-                                           nc = 2))
+```{r, fit model, cache = TRUE}
+model <-tor_fit(Ta = test_data2$Ta, 
+                M = test_data2$VO2ms,
+                Mtnz = 1.49,
+                fitting_options = list(ni = 500,
+                                            nt = 2,
+                                            nb = 200,
+                                            nc = 2,
+                                            parallel =FALSE))
 ```
-Note that for the purpose of this example we only run 5000 iterations with 3000 
-burned-in. The results are thus not trusthworthy.
+Note that for the purpose of this vignette we only run two chains with 1’000 iterations and 800 burned-in. The results have to be considered carefully (i.e. Checking the adequacy of the model, below). Default settings are more suitable but require more time for the model to run.
 
-The output of the `tor_fit()` function is a list of class `tor_obj`. The rest of the package offers several functions to manipulate the model output, to check its consistency and represent it graphically.
+The output of the `tor_fit()` function is a list containing information on the posterior distributions of the investigated parameters as well as on the convergence of the chains and on the prior-posterior distributions overlap of some parameters. These information can also be called by the function `tor_summarise()`. The rest of the package offers several functions to make more sense of the model output, to check its consistency and to represent it graphically. Researchers familiar with `jagsUI` can develop their analysis from that point.
 
-## Checking the robustness of the model 
+## Checking the adequacy of the model 
 
-Once the model is fitted, it is recommended to have an overlook at the results. This can be achieved via the function `tor_summarise()`. The latter will return a list with the essentials: A data.frame with the mean and median of parameter estimates, the 95% credible interval and the $\hat{R}$ value (i.e. chain convergence estimation). It also reports the parameters’ identifiability. 
+Once the model is fitted, it is recommended to verify the adequacy of the results. This can be achieved via the function `tor_summarise()`. The latter will return a list with the essentials: A dataframe with the mean and median of parameter estimates, the 95% credible interval and the $\hat{R}$  value (i.e. chain convergence estimation). It also reports the parameters’ identifiability. 
 
 ```{r, tor summarise}
 summary <- tor_summarise(model)
@@ -58,36 +59,38 @@ summary$params
 ```
 
 ### Checking the convergence
-If the $\hat{R}$ values, given in the summary data.frame are larger than 1.1, we recommend to refit the model and increase the number of iterations and burn-ins respectively. This can be done by setting the parameter `fitting_options = list(ni = , nb = )`
+If the $\hat{R}$ values, given in the summary dataframe are larger than 1.1, we recommend to refit the model and increase the number of iterations and burn-ins respectively. This can be done by setting the parameter `fitting_options = list(ni = , nb = )`. It is also possible to look graphicaly at the convergence using the jagsUI function `traceplot()`. Let’s have a look at the convergence for the parameters betat and betac. The necessary object to run the `jagsUI::traceplot()` function can be accessed through `model$mod_parameter`.
 
+```{r, Traceplot,eval=FALSE}
+jagsUI::traceplot(model$mod_parameter, c("betat", "betac"))
+
+```
 ### checking the parameters identifiability 
-In addition to check of the convergence it is advised to control the identifiability of the parameters. This is done by comparing the prior and the posterior distributions. If the overlap is greater than 0.3 the parameter should be considered as not identifiable and a warning will be sent to the user. 
 
-The ovelap is also given by the `tor_summarise()` function. Let's continue with our analysis of *Cercartetus lepidus*: 
+The identifiability of the parameters can be checked by comparing their prior and the posterior distributions. If the overlap between these is greater than 85%, the parameter should be considered as not identifiable (Fasel et al. in prep.) and a warning will be sent to the user. Parameter identifiability is provided for $T_{lc}$, $M_r$, and $T_{be}$, $TMR$ and $T_{bt}$. The ovelap is also given by the `tor_summarise()` function. Let’s continue with our analysis of *Cercartetus lepidus*:
 
 ```{r message=TRUE, warning=TRUE, paged.print=FALSE}
 summary$ppo
 ``` 
 
-### Making sens of the model 
+### Making sense of the model 
 
-Once the basic checks have been done, we can go on with the evaluation of the output. There are two main functions that deal with predictions. `tor_classify()` firstly gives the classification of the raw data based on the predictions of the model. `tor_predict()` further gives the predicted $M$ in torpor and euthermy for a given $T_a$. Finally, we can plot the result using the function `plot_torpor()`.
+Once the basic checks have been done, we can go on with the evaluation of the output. There are two main functions that deal with predictions. `tor_assign()` firstly gives the classification of the raw data based on the predictions of the model. `tor_predict()` further gives the predicted M in torpor and euthermia  for a given $T_a$. Finally, we can plot the result using the function `tor_plot()`.
 
+### Getteing the assignation  
 
-### Getteing the classification 
+To look at the classification of the data the corresponding predicted values we use the function `tor_assign()`,  which will assign the measured metabolic values to either torpor or euthermia  and returns a dataframe with the measured $M$, the measured $T_a$, the predicted $M$ and the assignment.
 
-To look at the classification of the data the corresponding predicted values we use the function `tor_classify()`, which will assign the measured metabolic values to either torpor or euthermy and returns a dataframe with the measured $M$, the measured $T_a$, the predicted $M$ and the classification (predicted_state).
-
-```{r, tor_classify}
-classification <- tor_classify(tor_obj = model)
+```{r, tor_assign}
+assignment <- tor_assign(tor_obj = model)
  
-head(classification)
+head(assignment)
 ```
 
 
 
 ### Prediction 
-The `tor_predict()` function is slightly different as it takes a vector of $T_a$ as input and return the predicted $M$ both in torpor and in euthermy and the 95% credible interval. For example, let's see what are the predicted $M$ at Ta 22°C. 
+The `tor_predict()`  function is slightly different as it takes a vector of $T_a$ as input and returns the predicted  $M$ both in torpor and in euthermia and the 95% credible interval. For example, the predicted $M$ at $T_a$ 22°C can be found:
 
 ```{r, tor_predict}
 prediction <- tor_predict(tor_obj = model, Ta = 22)
@@ -96,7 +99,7 @@ head(prediction)
 
 ### plotting the data and predicted values 
 
-Finally a built-in function allows plot the results. The user can specifie some parameters and can save the plot using the arguments `pdf = TRUE`. The `plot_type` argument also allows to choose between `ggplot` and `base-R`
+Finally a built-in function allows to plot the results. The user can modify the labels with `xlab` and `ylab` and the colors with `col_torp`, `col_eut` and `col_Mtnz` and can save the plot using the arguments `pdf = TRUE`. The plot_type argument also allows to choose between `base` (default) and `ggplot`.
 
 ```{r message=FALSE, warning=FALSE}
 plot <- tor_plot(tor_obj = model, ylab = "MR")
