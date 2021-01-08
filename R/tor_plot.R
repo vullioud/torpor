@@ -13,7 +13,7 @@
 #'@param plot_type A character string specifying the type of plot desired. Either "base" or "ggplot". Note that ggplots are still in development stage.
 #'@param legend A logical specifying if a legend should be added to the plot. Only work for base plot at the moment.
 #'@param col_torp color for torpor model prediction and points
-#'@param col_euth color for euthermy model prediction and points
+#'@param col_euth color for Euthermia model prediction and points
 #'@param col_Mtnz color of Mtnz
 #'@param ylab y label
 #'@param xlab x label
@@ -36,13 +36,13 @@ tor_plot <- function(tor_obj = NULL,
   if(!("tor_obj" %in% class(tor_obj))) stop("tor_obj need to be of class tor_obj")
 
   ## please check
-  group <- measured_Ta <- measured_M <- classification <- NULL
+  assignment <- measured_Ta <- measured_M <- assignment <- NULL
   ## retrieve values from the model
   Tlc <- tor_obj$out_Mtnz_Tlc$Tlc_estimated
   Mtnz <- tor_obj$out_Mtnz_Tlc$Mtnz_estimated
 
 
-  Y <- MR <- tor_obj$data$Y
+  Y <- M <- tor_obj$data$Y
   Ta <- tor_obj$data$Ta
 
   # plotting limits
@@ -51,13 +51,12 @@ tor_plot <- function(tor_obj = NULL,
   MRup <- max(Y,na.rm=TRUE)
   MRlo <- min(Y,na.rm=TRUE)
 
-  ## get the classification and data
-  da <- tor_classify(tor_obj)
+  ## get the assignment and data
+  da <- tor_assign(tor_obj)
 
 
   ## get the predictions
-  pred <- tor_predict(tor_obj, seq(Tlimlo,Tlimup,length=1000)) %>%
-    dplyr::rename(classification = group)
+  pred <- tor_predict(tor_obj, seq(Tlimlo,Tlimup,length=1000))
 
   ## ggplot
   if(plot_type == "ggplot"){
@@ -65,25 +64,25 @@ tor_plot <- function(tor_obj = NULL,
     G <- lwr_95 <- upr_95 <- NULL ## check
 
     plot <- ggplot2::ggplot() +
-      ggplot2::geom_point(data = da[da$classification == "Torpor", ], ggplot2::aes(x = measured_Ta, y = measured_M, col = "Torpor"), col = col_torp) + ## torpor
+      ggplot2::geom_point(data = da[da$assignment == "Torpor", ], ggplot2::aes(x = measured_Ta, y = measured_M, col = "Torpor"), col = col_torp) + ## torpor
       ggplot2::xlim(c(min(da$measured_Ta), max(da$measured_Ta))) +
-      ggplot2::geom_line(data = pred[pred$classification == "Torpor", ], ggplot2::aes(x = Ta, y = pred), col = col_torp,
+      ggplot2::geom_line(data = pred[pred$assignment == "Torpor", ], ggplot2::aes(x = Ta, y = pred), col = col_torp,
                          linetype = 2) +
-      ggplot2::geom_ribbon(data = pred[pred$classification == "Torpor", ],
+      ggplot2::geom_ribbon(data = pred[pred$assignment == "Torpor", ],
                            ggplot2::aes(x = Ta, ymin = lwr_95, ymax = upr_95), fill = col_torp,
                            alpha = 0.2,
                            col = NA) +
-      ggplot2::geom_point(data = da[da$classification == "Euthermy", ], ggplot2::aes(x = measured_Ta, y = measured_M, col = "Euthermy"), col = col_euth) + ## Euthermy
-      ggplot2::geom_line(data = pred[pred$classification == "Euthermy", ], ggplot2::aes(x = Ta, y = pred), col = col_euth,
+      ggplot2::geom_point(data = da[da$assignment == "Euthermia", ], ggplot2::aes(x = measured_Ta, y = measured_M, col = "Euthermia"), col = col_euth) + ## Euthermia
+      ggplot2::geom_line(data = pred[pred$assignment == "Euthermia", ], ggplot2::aes(x = Ta, y = pred), col = col_euth,
                          linetype = 2) +
-      ggplot2::geom_ribbon(data = pred[pred$classification == "Euthermy", ],
+      ggplot2::geom_ribbon(data = pred[pred$assignment == "Euthermia", ],
                            ggplot2::aes(x = Ta, ymin = lwr_95, ymax = upr_95), fill = col_euth,
                            alpha = 0.2,
                            col = NA) +
-      ggplot2::geom_point(data = da[da$classification == "Mtnz", ], ggplot2::aes(x = measured_Ta, y = measured_M, col = "Mtnz"), col = col_Mtnz) + ## Euthermy
-      ggplot2::geom_line(data = pred[pred$classification == "Mtnz", ], ggplot2::aes(x = Ta, y = pred), col = col_Mtnz,
+      ggplot2::geom_point(data = da[da$assignment == "Mtnz", ], ggplot2::aes(x = measured_Ta, y = measured_M, col = "Mtnz"), col = col_Mtnz) + ## Euthermia
+      ggplot2::geom_line(data = pred[pred$assignment == "Mtnz", ], ggplot2::aes(x = Ta, y = pred), col = col_Mtnz,
                          linetype = 2) +
-      ggplot2::geom_point(data = da[da$classification == "Undefined", ], ggplot2::aes(x = measured_Ta, y = measured_M), shape = 4) +
+      ggplot2::geom_point(data = da[da$assignment == "Undefined", ], ggplot2::aes(x = measured_Ta, y = measured_M), shape = 4) +
       ggplot2::theme_light() +
       ggplot2::xlab(xlab) +
       ggplot2::ylab(ylab)
@@ -97,15 +96,15 @@ tor_plot <- function(tor_obj = NULL,
   ## base-R plot
   } else {
     # get values
-    Ymeant <- pred[pred$classification == "Torpor", "pred"]
-    Y975t <- pred[pred$classification == "Torpor", "upr_95"]
-    Y025t <- pred[pred$classification == "Torpor", "lwr_95"]
+    Ymeant <- pred[pred$assignment == "Torpor", "pred"]
+    Y975t <- pred[pred$assignment == "Torpor", "upr_95"]
+    Y025t <- pred[pred$assignment == "Torpor", "lwr_95"]
 
-    Ymeann <- pred[pred$classification == "Euthermy", "pred"]
-    Y975n <- pred[pred$classification == "Euthermy", "upr_95"]
-    Y025n <- pred[pred$classification == "Euthermy", "lwr_95"]
+    Ymeann <- pred[pred$assignment == "Euthermia", "pred"]
+    Y975n <- pred[pred$assignment == "Euthermia", "upr_95"]
+    Y025n <- pred[pred$assignment == "Euthermia", "lwr_95"]
 
-    YmeanM <- pred[pred$classification == "Mtnz", "pred"]
+    YmeanM <- pred[pred$assignment == "Mtnz", "pred"]
 
 
 
@@ -115,13 +114,13 @@ tor_plot <- function(tor_obj = NULL,
     }
 
     graphics::plot(da$measured_M~da$measured_Ta, type="n",frame=FALSE, xlim=c(Tlimlo, Tlimup),ylim=c(MRlo, MRup),ylab= ylab, xlab = xlab)
-    graphics::points(da$measured_M[da$classification == "Torpor"] ~ da$measured_Ta[da$classification == "Torpor"],col = col_torp, pch = 19)
-    graphics::points(da$measured_M[da$classification == "Euthermy"] ~ da$measured_Ta[da$classification == "Euthermy"],col = col_euth , pch = 19)
-    graphics::points(da$measured_M[da$classification == "Mtnz"] ~ da$measured_Ta[da$classification == "Mtnz"],col = col_Mtnz , pch = 19)
-    graphics::points(da$measured_M[da$classification == "Undefined"] ~ da$measured_Ta[da$classification == "Undefined"], pch = 3)
+    graphics::points(da$measured_M[da$assignment == "Torpor"] ~ da$measured_Ta[da$assignment == "Torpor"],col = col_torp, pch = 19)
+    graphics::points(da$measured_M[da$assignment == "Euthermia"] ~ da$measured_Ta[da$assignment == "Euthermia"],col = col_euth , pch = 19)
+    graphics::points(da$measured_M[da$assignment == "Mtnz"] ~ da$measured_Ta[da$assignment == "Mtnz"],col = col_Mtnz , pch = 19)
+    graphics::points(da$measured_M[da$assignment == "Undefined"] ~ da$measured_Ta[da$assignment == "Undefined"], pch = 3)
 
-    if(length(da$classification == "Torpor")> 0){
-      X <-  pred[pred$classification == "Torpor", "Ta"]
+    if(length(da$assignment == "Torpor")> 0){
+      X <-  pred[pred$assignment == "Torpor", "Ta"]
       graphics::par(new=TRUE)
 
       graphics::plot(Ymeant~X,xlim=c(Tlimlo, Tlimup),ylim=c(MRlo, MRup),type="l",xaxt="n",frame=FALSE,yaxt="n",ylab="",xlab="",col=col_torp)
@@ -134,8 +133,8 @@ tor_plot <- function(tor_obj = NULL,
     }
 
 
-    if(length(da$classification == "Euthermy")>0){
-      X <-  pred[pred$classification == "Euthermy", "Ta"]
+    if(length(da$assignment == "Euthermia")>0){
+      X <-  pred[pred$assignment == "Euthermia", "Ta"]
       graphics::par(new=TRUE)
 
       graphics::plot(Ymeann~X,xlim=c(Tlimlo, Tlimup),ylim=c(MRlo, MRup),type="l",xaxt="n",frame=FALSE,yaxt="n",ylab="",xlab="",col=col_euth)
@@ -148,14 +147,17 @@ tor_plot <- function(tor_obj = NULL,
 
       }
 
-    if(length(da$classification == "Mtnz")>0){
-      X <-  pred[pred$classification == "Mtnz", "Ta"]
+    if(length(da$assignment == "Mtnz")>0){
+      X <-  pred[pred$assignment == "Mtnz", "Ta"]
       graphics::par(new=TRUE)
       graphics::plot(YmeanM~X,xlim=c(Tlimlo, Tlimup),ylim=c(MRlo, MRup),type="l",xaxt="n",frame=FALSE,yaxt="n",ylab="",xlab="",col=col_Mtnz)
 
     }
     if (legend) {
-    graphics::legend("topright",c("Euthermy","Torpor", "Mtnz", "Undefined"), pch=c(19, 19,19, 3), col=c(col_euth,col_torp, col_Mtnz, "black"),bty="n")
+    graphics::legend("topright", c("Euthermia","Torpor", "Mtnz", "Undefined"),
+                     pch=c(19, 19,19, 3),
+                     col=c(col_euth,col_torp, col_Mtnz, "black"),
+                     bty="n")
     }
 
     if(pdf == TRUE){
@@ -164,4 +166,4 @@ tor_plot <- function(tor_obj = NULL,
 
   }
 }
-
+tor_plot()
