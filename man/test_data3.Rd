@@ -12,5 +12,6 @@ data(test_data3)
 }
 \description{
 Dasyuroides byrnei
+Mtnz = 0.7, Tlc = 28.3
 }
 \keyword{datasets}

@@ -8,7 +8,7 @@ estimate_Tlc_Mtnz(
   M,
   Ta,
   Mtnz,
-  fitting_options = list(ni = 80000, nt = 10, nb = 50000, nc = 3, parallel = TRUE)
+  fitting_options = list(ni = 50000, nt = 10, nb = 30000, nc = 3, parallel = TRUE)
 )
 }
 \arguments{

@@ -12,5 +12,6 @@ data(test_data2)
 }
 \description{
 Cercartetus lepidus
+Mtnz = 1.49, Tlc = 28.8
 }
 \keyword{datasets}

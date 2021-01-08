@@ -9,7 +9,7 @@ estimate_assignation(
   Ta,
   Mtnz = NULL,
   Tlc = NULL,
-  fitting_options = list(ni = 80000, nt = 10, nb = 30000, nc = 3, parallel = TRUE)
+  fitting_options = list(ni = 50000, nt = 10, nb = 30000, nc = 3, parallel = TRUE)
 )
 }
 \arguments{
@@ -24,7 +24,7 @@ estimate_assignation(
 \item{fitting_options}{a list of fitting option to pass to jags.}
 }
 \description{
-This function estimate the assignation into torpor or euthermy. It is used
+This function estimate the assignation into torpor or euthermia. It is used
 internally prior to estimate the parameters
 }
 \examples{

@@ -25,7 +25,7 @@ tor_plot(
 
 \item{col_torp}{color for torpor model prediction and points}
 
-\item{col_euth}{color for euthermy model prediction and points}
+\item{col_euth}{color for Euthermia model prediction and points}
 
 \item{col_Mtnz}{color of Mtnz}
 

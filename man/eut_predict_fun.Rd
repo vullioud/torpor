@@ -19,11 +19,11 @@ eut_predict_fun(x, inte, betat, Ym)
 a numerical value
 }
 \description{
-function to fit the model in euthermy
+function to fit the model in euthermia
 }
 \seealso{
 Other predict: 
-\code{\link{tor_classify}()},
+\code{\link{tor_assign}()},
 \code{\link{tor_predict_fun}()},
 \code{\link{tor_predict}()}
 }

@@ -23,13 +23,13 @@ a given ambient temperature (Ta), in euthermic and/or torpid state.
 test_mod <- tor_fit(M = test_data2[,2],
                    Ta = test_data2[, 1],
                    fitting_options = list(nc = 1, nb = 3000, ni = 5000))
-tor_predict(tor_obj, Ta = 10:35)
+tor_predict(test_mod, Ta = 10:35)
 }
 }
 \seealso{
 Other predict: 
 \code{\link{eut_predict_fun}()},
-\code{\link{tor_classify}()},
+\code{\link{tor_assign}()},
 \code{\link{tor_predict_fun}()}
 }
 \concept{predict}
