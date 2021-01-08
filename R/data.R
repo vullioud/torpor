@@ -1,6 +1,7 @@
 #' test_data
 #'
 #' Callithrix pygmaea
+#' Mtnz = 98, Tlc = 27.5
 #'
 #' @docType data
 #' @keywords datasets
@@ -12,6 +13,7 @@ NULL
 #' test_data2
 #'
 #' Cercartetus lepidus
+#' Mtnz = 1.49, Tlc = 28.8
 #'
 #' @docType data
 #' @keywords datasets
@@ -23,6 +25,7 @@ NULL
 #' test_data3
 #'
 #' Dasyuroides byrnei
+#' Mtnz = 0.7, Tlc = 28.3
 #'
 #' @docType data
 #' @keywords datasets
