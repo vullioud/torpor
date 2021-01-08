@@ -124,9 +124,9 @@ find_low_Tlc_Mtnz <- function(M,Ta){
 #'t <- estimate_Tlc_Mtnz(M = test_data2$VO2ms, Ta = test_data2$Ta, Mtnz = NULL,
 #'                       fitting_options = list(parallel = FALSE))
 
-estimate_Tlc_Mtnz <- function(M, Ta, Mtnz, fitting_options = list(ni = 80000,
+estimate_Tlc_Mtnz <- function(M, Ta, Mtnz, fitting_options = list(ni = 50000,
                                                                   nt = 10,
-                                                                  nb = 50000,
+                                                                  nb = 30000,
                                                                   nc = 3,
                                                                   parallel = TRUE)) { ## add parallel to fitting options
   .complete_args(estimate_Tlc_Mtnz)
@@ -154,7 +154,7 @@ estimate_Tlc_Mtnz <- function(M, Ta, Mtnz, fitting_options = list(ni = 80000,
     p = stats::runif(2),
     Tbe= stats::runif(1,35,40),
     Tlc = stats::runif(1, low_Tlc, max(Ta)),
-    MR=stats::runif(1,Mtnz*0.8/Ym,Mtnz/Ym),
+    Mr=stats::runif(1,Mtnz*0.8/Ym,Mtnz/Ym),
     TMR=stats::runif(1,0.7*Mtnz/(Ym),Mtnz*0.8/Ym))
 
   inits_hetero_list <- rep(list(inits), fitting_options[["nc"]])
@@ -206,7 +206,7 @@ estimate_Tlc_Mtnz <- function(M, Ta, Mtnz, fitting_options = list(ni = 80000,
 
 #' Estimate assignation
 #'
-#' This function estimate the assignation into torpor or euthermy. It is used
+#' This function estimate the assignation into torpor or euthermia. It is used
 #' internally prior to estimate the parameters
 #'
 #'@name estimate_assignation
@@ -221,7 +221,7 @@ estimate_Tlc_Mtnz <- function(M, Ta, Mtnz, fitting_options = list(ni = 80000,
 #'}
 estimate_assignation <- function(M, Ta,
                                  Mtnz = NULL, Tlc = NULL,
-                                 fitting_options = list(ni = 80000,
+                                 fitting_options = list(ni = 50000,
                                                         nt = 10,
                                                         nb = 30000,
                                                         nc = 3,
@@ -284,7 +284,7 @@ estimate_assignation <- function(M, Ta,
     p = stats::runif(3),
     Tbe = stats::runif(1,Tlc, 50),
     TMR = stats::runif(1,0.7*Mtnz/(Ym),Mtnz*0.8/Ym),
-    MR = stats::runif(1, Mtnz*0.8/Ym, Mtnz/Ym))
+    Mr = stats::runif(1, Mtnz*0.8/Ym, Mtnz/Ym))
 
 
   inits_hetero_list_2 <- rep(list(inits_2), fitting_options[["nc"]])
@@ -433,7 +433,7 @@ estimate_assignation <- function(M, Ta,
 #'@export
 #'@examples
 #'\dontrun{
-#'test_mod <- tor_fit(Ta = test_data3$Ta, M = test_data3$Y,
+#'test_mod <- tor_fit(Ta = test_data$Ta, M = test_data$VO2,
 #'                    fitting_options = list(parallel = TRUE))
 #'test_mod2 <- tor_fit(Ta = test_data2$Ta, M = test_data2$VO2ms, Mtnz = 1.8, Tlc = 29.2,
 #'                    fitting_options = list(parallel = TRUE))
@@ -446,9 +446,9 @@ estimate_assignation <- function(M, Ta,
 tor_fit <- function(Ta, M,
                     Mtnz = NULL,
                     Tlc = NULL,
-                    fitting_options = list(ni = 80000,
+                    fitting_options = list(ni = 50000,
                                            nt = 10,
-                                           nb = 50000,
+                                           nb = 30000,
                                            nc = 3,
                                            parallel = TRUE)) {
 
@@ -484,11 +484,11 @@ tor_fit <- function(Ta, M,
     tauy1=stats::runif(1,0.03,0.05),
     Tbe = stats::runif(1,Tlc, 50),
     TMR = stats::runif(1,0.7*Mtnz/(Ym),Mtnz*0.8/Ym),
-    MR = stats::runif(1, Mtnz*0.8/Ym, Mtnz/Ym))
+    Mr = stats::runif(1, Mtnz*0.8/Ym, Mtnz/Ym))
 
   inits_hetero_list_3 <- rep(list(inits_3), fitting_options[["nc"]])
   params <- params_hetero_2 <- c("tau","inte","intc","intr","betat",
-                                 "betac","Tt","TMR","MR","tauy1", "tauy2", "Tbt", "Tbe")
+                                 "betac","Tt","TMR","Mr","tauy1", "tauy2", "Tbt", "Tbe")
 
   out_4 <- jagsUI::jags(data = win.data_3,
                         inits =  inits_hetero_list_3,
