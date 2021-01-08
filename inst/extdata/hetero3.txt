@@ -27,17 +27,17 @@ model{
     #Assumptions
     inte <- Mtnz-betat*Tlc
     intr <- -Tbt*betat
-    intc <- MR/exp(betac*Tlc)
+    intc <- Mr/exp(betac*Tlc)
     maxTbt <- min(Tbe-Mtnz*2/TMR,(Tlcq2.5*betat-TMR)/betat)
     betat <- Mtnz/(Tlc-Tbe)
     Tt <- (TMR-intr)/betat
-    betac <-(log(MR)-log(TMR))/(Tlc-Tt)
+    betac <-(log(Mr)-log(TMR))/(Tlc-Tt)
 #Priors
     Tbt ~ dnorm(0,0.01)T(-5,maxTbt)
     tauy2~ dunif(0,3)
     tauy1~dunif(0.2*tauy2,tauy2)
     TMR~dnorm(0,0.001)T(0,0.8*Mtnz)
-    MR~dnorm(0,0.001)T(TMR,Mtnz)
+    Mr~dnorm(0,0.001)T(TMR,Mtnz)
     Tbe~dnorm(0,0.001)T(Tlc,50)
 
     }
