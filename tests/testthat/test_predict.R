@@ -23,10 +23,10 @@ test_that("tor_predict return an error if ta is not a vector of numeric", {
  })
 
 
-test_that("tor_classify return a data.frame of length = length(data) and 5 column", {
+test_that("tor_assign return a data.frame of length = length(data) and 5 column", {
    set.seed(1)
    expect_warning(mod <- tor_fit(M = test_data$VO2, Ta = test_data$Ta, fitting_options = list(ni = 5000, nb = 3000, nc = 1)))
-   x <- tor_classify(mod)
+   x <- tor_assign(mod)
    expect_equal(class(x), "data.frame")
    expect_equal(nrow(x), length(mod$data$Y))
    expect_equal(ncol(x), 4)
