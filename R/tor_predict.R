@@ -15,7 +15,7 @@
 #'test_mod <- tor_fit(M = test_data2[,2],
 #'                    Ta = test_data2[, 1],
 #'                    fitting_options = list(nc = 1, nb = 3000, ni = 5000))
-#' tor_predict(tor_obj, Ta = 10:35)
+#' tor_predict(test_mod, Ta = 10:35)
 #'}
 tor_predict <- function(tor_obj, Ta){
   if(!("tor_obj" %in% class(tor_obj))) stop("tor_obj need to be of class tor_obj")
@@ -64,13 +64,12 @@ tor_predict <- function(tor_obj, Ta){
 
     } else {
 
-      Mtnz <- tor_obj$out_Mtnz_Tlc$Mtnz_points
+      Mtnz <- tor_obj$out_Mtnz_Tlc$Mtnz_estimated
 
       if(length(Mtnz < 2)) { # cases when Mtnz is provided by the user
         Ymean_b[i] <-Mtnz
-        Y975_b[i] <- Mtnz ## cannot give NA because of the filter at the end
-        Y025_b[i] <- Mtnz ##
-
+        Y975_b[i] <- Mtnz
+        Y025_b[i] <- Mtnz
 
       } else {
       Ymean_b[i] <- mean(Mtnz, na.rm = TRUE)
@@ -83,14 +82,14 @@ tor_predict <- function(tor_obj, Ta){
 
   #### values for torpor
   out_tor <- data.frame(Ta = Ta,
-                     group = rep("Torpor", length(X)),
+                     assignment = rep("Torpor", length(X)),
                      pred =  Ymean_t,
                      upr_95 = Y975_t,
                      lwr_95 = Y025_t)
 
-  #### values for euthermy
+  #### values for euthermia
   out_eut <- data.frame(Ta = Ta,
-                     group = rep("Euthermy", length(X)),
+                     assignment = rep("Euthermia", length(X)),
                      pred =  Ymean_n,
                      upr_95 = Y975_n,
                      lwr_95 = Y025_n)
@@ -98,7 +97,7 @@ tor_predict <- function(tor_obj, Ta){
 
   ### values for > Tlc.
   out_Mtnz <- data.frame(Ta = Ta,
-                        group = rep("Mtnz", length(X)),
+                        assignment = rep("Mtnz", length(X)),
                         pred =  Ymean_b,
                         upr_95 = Y975_b,
                         lwr_95 = Y025_b)
@@ -109,9 +108,9 @@ tor_predict <- function(tor_obj, Ta){
 
   if(!any(tor_obj$assignation$G == 1)){ ## no torpor
     out <- rbind(out_eut,out_Mtnz)
-  } else if (!any(tor_obj$assignation$G == 2)){ ## no euthermy
+  } else if (!any(tor_obj$assignation$G == 2)){ ## no euthermia
     out <- rbind(out_tor, out_Mtnz)
-  } else { ## both torpor and euthermy
+  } else { ## both torpor and euthermia
     out <- rbind(out_tor, out_eut, out_Mtnz)
   }
 
@@ -140,7 +139,7 @@ tor_predict_fun <- function(x, Tt, intr, intc, betat, betac, Ym) {
 ################################################################################
 #' eut_predict_fun // internal
 #'
-#'function to fit the model in euthermy
+#'function to fit the model in euthermia
 #'@name eut_predict_fun
 #'@family predict
 #'@param x a temperature
@@ -148,7 +147,7 @@ tor_predict_fun <- function(x, Tt, intr, intc, betat, betac, Ym) {
 #'@param betat slope 1
 #'@param Ym mean of Y to back transform
 #'@return a numerical value
-eut_predict_fun <- function(x, inte, betat, Ym) { ## backtransform parameters to prediction for euthermy
+eut_predict_fun <- function(x, inte, betat, Ym) { ## backtransform parameters to prediction for euthermia
   out <- (inte +betat*x)*Ym
   return(out)
 }
@@ -156,19 +155,18 @@ eut_predict_fun <- function(x, inte, betat, Ym) { ## backtransform parameters to
 
 #' Assign metabolic state
 #'
-#'[tor_classify()] returns the raw data with the related
+#'[tor_assign()] returns the raw data with the related
 #'predicted state values (between 1 and 2), which leads to the state
-#'classification (torpor or euthermy). Additionally, it also provides the
 #'predicted metabolic rate (M) at the given ambient temperature (Ta).
 #'
-#'@name tor_classify
-#'@aliases tor_classify
+#'@name tor_assign
+#'@aliases tor_assign
 #'@family predict
 #'@param tor_obj a fitted model from [tor_fit()]
 #'@return a data.frame
 #'@export
 
-tor_classify <- function(tor_obj){
+tor_assign <- function(tor_obj){
   if(!("tor_obj" %in% class(tor_obj))) stop("tor_obj need to be of class tor_obj")
 
 data <- data.frame(measured_M = tor_obj$data$Y,
@@ -191,9 +189,9 @@ Ym <- tor_obj$data$Ym
 X <- nrow(data)
 data$predicted_M <- rep(NA, X)
 
-data$classification <- dplyr::case_when(data$predicted_state == 0 ~ "Undefined",
+data$assignment <- dplyr::case_when(data$predicted_state == 0 ~ "Undefined",
                                      data$predicted_state == 1 ~ "Torpor",
-                                     data$predicted_state == 2 ~ "Euthermy",
+                                     data$predicted_state == 2 ~ "Euthermia",
                                      data$predicted_state == 3 ~ "Mtnz")
 
 for(i in 1:nrow(data)) {
