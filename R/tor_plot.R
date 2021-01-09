@@ -166,4 +166,4 @@ tor_plot <- function(tor_obj = NULL,
 
   }
 }
-tor_plot()
+
