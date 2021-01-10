@@ -36,7 +36,7 @@ for(i in 1:2){
 #Priors
 
     Tlc ~dnorm(0,0.001)T(max(Ta),Max)
-    Tbt ~ dnorm(0,0.01)T(-5,maxTbt)
+    Tbt ~ dnorm(0,0.001)T(-5,maxTbt)
     tauy2~ dunif(0,3)
     tauy1~dunif(0.2*tauy2,tauy2)
     p[1:2] ~ ddirch(rep(1,2))
