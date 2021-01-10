@@ -488,7 +488,7 @@ tor_fit <- function(Ta, M,
 
   inits_hetero_list_3 <- rep(list(inits_3), fitting_options[["nc"]])
   params <- params_hetero_2 <- c("tau","inte","intc","intr","betat",
-                                 "betac","Tt","TMR","Mr","tauy1", "tauy2", "Tbt", "Tbe")
+                                 "betac","Tt","TMR","Mr", "Tbt", "Tbe")
 
   out_4 <- jagsUI::jags(data = win.data_3,
                         inits =  inits_hetero_list_3,
