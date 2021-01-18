@@ -88,7 +88,7 @@ find_low_Tlc_Mtnz <- function(M,Ta){
 
   if (length(SEQX[p2 < 0.01 & !is.na(p2)]) > 0 &
       length(SEQX[p < 0.01 & !is.na(p)]) == 0 &
-      length(SEQX[whitetest < 0.01]) == 0) {
+      length(SEQX[whitetest < 0.05]) == 0) {
 
     stop("Tlc and Mtnz can not be estimated: provide values")
 
