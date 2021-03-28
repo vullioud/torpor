@@ -111,7 +111,8 @@ tor_ppo <- function(tor_obj){
   for(i in 1:nbsamples){
     PR[i]<- truncnorm::rtruncnorm(1,
                                   a = -5,
-                                  b = min(tor_obj$mod_parameter$sims.list$Tbe[i]- (tor_obj$out_Mtnz_Tlc$Mtnz_estimated*2) / (tor_obj$data$Ym*tor_obj$mod_parameter$sims.list$TMR[i]), (tor_obj$out_Mtnz_Tlc$model_1$q2.5$Tlc* tor_obj$mod_parameter$sims.list$betat[i]- tor_obj$mod_parameter$sims.list$TMR[i])
+                                  b = min(tor_obj$mod_parameter$sims.list$Tbe[i]- (tor_obj$out_Mtnz_Tlc$Mtnz_estimated*2) /
+                                            (tor_obj$data$Ym*tor_obj$mod_parameter$sims.list$TMR[i]), (tor_obj$out_Mtnz_Tlc$model_1$q2.5$Tlc* tor_obj$mod_parameter$sims.list$betat[i]- tor_obj$mod_parameter$sims.list$TMR[i])
                                           / tor_obj$mod_parameter$sims.list$betat[i]),
                                   mean=0,
                                   sd=sqrt(1/0.001))
@@ -128,7 +129,7 @@ tor_ppo <- function(tor_obj){
   for (i in 1:nrow(out)){
 
     if (out$ppo[i] > 85) {
-      warning(paste(out$name[i], "is not identifiable: PPO > 85%"))
+      warning(paste(out$name[i], "Weak identifiability; PPO > 85%"))
     }
   }
   out
