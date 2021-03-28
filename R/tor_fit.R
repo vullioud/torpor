@@ -265,7 +265,7 @@ estimate_assignation <- function(M, Ta,
                          Ta2 = stats::na.omit(Ta[Ta < Tlc]))
 
   } else { ## keep the structure of output of estimate_Tlc_Mtnz when there are provided as input
-    message("test")
+    message("Mtnz and Tlc have been provided by the user")
     out_Mtnz_Tlc <- list(model_1 = NULL,
                          Tlc_estimated = Tlc,
                          Tlc_distribution = Tlc,
@@ -279,9 +279,10 @@ estimate_assignation <- function(M, Ta,
 
   ## initial values
   inits_2 <- list(
-    tauy2=stats::runif(1,0.05,0.1),
-    tauy1=stats::runif(1,0.03,0.05),
-    p = stats::runif(3),
+    tauy3 = stats::runif(1, 0.04, 0.05),
+    tauy2 = stats::runif(1, 0.05, 0.06),
+    tauy1 = stats::runif(1, 0.012, 0.05),
+    p = stats::runif(2),
     Tbe = stats::runif(1,Tlc, 50),
     TMR = stats::runif(1,0.7*Mtnz/(Ym),Mtnz*0.8/Ym),
     Mr = stats::runif(1, Mtnz*0.8/Ym, Mtnz/Ym))
@@ -290,6 +291,7 @@ estimate_assignation <- function(M, Ta,
   inits_hetero_list_2 <- rep(list(inits_2), fitting_options[["nc"]])
 
   params_hetero_2 <- c("G", "Tt","intr","intc", "inte", "betat", "betac")
+
   Tlcq2.5 <- if(is.null(out_Mtnz_Tlc$model_1)) Tlc else out_Mtnz_Tlc$model_1$q2.5$Tlc
 
   win.data_2 <- list(Y = Y/Ym,
@@ -329,7 +331,7 @@ estimate_assignation <- function(M, Ta,
 
 #'step_3_bis
 #'
-#' This function estimate the lowest TLC and the Mtnz
+#' This function assigns certain points to Torpor or euthermy
 #'
 #'@name .step_3_bis
 #'@param out_assignation output of estimatate_assignation.
@@ -348,15 +350,6 @@ estimate_assignation <- function(M, Ta,
 
   G <- mod_assignation$mean$G ## extract the G
 
-
-  nbsamples <- ((ni - nb)*nc)/nt ## look how to take them from mod2
-
-  ## inside small fun
-  expit <- function(x){1/(1 + exp(-x))} ##step not to be done if Tlc and Mtnz and given
-  funabove <- function(x, mod){expit(stats::coefficients(mod)[1] + stats::coefficients(mod)[2]*x)} ##step not to be done if Tlc and Mtnz and given
-  funbelow <- function(x, mod){-(funabove(x, mod)- 1)} ##step not to be done if Tlc and Mtnz and given
-
-  ####
   if(length(round(G)[round(G)==1])!=0){
 
     for(i in 1:length(G)){
@@ -372,9 +365,43 @@ estimate_assignation <- function(M, Ta,
       G[i] <- ifelse(Y[i] >=  stats::median(eut_predict_fun(x = Ta[i],
                                                             inte = mod_assignation$sims.list$inte,
                                                             betat = mod_assignation$sims.list$betat,
-                                                            Ym = out_assignation$data$Ym)) & G[i] != 3, 2 ,G[i])
+                                                            Ym = out_assignation$data$Ym)) & G[i] != 3, 2 , G[i])
     }
   }
+
+  list(G = G,
+       pstatus = NA)
+}
+
+#'step_4_bis
+#'
+#' This function flag the uncertain point based on a threshold
+#'
+#'@name .step_4_bis
+#'@param out_assignation output of estimatate_assignation.
+#'@param fitting_options fitting options
+#'@param threshold Assignment confidence threshold
+.step_4_bis <- function(out_assignation, fitting_options, threshold){
+  ## comes from hetero2
+  Ta <- out_assignation$data$Ta
+  Y <- out_assignation$data$Y
+
+  nc <- fitting_options[["nc"]]
+  nt <- fitting_options[["nt"]]
+  ni <- fitting_options[["ni"]]
+  nb <- fitting_options[["nb"]]
+  ## extract model assignation
+  mod_assignation <- out_assignation$mod_parameter ### CHECK THAT IS THE GOOD MODEL !!
+
+  G <- mod_assignation$mean$G ## extract the G
+  G[Ta >= out_assignation$out_Mtnz_Tlc$Tlc_estimated] <- 3
+
+  nbsamples <- ((ni - nb)*nc)/nt ## look how to take them from mod2
+
+  ## inside small fun
+  expit <- function(x){1/(1 + exp(-x))} ##step not to be done if Tlc and Mtnz and given
+  funabove <- function(x, mod){expit(stats::coefficients(mod)[1] + stats::coefficients(mod)[2]*x)} ##step not to be done if Tlc and Mtnz and given
+  funbelow <- function(x, mod){-(funabove(x, mod)- 1)} ##step not to be done if Tlc and Mtnz and given
 
   probStatus <- 1 - sqrt((G - round(G))^2)
 
@@ -396,20 +423,16 @@ estimate_assignation <- function(M, Ta,
 
     pstatus[i] <- as.numeric(stats::binom.test(round(nbsamples*probStatus[i]),
                                                nbsamples,
-                                               alternative = "greater", p = 0.5)$p.value)
+                                               alternative = "greater", p = threshold)$p.value)
 
   }
 
-  G[pstatus>0.01] <- 0
+  G[pstatus>0.05] <- 0
   G <- round(G)
-
-
 
   list(G = G,
        pstatus = pstatus)
-
 }
-
 
 #' Mixture model aimed at assigning metabolic rate measurements (M) to torpor and euthermia
 #'
@@ -429,12 +452,13 @@ estimate_assignation <- function(M, Ta,
 #'
 #'@name tor_fit
 #'@inheritParams estimate_assignation
+#'@param threshold Assignment confidence threshold
 #'@return A list of class tor_obj
 #'@export
 #'@examples
 #'\dontrun{
-#'test_mod <- tor_fit(Ta = test_data$Ta, M = test_data$VO2,
-#'                    fitting_options = list(parallel = TRUE))
+#'test_mod <- tor_fit(Ta = test_data2$Ta, M = test_data2$VO2ms,
+#'                    fitting_options = list(parallel = TRUE), threshold = 0.9)
 #'test_mod2 <- tor_fit(Ta = test_data2$Ta, M = test_data2$VO2ms, Mtnz = 1.8, Tlc = 29.2,
 #'                    fitting_options = list(parallel = TRUE))
 #'test_mod3 <- tor_fit(Ta = test_data2$Ta, M = test_data2$VO2ms, Mtnz = 1.8,
@@ -450,7 +474,8 @@ tor_fit <- function(Ta, M,
                                            nt = 10,
                                            nb = 30000,
                                            nc = 3,
-                                           parallel = TRUE)) {
+                                           parallel = TRUE),
+                    threshold = 0.5) {
 
 
   if (length(Ta) != length(M)) stop("M and Ta do not have the same length")
@@ -461,6 +486,8 @@ tor_fit <- function(Ta, M,
   out_assignation <- estimate_assignation(M = M, Ta = Ta, Mtnz = Mtnz, Tlc = Tlc, fitting_options)
 
   G <- out_assignation$assignation$G
+  G[!(G==2|G==1)] <- NA
+
   Y <- out_assignation$data$Y
   Ta <- out_assignation$data$Ta
   Tlc <- out_assignation$out_Mtnz_Tlc$Tlc_estimated
@@ -469,26 +496,28 @@ tor_fit <- function(Ta, M,
 
   Tlcq2.5 <- if(is.null(out_assignation$out_Mtnz_Tlc$model_1)) Tlc else out_assignation$out_Mtnz_Tlc$model_1$q2.5$Tlc ##
 
-  win.data_3 <- list(Y = Y[G != 0 & G != 3] / Ym,
-                     NbObservations = length(Y[G != 0 & G != 3]),
-                     Ta = Ta[G != 0 & G != 3],
+  win.data_3 <- list(Y = Y/Ym,
+                     NbObservations = length(Y),
+                     Ta = Ta,
                      Mtnz = Mtnz / Ym,
                      Tlc = Tlc,
-                     G = G[G != 0 & G != 3],
+                     G = G,
                      Tlcq2.5= Tlcq2.5)
 
-  path_to_model_3 <- system.file("extdata", "hetero3.txt",  package = "torpor")
+  path_to_model_3 <- system.file("extdata", "hetero2.txt",  package = "torpor")
 
   inits_3 <-  list(
-    tauy2=stats::runif(1,0.05,0.1),
-    tauy1=stats::runif(1,0.03,0.05),
+    tauy3 = stats::runif(1, 0.04, 0.05),
+    tauy2 = stats::runif(1,0.05, 0.06),
+    tauy1 = stats::runif(1, 0.012,0.05),
     Tbe = stats::runif(1,Tlc, 50),
+    p = stats::runif(2),
     TMR = stats::runif(1,0.7*Mtnz/(Ym),Mtnz*0.8/Ym),
     Mr = stats::runif(1, Mtnz*0.8/Ym, Mtnz/Ym))
 
   inits_hetero_list_3 <- rep(list(inits_3), fitting_options[["nc"]])
   params <- params_hetero_2 <- c("tau","inte","intc","intr","betat",
-                                 "betac","Tt","TMR","Mr", "Tbt", "Tbe")
+                                 "betac","Tt","TMR","Mr", "Tbt", "Tbe", "G")
 
   out_4 <- jagsUI::jags(data = win.data_3,
                         inits =  inits_hetero_list_3,
@@ -508,6 +537,7 @@ tor_fit <- function(Ta, M,
   }
 
   out_assignation$mod_parameter <- out_4
+  out_assignation$assignation <- .step_4_bis(out_assignation, fitting_options, threshold)
 
   class(out_assignation) <- c("tor_obj", "list")
   print(out_assignation)
