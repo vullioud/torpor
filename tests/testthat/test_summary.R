@@ -33,11 +33,11 @@ test_that("tor_overlap and tor_summarise return a warning if tlc_overlap, Tt_ove
    expect_warning(tor_summarise(mod))
 })
 
- test_that("get_parameters return a data.frame of 14 rows and 6 col", {
+ test_that("get_parameters return a data.frame of 15 rows and 6 col", {
    set.seed(1)
    expect_warning(mod <- tor_fit(M = test_data$VO2, Ta = test_data$Ta, fitting_options = list(ni = 5000, nb = 3000, nc = 1)))
    test <- get_parameters(mod)
-   expect_equal(nrow(test), 14)
+   expect_equal(nrow(test), 15)
    expect_equal(ncol(test), 6)
 })
 
