@@ -36,7 +36,6 @@
   return(NULL)
 }
 
-
 ##############################################################################
 
 #'Find the low Tlc.
@@ -322,8 +321,8 @@ estimate_assignation <- function(M, Ta,
                 Ta = Ta,
                 Ym = Ym))
 
-  out_assignation$assignation <- .step_3_bis(out_assignation = out_assignation,
-                                             fitting_options = fitting_options)
+  out_assignation$assignation <- suppressWarnings(.step_3_bis(out_assignation = out_assignation,
+                                             fitting_options = fitting_options))
 
   out_assignation
 }
@@ -375,13 +374,13 @@ estimate_assignation <- function(M, Ta,
 
 #'step_4_bis
 #'
-#' This function flag the uncertain point based on a threshold
+#' This function flag the uncertain point based on a confidence
 #'
 #'@name .step_4_bis
 #'@param out_assignation output of estimatate_assignation.
 #'@param fitting_options fitting options
-#'@param threshold Assignment confidence threshold
-.step_4_bis <- function(out_assignation, fitting_options, threshold){
+#'@param confidence Assignment confidence threshold
+.step_4_bis <- function(out_assignation, fitting_options, confidence){
   ## comes from hetero2
   Ta <- out_assignation$data$Ta
   Y <- out_assignation$data$Y
@@ -423,7 +422,7 @@ estimate_assignation <- function(M, Ta,
 
     pstatus[i] <- as.numeric(stats::binom.test(round(nbsamples*probStatus[i]),
                                                nbsamples,
-                                               alternative = "greater", p = threshold)$p.value)
+                                               alternative = "greater", p = confidence)$p.value)
 
   }
 
@@ -452,13 +451,14 @@ estimate_assignation <- function(M, Ta,
 #'
 #'@name tor_fit
 #'@inheritParams estimate_assignation
-#'@param threshold Assignment confidence threshold
+#'@param confidence Assignment confidence threshold
 #'@return A list of class tor_obj
 #'@export
 #'@examples
 #'\dontrun{
 #'test_mod <- tor_fit(Ta = test_data2$Ta, M = test_data2$VO2ms,
-#'                    fitting_options = list(parallel = TRUE), threshold = 0.9)
+#'                    fitting_options = list(parallel = TRUE, ni = 500, nt = 2,
+#'                    nb = 200), confidence = 0.9)
 #'test_mod2 <- tor_fit(Ta = test_data2$Ta, M = test_data2$VO2ms, Mtnz = 1.8, Tlc = 29.2,
 #'                    fitting_options = list(parallel = TRUE))
 #'test_mod3 <- tor_fit(Ta = test_data2$Ta, M = test_data2$VO2ms, Mtnz = 1.8,
@@ -475,7 +475,7 @@ tor_fit <- function(Ta, M,
                                            nb = 30000,
                                            nc = 3,
                                            parallel = TRUE),
-                    threshold = 0.5) {
+                    confidence = 0.5) {
 
 
   if (length(Ta) != length(M)) stop("M and Ta do not have the same length")
@@ -533,11 +533,11 @@ tor_fit <- function(Ta, M,
 
   ### check convergence.... if Rhat > 1.1 warrning sur parameters.
   for(i in seq_along(out_4$Rhat)){
-    if (any(out_4$Rhat[i][[1]] > 1.1, na.rm = TRUE)) warning(paste("Rhat > 1.1 on parameter:", names(out_4$Rhat[i])))
+    if (any(out_4$Rhat[i][[1]] > 1.1, na.rm = TRUE) & names(out_4$Rhat[i]) != "G") warning(paste("Rhat > 1.1 on parameter:", names(out_4$Rhat[i])))
   }
 
   out_assignation$mod_parameter <- out_4
-  out_assignation$assignation <- .step_4_bis(out_assignation, fitting_options, threshold)
+  out_assignation$assignation <- suppressWarnings(.step_4_bis(out_assignation, fitting_options, confidence))
 
   class(out_assignation) <- c("tor_obj", "list")
   print(out_assignation)
