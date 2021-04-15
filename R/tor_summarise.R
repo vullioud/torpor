@@ -98,11 +98,16 @@ tor_ppo <- function(tor_obj){
   ## TMR
   MIN <- 0
   MAX <- 0.8 * tor_obj$out_Mtnz_Tlc$Mtnz_estimated/tor_obj$data$Ym
-  PR<- truncnorm::rtruncnorm(nbsamples,
-                             a=MIN,
-                             b=MAX,
-                             mean=0,
-                             sd=sqrt(1/0.001))
+
+  for(i in 1:nbsamples){
+
+    PR[i] <- truncnorm::rtruncnorm(1,
+                                  a=tor_obj$out_Mtnz_Tlc$Mtnz_estimated*2/(tor_obj$data$Ym*(tor_obj$mod_parameter$sims.list$Tbe[i]+5)),
+                                  b=MAX,
+                                  mean=0,
+                                  sd=sqrt(1/0.001))
+    }
+
   TMR_chain <- tor_obj$mod_parameter$sims.list$TMR
   overlapTMR <- as.numeric(round(overlapping::overlap(x = list(TMR_chain, PR))$OV, digits = 3))
   out_TMR <- data.frame(name = "TMR", overlap = overlapTMR)
