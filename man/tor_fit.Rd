@@ -10,7 +10,7 @@ tor_fit(
   Mtnz = NULL,
   Tlc = NULL,
   fitting_options = list(ni = 50000, nt = 10, nb = 30000, nc = 3, parallel = TRUE),
-  threshold = 0.5
+  confidence = 0.5
 )
 }
 \arguments{
@@ -24,7 +24,7 @@ tor_fit(
 
 \item{fitting_options}{a list of fitting option to pass to jags.}
 
-\item{threshold}{Assignment confidence threshold}
+\item{confidence}{Assignment confidence threshold}
 }
 \value{
 A list of class tor_obj
@@ -48,7 +48,8 @@ as "conforming torpor".
 \examples{
 \dontrun{
 test_mod <- tor_fit(Ta = test_data2$Ta, M = test_data2$VO2ms,
-                   fitting_options = list(parallel = TRUE), threshold = 0.9)
+                   fitting_options = list(parallel = TRUE, ni = 500, nt = 2,
+                   nb = 200), confidence = 0.9)
 test_mod2 <- tor_fit(Ta = test_data2$Ta, M = test_data2$VO2ms, Mtnz = 1.8, Tlc = 29.2,
                    fitting_options = list(parallel = TRUE))
 test_mod3 <- tor_fit(Ta = test_data2$Ta, M = test_data2$VO2ms, Mtnz = 1.8,

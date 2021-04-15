@@ -4,15 +4,15 @@
 \alias{.step_4_bis}
 \title{step_4_bis}
 \usage{
-.step_4_bis(out_assignation, fitting_options, threshold)
+.step_4_bis(out_assignation, fitting_options, confidence)
 }
 \arguments{
 \item{out_assignation}{output of estimatate_assignation.}
 
 \item{fitting_options}{fitting options}
 
-\item{threshold}{Assignment confidence threshold}
+\item{confidence}{Assignment confidence threshold}
 }
 \description{
-This function flag the uncertain point based on a threshold
+This function flag the uncertain point based on a confidence
 }
