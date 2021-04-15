@@ -36,4 +36,5 @@ Imports: jagsUI,
 VignetteBuilder: knitr
 Suggests: 
     testthat (>= 2.1.0),
-    covr
+    covr,
+    markdown
