@@ -31,7 +31,8 @@ A list of class tor_obj
 }
 \description{
 The function \code{\link[=tor_fit]{tor_fit()}} considers the relation between metabolic rate (M) and
-ambient temperature (Ta) assumed by the Scholander-Irving model and its later extensions.
+ambient temperature (Ta) assumed by the Scholander-Irving model and its later
+extensions.
 }
 \details{
 Resting M measured within the thermoneutral zone (TNZ) is independent of Ta.

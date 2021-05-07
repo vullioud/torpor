@@ -7,12 +7,14 @@
 tor_plot(
   tor_obj = NULL,
   plot_type = "base",
-  legend = TRUE,
   col_torp = "cornflowerblue",
   col_euth = "coral3",
   col_Mtnz = "black",
   ylab = "M",
   xlab = "Ta",
+  xlim = NULL,
+  ylim = NULL,
+  legend = TRUE,
   pdf = FALSE
 )
 }
@@ -20,8 +22,6 @@ tor_plot(
 \item{tor_obj}{a fitted model from \code{\link[=tor_fit]{tor_fit()}}}
 
 \item{plot_type}{A character string specifying the type of plot desired. Either "base" or "ggplot". Note that ggplots are still in development stage.}
-
-\item{legend}{A logical specifying if a legend should be added to the plot. Only work for base plot at the moment.}
 
 \item{col_torp}{color for torpor model prediction and points}
 
@@ -33,17 +33,25 @@ tor_plot(
 
 \item{xlab}{x label}
 
+\item{xlim}{limit of the x-axis}
+
+\item{ylim}{limit of the y-axis}
+
+\item{legend}{A logical specifying if a legend should be added to the plot. Only work for base plot at the moment.}
+
 \item{pdf}{logical if a .pdf copy of the plot should be saved}
 }
 \value{
-a base-R plot or a ggplot object
+a graphics plot or a ggplot object
 }
 \description{
 \code{\link[=tor_plot]{tor_plot()}} provides a plot of the metabolic rate (M) values over the respective
 ambient temperature (Ta).
-Raw data and predicted values are presented in different colors depending
-of the metabolic state. Predicted values are represented by continuous and
-stripped lines for the estimates’ median and 95\% CI bounds of the posterior
-distribution, respectively.
+}
+\details{
+The function plots the predicted value as well as the raw data.
+Measures are presented in different colors depending on the metabolic state.
+Predicted values as well as 95\% credible interval (segmented lines) are also presented.
+This function enables the user to replicate the analysis done in Fasel et al. (in prep).
 For more flexibility the users can use \code{\link[=tor_fit]{tor_fit()}} and \code{\link[=tor_predict]{tor_predict()}} directly.
 }

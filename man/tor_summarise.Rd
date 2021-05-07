@@ -14,10 +14,8 @@ a list of two data.frame. The first element returns the parameter estimates, the
 }
 \description{
 \code{\link[=tor_summarise]{tor_summarise()}} provides a comprehensive summary of the output
-returned by \code{\link[=tor_fit]{tor_fit()}}. Values of mean, 95CI bounds, median and
-Brooks–Gelman–Rubin criterion (i.e. chain convergence check) of parameters
-posterior distributions are provided. Additionally, prior posterior overlap
-values for parameters Tlc, Tt and Betat are generated.
+returned by \code{\link[=tor_fit]{tor_fit()}}. The function gives a summary statistic of the model fit and
+the ppo value for MR and TMR.
 }
 \examples{
 test2 <- tor_fit(M = test_data[,2],

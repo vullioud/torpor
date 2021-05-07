@@ -1,10 +1,8 @@
 #' Model summary
 #'
 #'[tor_summarise()] provides a comprehensive summary of the output
-#'returned by [tor_fit()]. Values of mean, 95CI bounds, median and
-#'Brooks–Gelman–Rubin criterion (i.e. chain convergence check) of parameters
-#'posterior distributions are provided. Additionally, prior posterior overlap
-#'values for parameters Tlc, Tt and Betat are generated.
+#'returned by [tor_fit()]. The function gives a summary statistic of the model fit and
+#'the ppo value for MR and TMR.
 #'
 #'@name tor_summarise
 #'@aliases tor_summarise

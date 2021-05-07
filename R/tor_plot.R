@@ -2,10 +2,11 @@
 #'
 #'[tor_plot()] provides a plot of the metabolic rate (M) values over the respective
 #'ambient temperature (Ta).
-#'Raw data and predicted values are presented in different colors depending
-#'of the metabolic state. Predicted values are represented by continuous and
-#'stripped lines for the estimates’ median and 95% CI bounds of the posterior
-#'distribution, respectively.
+#'
+#'The function plots the predicted value as well as the raw data.
+#'Measures are presented in different colors depending on the metabolic state.
+#'Predicted values as well as 95% credible interval (segmented lines) are also presented.
+#'This function enables the user to replicate the analysis done in Fasel et al. (in prep).
 #'For more flexibility the users can use [tor_fit()] and [tor_predict()] directly.
 #'
 #'@name tor_plot

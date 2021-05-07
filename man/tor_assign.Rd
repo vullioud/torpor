@@ -13,9 +13,8 @@ tor_assign(tor_obj)
 a data.frame
 }
 \description{
-\code{\link[=tor_assign]{tor_assign()}} returns the raw data with the related
-predicted state values (between 1 and 2), which leads to the state
-predicted metabolic rate (M) at the given ambient temperature (Ta).
+\code{\link[=tor_assign]{tor_assign()}} The function assign the individual points according to their
+estimated state.
 }
 \seealso{
 Other predict: 

@@ -1,7 +1,7 @@
 #' Model predictions
 #'
-#' [tor_predict()] provides the predicted metabolic rate (M) and 95% CI bounds at
-#' a given ambient temperature (Ta), in euthermic and/or torpid state.
+#' [tor_predict()] The function provides the predicted M and 95% credible interval
+#' boundaries at a defined Ta given a certain model, in euthermic and/or torpid state.
 #'
 #'@name tor_predict
 #'@aliases tor_predict
@@ -155,9 +155,8 @@ eut_predict_fun <- function(x, inte, betat, Ym) { ## backtransform parameters to
 
 #' Assign metabolic state
 #'
-#'[tor_assign()] returns the raw data with the related
-#'predicted state values (between 1 and 2), which leads to the state
-#'predicted metabolic rate (M) at the given ambient temperature (Ta).
+#'[tor_assign()] The function assign the individual points according to their
+#'estimated state.
 #'
 #'@name tor_assign
 #'@aliases tor_assign

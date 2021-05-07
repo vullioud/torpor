@@ -436,7 +436,8 @@ estimate_assignation <- function(M, Ta,
 #' Mixture model aimed at assigning metabolic rate measurements (M) to torpor and euthermia
 #'
 #'The function [tor_fit()] considers the relation between metabolic rate (M) and
-#'ambient temperature (Ta) assumed by the Scholander-Irving model and its later extensions.
+#'ambient temperature (Ta) assumed by the Scholander-Irving model and its later
+#'extensions.
 #'
 #'Resting M measured within the thermoneutral zone (TNZ) is independent of Ta.
 #'This rate is hereafter referred to as Mtnz, although it would correspond to
