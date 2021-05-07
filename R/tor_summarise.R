@@ -51,22 +51,50 @@ tor_ppo <- function(tor_obj){
 
   nbsamples <- nrow(mod_param$samples[[1]])*length(mod_param$samples)
 
-  if(!(is.null(mod_Tlc))) {
+  # if(!(is.null(mod_Tlc))) {
+  #
+  #   MIN<- max(tor_obj$out_Mtnz_Tlc$Ta2)
+  #   MAX<-max(tor_obj$data$Ta)
+  #   PR<- truncnorm::rtruncnorm(nbsamples,
+  #                              a=MIN,
+  #                              b=MAX,
+  #                              mean=0,
+  #                              sd=sqrt(1/0.001))
+  #   Tlc_chain <- tor_obj$out_Mtnz_Tlc$Tlc_distribution
+  #   overlapTlc <- as.numeric(round(overlapping::overlap(x = list(Tlc_chain, PR))$OV, digits = 3))
+  #   out_Tlc <- data.frame(name = "Tlc", overlap = overlapTlc)
+  #
+  # } else {
+  #   out_Tlc <- data.frame(name = "Tlc", overlap = 0)
+  # }
 
-    MIN<- max(tor_obj$out_Mtnz_Tlc$Ta2)
-    MAX<-max(tor_obj$data$Ta)
-    PR<- truncnorm::rtruncnorm(nbsamples,
-                               a=MIN,
-                               b=MAX,
-                               mean=0,
-                               sd=sqrt(1/0.001))
-    Tlc_chain <- tor_obj$out_Mtnz_Tlc$Tlc_distribution
-    overlapTlc <- as.numeric(round(overlapping::overlap(x = list(Tlc_chain, PR))$OV, digits = 3))
-    out_Tlc <- data.frame(name = "Tlc", overlap = overlapTlc)
+  ## Tbe
+  # MIN <- tor_obj$out_Mtnz_Tlc$Tlc_estimated
+  # MAX <- 50
+  # PR <- truncnorm::rtruncnorm(nbsamples,
+  #                             a=MIN,
+  #                             b=MAX,
+  #                             mean=0,
+  #                             sd=sqrt(1/0.001))
+  # Tbe_chain <- tor_obj$mod_parameter$sims.list$Tbe
+  # overlapTbe <- as.numeric(round(overlapping::overlap(x = list(Tbe_chain, PR))$OV, digits = 3))
+  #
+  # out_Tbe <- data.frame(name = "Tbe", overlap = overlapTbe)
 
-  } else {
-    out_Tlc <- data.frame(name = "Tlc", overlap = 0)
-  }
+  ## tbt
+  # for(i in 1:nbsamples){
+  #   PR[i]<- truncnorm::rtruncnorm(1,
+  #                                 a = -5,
+  #                                 b = min(tor_obj$mod_parameter$sims.list$Tbe[i]- (tor_obj$out_Mtnz_Tlc$Mtnz_estimated*2) /
+  #                                           (tor_obj$data$Ym*tor_obj$mod_parameter$sims.list$TMR[i]), (tor_obj$out_Mtnz_Tlc$model_1$q2.5$Tlc* tor_obj$mod_parameter$sims.list$betat[i]- tor_obj$mod_parameter$sims.list$TMR[i])
+  #                                         / tor_obj$mod_parameter$sims.list$betat[i]),
+  #                                 mean=0,
+  #                                 sd=sqrt(1/0.001))
+  # }
+  #
+  # Tbt_chain <- tor_obj$mod_parameter$sims.list$Tbt
+  # overlapTbt <- as.numeric(round(overlapping::overlap(x = list(Tbt_chain, PR))$OV, digits = 3))
+  # out_Tbt <- data.frame(name = "Tbt", overlap = overlapTbt)
 
   ## Mr
   PR<- rep(NA, nbsamples)
@@ -81,19 +109,6 @@ tor_ppo <- function(tor_obj){
   MR_chain <- tor_obj$mod_parameter$sims.list$Mr
   overlapMR <- as.numeric(round(overlapping::overlap(x = list(MR_chain, PR))$OV, digits = 3))
   out_MR <- data.frame(name = "Mr", overlap = overlapMR)
-
-  ## Tbe
-  MIN <- tor_obj$out_Mtnz_Tlc$Tlc_estimated
-  MAX <- 50
-  PR <- truncnorm::rtruncnorm(nbsamples,
-                              a=MIN,
-                              b=MAX,
-                              mean=0,
-                              sd=sqrt(1/0.001))
-  Tbe_chain <- tor_obj$mod_parameter$sims.list$Tbe
-  overlapTbe <- as.numeric(round(overlapping::overlap(x = list(Tbe_chain, PR))$OV, digits = 3))
-
-  out_Tbe <- data.frame(name = "Tbe", overlap = overlapTbe)
 
   ## TMR
   MIN <- 0
@@ -112,29 +127,15 @@ tor_ppo <- function(tor_obj){
   overlapTMR <- as.numeric(round(overlapping::overlap(x = list(TMR_chain, PR))$OV, digits = 3))
   out_TMR <- data.frame(name = "TMR", overlap = overlapTMR)
 
-  ## tbt
-  for(i in 1:nbsamples){
-    PR[i]<- truncnorm::rtruncnorm(1,
-                                  a = -5,
-                                  b = min(tor_obj$mod_parameter$sims.list$Tbe[i]- (tor_obj$out_Mtnz_Tlc$Mtnz_estimated*2) /
-                                            (tor_obj$data$Ym*tor_obj$mod_parameter$sims.list$TMR[i]), (tor_obj$out_Mtnz_Tlc$model_1$q2.5$Tlc* tor_obj$mod_parameter$sims.list$betat[i]- tor_obj$mod_parameter$sims.list$TMR[i])
-                                          / tor_obj$mod_parameter$sims.list$betat[i]),
-                                  mean=0,
-                                  sd=sqrt(1/0.001))
-  }
 
-  Tbt_chain <- tor_obj$mod_parameter$sims.list$Tbt
-  overlapTbt <- as.numeric(round(overlapping::overlap(x = list(Tbt_chain, PR))$OV, digits = 3))
-  out_Tbt <- data.frame(name = "Tbt", overlap = overlapTbt)
-
-  out <- dplyr::bind_rows(out_Tlc, out_MR, out_Tbe, out_TMR, out_Tbt) %>%
+  out <- dplyr::bind_rows(out_MR, out_TMR) %>% ## will need to add the other in case we want to re-introduce them
     dplyr::mutate(overlap = .data$overlap *100) %>%
     dplyr::rename(ppo = .data$overlap)
   ## add loop on out to flag overlap > 85 %.
   for (i in 1:nrow(out)){
 
-    if (out$ppo[i] > 85) {
-      warning(paste(out$name[i], "Weak identifiability; PPO > 85%"))
+    if (out$ppo[i] > 75) {
+      warning(paste(out$name[i], "Weak identifiability; PPO > 75%"))
     }
   }
   out
