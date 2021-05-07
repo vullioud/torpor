@@ -10,12 +10,18 @@ Authors@R:
       person(given = "Nicolas",
              family = "Fasel",
              role = "aut"))
-Description: This package enables an objective and standardized distinction 
-    between torpid and euthermic metabolic rates (MR) measured in steady-state 
-    conditions. Furthermore, it provides parameters’ estimations of the relation 
-    between ambient temperatures (Ta) and MR in both physiological states. This 
-    package is aimed to support any physiologist working in thermal energetics. 
-    More information can be found on the companion article Fasel et al. (in prep).
+Description: This package enables the assignment of M to torpor, euthermia.
+  It uses the variation in M measured during euthermic rest and torpor at different 
+  ambient temperatures (Ta) to estimate the lower critical temperature (Tlc) of 
+  the thermoneutral zone (TNZ) and determine physiological state membership using 
+  mixture models. In addition, this package enables the further prediction of M 
+  during euthermic rest and torpor along Ta, including resting metabolic rate 
+  within the TNZ.
+  This package is aimed to support any physiologist working in thermal energetics.
+  More information can be found on the companion article Fasel et al. (in prep) 
+  and in the vignettes.
+  This package is center around the tor_fit() function which enables to fit mixture
+  models on metabolic rates data using Bayesian inference.
 License: GPL (>=2)
 Depends: R (>= 2.10)
 Encoding: UTF-8
