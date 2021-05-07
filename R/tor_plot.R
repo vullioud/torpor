@@ -17,19 +17,23 @@
 #'@param col_Mtnz color of Mtnz
 #'@param ylab y label
 #'@param xlab x label
+#'@param xlim limit of the x-axis
+#'@param ylim limit of the y-axis
 #'@param pdf logical if a .pdf copy of the plot should be saved
 #'@export
-#'@return a base-R plot or a ggplot object
+#'@return a graphics plot or a ggplot object
 #'@importFrom grDevices dev.off
 
 tor_plot <- function(tor_obj = NULL,
                      plot_type = "base",
-                     legend = TRUE,
                      col_torp = "cornflowerblue",
                      col_euth = "coral3",
                      col_Mtnz = "black",
                      ylab = "M",
                      xlab = "Ta",
+                     xlim = NULL,
+                     ylim = NULL,
+                     legend = TRUE,
                      pdf = FALSE) {
 
 
@@ -45,19 +49,31 @@ tor_plot <- function(tor_obj = NULL,
   Y <- M <- tor_obj$data$Y
   Ta <- tor_obj$data$Ta
 
-  # plotting limits
-  Tlimup <- max(Ta,na.rm=TRUE)
-  Tlimlo <- min(Ta,na.rm=TRUE)
-  MRup <- max(Y,na.rm=TRUE)
-  MRlo <- min(Y,na.rm=TRUE)
+  # plotting limits and get values
+  if (length(xlim) != 2 & !is.null(xlim)) stop("xlim must be a vector of length 2")
+
+  Tlimup <- if(is.null(xlim)) max(Ta, na.rm=TRUE) else xlim[2]
+  Tlimlo <- if(is.null(xlim)) min(Ta, na.rm=TRUE) else xlim[1]
 
   ## get the assignment and data
   da <- tor_assign(tor_obj)
-
-
-  ## get the predictions
   pred <- tor_predict(tor_obj, seq(Tlimlo,Tlimup,length=1000))
 
+  ## get the values
+  Ymeant <- pred[pred$assignment == "Torpor", "pred"]
+  Y975t <- pred[pred$assignment == "Torpor", "upr_95"]
+  Y025t <- pred[pred$assignment == "Torpor", "lwr_95"]
+
+  Ymeann <- pred[pred$assignment == "Euthermia", "pred"]
+  Y975n <- pred[pred$assignment == "Euthermia", "upr_95"]
+  Y025n <- pred[pred$assignment == "Euthermia", "lwr_95"]
+
+  YmeanM <- pred[pred$assignment == "Mtnz", "pred"]
+
+  if(length(ylim) != 2 & !is.null(ylim)) stop("ylim must be a vector of length 2")
+
+  MRup <- ifelse(is.null(ylim), max(Y975n,Y975t,Y,na.rm=TRUE), ylim[2])
+  MRlo <- ifelse(is.null(ylim), min(Y025n,Y025t,Y,na.rm=TRUE), ylim[1])
   ## ggplot
   if(plot_type == "ggplot"){
 
@@ -65,7 +81,8 @@ tor_plot <- function(tor_obj = NULL,
 
     plot <- ggplot2::ggplot() +
       ggplot2::geom_point(data = da[da$assignment == "Torpor", ], ggplot2::aes(x = measured_Ta, y = measured_M, col = "Torpor"), col = col_torp) + ## torpor
-      ggplot2::xlim(c(min(da$measured_Ta), max(da$measured_Ta))) +
+      ggplot2::xlim(c(Tlimlo, Tlimup)) +
+      ggplot2::ylim(c(MRlo, MRup)) +
       ggplot2::geom_line(data = pred[pred$assignment == "Torpor", ], ggplot2::aes(x = Ta, y = pred), col = col_torp,
                          linetype = 2) +
       ggplot2::geom_ribbon(data = pred[pred$assignment == "Torpor", ],
@@ -95,18 +112,6 @@ tor_plot <- function(tor_obj = NULL,
 
   ## base-R plot
   } else {
-    # get values
-    Ymeant <- pred[pred$assignment == "Torpor", "pred"]
-    Y975t <- pred[pred$assignment == "Torpor", "upr_95"]
-    Y025t <- pred[pred$assignment == "Torpor", "lwr_95"]
-
-    Ymeann <- pred[pred$assignment == "Euthermia", "pred"]
-    Y975n <- pred[pred$assignment == "Euthermia", "upr_95"]
-    Y025n <- pred[pred$assignment == "Euthermia", "lwr_95"]
-
-    YmeanM <- pred[pred$assignment == "Mtnz", "pred"]
-
-
 
    ## plot
     if(pdf == TRUE){
