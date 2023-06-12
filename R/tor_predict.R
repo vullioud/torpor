@@ -116,7 +116,9 @@ tor_predict <- function(tor_obj, Ta, CI = TRUE){
                         upr_95 = Y975_b,
                         lwr_95 = Y025_b)
   if (!CI) {
-    # specific filtering needed since we create Mtnz unconditionally in the simple case
+    # specific filtering needed since we create outputs unconditionally in the simple case
+    out_eut <- out_eut[out_eut$Ta < Tlc, ]
+    out_tor <- out_tor[out_tor$Ta < Tlc, ]
     out_Mtnz <- out_Mtnz[out_Mtnz$Ta >= Tlc, ]
   }
 
