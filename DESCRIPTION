@@ -1,7 +1,7 @@
 Package: torpor
 Type: Package
 Title: Assigning metabolic rate measurements to torpor and euthermia in heterothermic endotherms  
-Version: 0.4
+Version: 0.41
 Authors@R: 
     c(person(given = "Colin",
              family = "Vullioud",
