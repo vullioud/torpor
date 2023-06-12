@@ -3,23 +3,29 @@
 #' [tor_predict()] The function provides the predicted M and 95% credible interval
 #' boundaries at a defined Ta given a certain model, in euthermic and/or torpid state.
 #'
+#' Note that the predictions are computed slightly differently depending on whether one uses `CI = TRUE` or `CI = FALSE`.
+#' In the former case (the default), for each value of Ta, one prediction is computed for every single iteration of the posteriors and the median value of these predictions is then computed.
+#' In the latter case, for each value of Ta, a single prediction is directly computed by assuming that parameters equate their median values from the corresponding posterior distribution.
+#'
 #'@name tor_predict
 #'@aliases tor_predict
 #'@family predict
 #'@param tor_obj a fitted model from [tor_fit()]
 #'@param Ta a vector of temperature
+#'@param CI whether or not to compute prediction intervals (default = TRUE, which reduces the speed of computation noticeably for large jobs)
 #'@return a data.frame
 #'@export
 #'@examples
 #'\dontrun{
-#'test_mod <- tor_fit(M = test_data2[,2],
-#'                    Ta = test_data2[, 1],
-#'                    fitting_options = list(nc = 1, nb = 3000, ni = 5000))
+#' test_mod <- tor_fit(M = test_data2[,2],
+#'                     Ta = test_data2[, 1],
+#'                     fitting_options = list(nc = 1, nb = 3000, ni = 5000))
 #' tor_predict(test_mod, Ta = 10:35)
+#' tor_predict(test_mod, Ta = 10:35, CI = FALSE)
 #'}
-tor_predict <- function(tor_obj, Ta){
-  if(!("tor_obj" %in% class(tor_obj))) stop("tor_obj need to be of class tor_obj")
-  if(!(class(Ta) %in% c("integer", "numeric"))) stop("Ta need to be a integer or a numeric vector")
+tor_predict <- function(tor_obj, Ta, CI = TRUE){
+  if (!("tor_obj" %in% class(tor_obj))) stop("tor_obj need to be of class tor_obj")
+  if (!(class(Ta) %in% c("integer", "numeric"))) stop("Ta need to be a integer or a numeric vector")
 
   # retrieved the posterior of interest
   mod <- tor_obj$mod_parameter
@@ -34,51 +40,59 @@ tor_predict <- function(tor_obj, Ta){
   ##
   Tlc <- tor_obj$out_Mtnz_Tlc$Tlc_estimated
   Ym <- tor_obj$data$Ym
-
+  Mtnz <- tor_obj$out_Mtnz_Tlc$Mtnz_estimated
 
   X <- length(Ta)
-  Ymean_t <- rep(NA, X)
-  Y975_t <- rep(NA, X)
-  Y025_t <- rep(NA, X)
 
-  Ymean_n <- rep(NA, X)
-  Y975_n <- rep(NA, X)
-  Y025_n <- rep(NA, X)
-
-  Ymean_b <- rep(NA, X)
-  Y975_b <- rep(NA, X)
-  Y025_b <- rep(NA, X)
-
-  for (i in 1:X) {
-
-    if(Ta[i] < tor_obj$out_Mtnz_Tlc$Tlc_estimated) {
-
-
-    Ymean_t[i] <- stats::median(tor_predict_fun(Ta[i], Tt, intr, intc, betat, betac, Ym))
-    Y975_t[i] <- stats::quantile(tor_predict_fun(Ta[i],Tt, intr, intc, betat, betac, Ym),0.975)
-    Y025_t[i] <- stats::quantile(tor_predict_fun(Ta[i],Tt, intr, intc, betat, betac, Ym),0.025)
-
-    Ymean_n[i] <- stats::median(eut_predict_fun(Ta[i], inte, betat, Ym))
-    Y975_n[i] <- stats::quantile(eut_predict_fun(Ta[i], inte, betat, Ym),0.975)
-    Y025_n[i] <- stats::quantile(eut_predict_fun(Ta[i], inte, betat, Ym),0.025)
+  if (!CI) {
+    # vectorial computation for simple case:
+    Ymean_t <- tor_predict_fun(Ta, stats::median(Tt), stats::median(intr), stats::median(intc), stats::median(betat), stats::median(betac), Ym)
+    Ymean_n <- eut_predict_fun(Ta, stats::median(inte), stats::median(betat), Ym)
+    Ymean_b <- mean(Mtnz, na.rm = TRUE)
+    Y975_t <- Y025_t <- Y975_n <- Y025_n <- Y975_b <- Y025_b <- NA
 
     } else {
+    # non-vectorial computation:
+    Ymean_t <- rep(NA, X)
+    Y975_t <- rep(NA, X)
+    Y025_t <- rep(NA, X)
 
-      Mtnz <- tor_obj$out_Mtnz_Tlc$Mtnz_estimated
+    Ymean_n <- rep(NA, X)
+    Y975_n <- rep(NA, X)
+    Y025_n <- rep(NA, X)
 
-      if(length(Mtnz < 2)) { # cases when Mtnz is provided by the user
-        Ymean_b[i] <-Mtnz
-        Y975_b[i] <- Mtnz
-        Y025_b[i] <- Mtnz
+    Ymean_b <- rep(NA, X)
+    Y975_b <- rep(NA, X)
+    Y025_b <- rep(NA, X)
+
+    for (i in 1:X) {
+
+      if (Ta[i] < Tlc) {
+
+
+      Ymean_t[i] <- stats::median(tor_predict_fun(Ta[i], Tt, intr, intc, betat, betac, Ym))
+      Y975_t[i] <- stats::quantile(tor_predict_fun(Ta[i],Tt, intr, intc, betat, betac, Ym), 0.975)
+      Y025_t[i] <- stats::quantile(tor_predict_fun(Ta[i],Tt, intr, intc, betat, betac, Ym), 0.025)
+
+      Ymean_n[i] <- stats::median(eut_predict_fun(Ta[i], inte, betat, Ym))
+      Y975_n[i] <- stats::quantile(eut_predict_fun(Ta[i], inte, betat, Ym),0.975)
+      Y025_n[i] <- stats::quantile(eut_predict_fun(Ta[i], inte, betat, Ym),0.025)
 
       } else {
-      Ymean_b[i] <- mean(Mtnz, na.rm = TRUE)
-      Y975_b[i] <- mean(Mtnz)+1.96*stats::sd(Mtnz)/sqrt(length(tor_obj$out_Mtnz_Tlc$Mtnz_points))
-      Y025_b[i] <- mean(Mtnz)-1.96*stats::sd(Mtnz)/sqrt(length(tor_obj$out_Mtnz_Tlc$Mtnz_points))
-  }
+
+        if (length(Mtnz < 2)) { # cases when Mtnz is provided by the user
+          Ymean_b[i] <- Mtnz
+          Y975_b[i] <- Mtnz
+          Y025_b[i] <- Mtnz
+
+        } else {
+        Ymean_b[i] <- mean(Mtnz, na.rm = TRUE)
+        Y975_b[i] <- mean(Mtnz) + 1.96*stats::sd(Mtnz)/sqrt(length(tor_obj$out_Mtnz_Tlc$Mtnz_points))
+        Y025_b[i] <- mean(Mtnz) - 1.96*stats::sd(Mtnz)/sqrt(length(tor_obj$out_Mtnz_Tlc$Mtnz_points))
+    }
+      }
     }
   }
-
 
   #### values for torpor
   out_tor <- data.frame(Ta = Ta,
@@ -101,20 +115,24 @@ tor_predict <- function(tor_obj, Ta){
                         pred =  Ymean_b,
                         upr_95 = Y975_b,
                         lwr_95 = Y025_b)
+  if (!CI) {
+    # specific filtering needed since we create Mtnz unconditionally in the simple case
+    out_Mtnz <- out_Mtnz[out_Mtnz$Ta >= Tlc, ]
+  }
 
 
   ###
-  if(any(Ta > tor_obj$out_Mtnz_Tlc$Tlc_estimated)) warning("Tuc is not considered: Mtnz is calculated independently of Ta above Tlc")
+  if (any(Ta > tor_obj$out_Mtnz_Tlc$Tlc_estimated)) warning("Tuc is not considered: Mtnz is calculated independently of Ta above Tlc")
 
-  if(!any(tor_obj$assignation$G == 1)){ ## no torpor
-    out <- rbind(out_eut,out_Mtnz)
-  } else if (!any(tor_obj$assignation$G == 2)){ ## no euthermia
+  if (!any(tor_obj$assignation$G == 1)) { ## no torpor
+    out <- rbind(out_eut, out_Mtnz)
+  } else if (!any(tor_obj$assignation$G == 2)) { ## no euthermia
     out <- rbind(out_tor, out_Mtnz)
   } else { ## both torpor and euthermia
     out <- rbind(out_tor, out_eut, out_Mtnz)
   }
 
-  stats::na.omit(out)
+  out[!is.na(out$pred), ]
 
 }
 ################################################################################

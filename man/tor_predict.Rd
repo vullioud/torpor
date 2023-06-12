@@ -4,12 +4,14 @@
 \alias{tor_predict}
 \title{Model predictions}
 \usage{
-tor_predict(tor_obj, Ta)
+tor_predict(tor_obj, Ta, CI = TRUE)
 }
 \arguments{
 \item{tor_obj}{a fitted model from \code{\link[=tor_fit]{tor_fit()}}}
 
 \item{Ta}{a vector of temperature}
+
+\item{CI}{whether or not to compute prediction intervals (default = TRUE, which reduces the speed of computation noticeably for large jobs)}
 }
 \value{
 a data.frame
@@ -18,12 +20,18 @@ a data.frame
 \code{\link[=tor_predict]{tor_predict()}} The function provides the predicted M and 95\% credible interval
 boundaries at a defined Ta given a certain model, in euthermic and/or torpid state.
 }
+\details{
+Note that the predictions are computed slightly differently depending on whether one uses \code{CI = TRUE} or \code{CI = FALSE}.
+In the former case (the default), for each value of Ta, one prediction is computed for every single iteration of the posteriors and the median value of these predictions is then computed.
+In the latter case, for each value of Ta, a single prediction is directly computed by assuming that parameters equate their median values from the corresponding posterior distribution.
+}
 \examples{
 \dontrun{
 test_mod <- tor_fit(M = test_data2[,2],
-                   Ta = test_data2[, 1],
-                   fitting_options = list(nc = 1, nb = 3000, ni = 5000))
+                    Ta = test_data2[, 1],
+                    fitting_options = list(nc = 1, nb = 3000, ni = 5000))
 tor_predict(test_mod, Ta = 10:35)
+tor_predict(test_mod, Ta = 10:35, CI = FALSE)
 }
 }
 \seealso{
