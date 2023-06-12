@@ -28,19 +28,18 @@ Encoding: UTF-8
 LazyData: true
 SystemRequirements: jags
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.1.1
+RoxygenNote: 7.2.3
 Imports: jagsUI, 
         ggplot2,
         truncnorm, 
         dplyr, 
         magrittr,
         overlapping, 
-        knitr,
-        rmarkdown, 
         lmtest, 
         rlang
 VignetteBuilder: knitr
 Suggests: 
     testthat (>= 2.1.0),
     covr,
-    markdown
+    rmarkdown,
+    knitr
