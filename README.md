@@ -40,9 +40,10 @@ remotes::install_github("vullioud/torpor", build_vignettes = TRUE)
 ## Where can you find more about torpor?
 
 You can learn more about the goal and the theory behind the package in
-the companion article (Fassel et al., in prep). And you will find an
-example in the vignettes of the package. You can access it directly from
-R by typing:
+the companion article (Fasel et al., Biol Open 15 April 2022; 11 (4):
+bio059064. doi: <https://doi.org/10.1242/bio.059064>). And you will find
+an example in the vignettes of the package. You can access it directly
+from R by typing:
 
 ``` r
 browseVignettes("torpor")
@@ -51,5 +52,5 @@ browseVignettes("torpor")
 ## How can you help ?
 
 Torpor is still in its infancy and despite numerous testing it is
-possible that bugs appears. You can help us by reporting bugs or request
+possible that bugs appear. You can help us by reporting bugs or request
 new features.
