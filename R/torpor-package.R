@@ -9,7 +9,8 @@
 #'of M during rest and torpor along Ta, including resting metabolic rate within the TNZ.
 #'
 #'This package is aimed to support any physiologist working in thermal energetics.
-#'More information can be found on the companion article Fasel et al. (in prep)
+#'More information can be found on the companion article Fasel et al.
+#'(Biol Open 15 April 2022; 11 (4): bio059064. doi: https://doi.org/10.1242/bio.059064)
 #'and in the vignettes.
 #'
 #'This package is center around the [tor_fit()] function which enables to fit

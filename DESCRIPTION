@@ -1,7 +1,7 @@
 Package: torpor
 Type: Package
 Title: Assigning metabolic rate measurements to torpor and euthermia in heterothermic endotherms  
-Version: 0.4
+Version: 0.41
 Authors@R: 
     c(person(given = "Colin",
              family = "Vullioud",
@@ -18,7 +18,8 @@ Description: This package enables the assignment of M to torpor, euthermia.
   during euthermic rest and torpor along Ta, including resting metabolic rate 
   within the TNZ.
   This package is aimed to support any physiologist working in thermal energetics.
-  More information can be found on the companion article Fasel et al. (in prep) 
+  More information can be found on the companion article Fasel et al. 
+  (Biol Open 15 April 2022; 11 (4): bio059064. doi: https://doi.org/10.1242/bio.059064) 
   and in the vignettes.
   This package is center around the tor_fit() function which enables to fit mixture
   models on metabolic rates data using Bayesian inference.
@@ -28,19 +29,18 @@ Encoding: UTF-8
 LazyData: true
 SystemRequirements: jags
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.1.1
+RoxygenNote: 7.2.3
 Imports: jagsUI, 
         ggplot2,
         truncnorm, 
         dplyr, 
         magrittr,
         overlapping, 
-        knitr,
-        rmarkdown, 
         lmtest, 
         rlang
 VignetteBuilder: knitr
 Suggests: 
     testthat (>= 2.1.0),
     covr,
-    markdown
+    rmarkdown,
+    knitr
