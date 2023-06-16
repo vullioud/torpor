@@ -87,7 +87,7 @@ summary$ppo
 Once the basic checks have been done, we can go on with the evaluation of the output. There are two main functions that deal with predictions. `tor_assign()` firstly gives the classification of the raw data based on the predictions of the model. `tor_predict()` further gives the predicted M in torpor and euthermia for a given $T_a$. Finally, we can plot the result using the function `tor_plot()`.
 
 ### Getteing the assignation  
-TTo look at the assignments of the data the corresponding predicted values we use the function `tor_assign()`,  , which will assign the measured metabolic values to either torpor or euthermia  and returns a dataframe with the measured $M$, the measured $T_a$, the predicted $M$ and the assignment. (predicted_state).
+To look at the assignments of the data the corresponding predicted values we use the function `tor_assign()`,  , which will assign the measured metabolic values to either torpor or euthermia  and returns a dataframe with the measured $M$, the measured $T_a$, the predicted $M$ and the assignment. (predicted_state).
 
 ```{r, tor_assign}
 assignment <- tor_assign(tor_obj = model)
@@ -99,9 +99,11 @@ head(assignment)
 The `tor_predict()`  function is slightly different as it takes a vector of $T_a$ as input and returns the predicted  $M$ both in torpor and in euthermia and the 95% credible interval. For example,  let’s see what are the predicted $M$ at $T_a$ 22°!
 
 ```{r, tor_predict}
-prediction <- tor_predict(tor_obj = model, Ta = 22)
+prediction <- tor_predict(tor_obj = model, Ta = 22, CI = TRUE)
 head(prediction)
 ```
+
+The computation of the credible interval is slow for large jobs and running `tor_predict()` with the parameter `CI = FALSE` drastically speed up the computation of the prediction.
 
 ### plotting the data and predicted values 
 Finally a built-in function allows plot the results. The user can modulate labels `xlab` and `ylab` and the colors with `col_torp`, `col_eut` and `col_Mtnz` and can save the plot using the arguments `pdf = TRUE`. The plot_type argument also allows to choose between `base` (default) and `ggplot`.
