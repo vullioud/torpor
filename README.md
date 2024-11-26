@@ -19,11 +19,6 @@ torpid and euthermic metabolic rates (M) measured in steady-state
 conditions. Note: This package is not aimed for use without careful
 researcher’s attention.
 
-A stable version of the package will be soon available on CRAN. However,
-to allow greater flexibility and interactivity at this early stage of
-the project, the package is only available on github at the moment. Any
-bug report or request features would therefore be appreciated.
-
 ## Installation
 
 Torpor is using `JAGS` (Just Another Gibbs Sampler) in the background
